@@ -898,6 +898,283 @@ Anche altri segnali vengono prodotti nella cosiddetta \textbf{banda base}, ovver
     \end{itemize}
 \end{itemize}
 
+\subsection*{Definizioni di Banda}
+Consideriamo un segnale $s(t)$ con estremi di banda $(f_1; f_2)$: dunque la \textbf{larghezza di banda} è $B = f_2 - f_1$. \\
+Inoltre, denotiamo con $f_0$ la \textbf{frequenza di centro banda} di $s(t)$, cioè:
+\begin{equation}
+    f_0 = \frac{f_1 + f_2}{2}
+\end{equation}
+
+La \textbf{larghezza di banda relativa} è definita come $B / f_0$.
+
+\begin{nota}
+    Allora la \textbf{banda base} si ha quando $B \approx 2f_0$, oppure equivalentemente quando la larghezza di banda relativa è prossima al valore 2 (cioè, $B / f_0 \approx 2$).
+\end{nota}
+
+Si parla invece di \textbf{banda passante} o \textbf{banda traslata} quando la stessa porzione di banda di frequenze è spostata a \textbf{frequenze maggiori}, e dunque in tal caso avremo:
+\begin{equation}
+    \frac{B}{f_0} \ll 1
+\end{equation}
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        xscale=1.1,
+        yscale=1.2,
+        font=\sffamily\small
+    ]
+
+    % Seed per rendere il rumore riproducibile
+    \pgfmathsetseed{31415}
+
+    % ============================================================
+    % GRAFICO 1 - BANDA BASE
+    % ============================================================
+
+    \begin{scope}[shift={(0,0)}]
+
+        % --------------------------------------------------------
+        % Assi
+        % --------------------------------------------------------
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (0,2.5)
+            node[left] {$P$};
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (4.2,0)
+            node[below right] {$\nu$};
+
+
+        % --------------------------------------------------------
+        % Rumore
+        % --------------------------------------------------------
+
+        \draw[
+            thick,
+            black!80
+        ]
+        plot[
+            domain=0.05:4.0,
+            samples=180
+        ]
+        (\x,{
+            0.12
+            + 0.07*rand
+            + 0.025*sin(900*\x)
+        });
+
+
+        % --------------------------------------------------------
+        % Banda del segnale
+        % --------------------------------------------------------
+
+        \draw[
+            thick,
+            orange
+        ]
+        (0.20,0.12)
+        -- (0.40,1.45)
+        -- (1.55,1.45)
+        -- (1.75,0.12);
+
+
+        % --------------------------------------------------------
+        % Frequenze f1, f0, f2
+        % --------------------------------------------------------
+
+        % f1
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (0.40,0) -- (0.40,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (0.40,-0.52)
+        {$f_1$};
+
+
+        % f0
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (0.975,0) -- (0.975,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (0.975,-0.52)
+        {$f_0$};
+
+
+        % f2
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (1.55,0) -- (1.55,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (1.55,-0.52)
+        {$f_2$};
+
+
+        % --------------------------------------------------------
+        % Larghezza di banda B
+        % --------------------------------------------------------
+
+        \draw[
+            <->,
+            thick,
+            orange
+        ]
+        (0.40,-0.85)
+        -- (1.55,-0.85);
+
+        \node[
+            text=orange
+        ]
+        at (0.975,-1.05)
+        {$B$};
+
+    \end{scope}
+
+
+    % ============================================================
+    % GRAFICO 2 - BANDA PASSANTE
+    % ============================================================
+
+    \begin{scope}[shift={(5.8,0)}]
+
+        % --------------------------------------------------------
+        % Assi
+        % --------------------------------------------------------
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (0,2.5)
+            node[left] {$P$};
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (4.5,0)
+            node[below right] {$\nu$};
+
+
+        % --------------------------------------------------------
+        % Rumore
+        % --------------------------------------------------------
+
+        \draw[
+            thick,
+            black!80
+        ]
+        plot[
+            domain=0.05:4.3,
+            samples=190
+        ]
+        (\x,{
+            0.12
+            + 0.07*rand
+            + 0.025*sin(850*\x)
+        });
+
+
+        % --------------------------------------------------------
+        % Banda del segnale traslata
+        % --------------------------------------------------------
+
+        \draw[
+            thick,
+            orange
+        ]
+        (1.80,0.12)
+        -- (2.00,1.45)
+        -- (3.15,1.45)
+        -- (3.35,0.12);
+
+
+        % --------------------------------------------------------
+        % Frequenze f1, f0, f2
+        % --------------------------------------------------------
+
+        % f1
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (2.00,0) -- (2.00,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (2.00,-0.52)
+        {$f_1$};
+
+
+        % f0
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (2.575,0) -- (2.575,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (2.575,-0.52)
+        {$f_0$};
+
+
+        % f2
+        \draw[
+            thin,
+            orange,
+            dashed
+        ]
+        (3.15,0) -- (3.15,-0.45);
+
+        \node[
+            text=orange
+        ]
+        at (3.15,-0.52)
+        {$f_2$};
+
+
+        % --------------------------------------------------------
+        % Larghezza di banda B
+        % --------------------------------------------------------
+
+        \draw[
+            <->,
+            thick,
+            orange
+        ]
+        (2.00,-0.85)
+        -- (3.15,-0.85);
+
+        \node[
+            text=orange
+        ]
+        at (2.575,-1.05)
+        {$B$};
+
+    \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+
 \section{Banda Passante}
 
 Se pensiamo alle usuali telecomunicazioni, queste non occupano / si trovano a bassa frequenza direttamente in banda base, quanto piuttosto ad alta frequenza, ovvero in \textbf{banda passante}:
@@ -939,75 +1216,7 @@ Se pensiamo alle usuali telecomunicazioni, queste non occupano / si trovano a ba
     \caption*{Frequenze associate a segnali di impiego comune.}
 \end{table}
 
-\subsection{Definizioni di Banda}
 
-Consideriamo un segnale $s(t)$ con estremi di banda $(f_1; f_2)$: dunque la \textbf{larghezza di banda} è $B = f_2 - f_1$. \\
-Inoltre, denotiamo con $f_0$ la \textbf{frequenza di centro banda} di $s(t)$, cioè:
-\begin{equation}
-    f_0 = \frac{f_1 + f_2}{2}
-\end{equation}
-
-La \textbf{larghezza di banda relativa} è definita come $B / f_0$.
-
-\begin{nota}
-    Allora la \textbf{banda base} si ha quando $B \approx 2f_0$, oppure equivalentemente quando la larghezza di banda relativa è prossima al valore 2 (cioè, $B / f_0 \approx 2$).
-\end{nota}
-
-Si parla invece di \textbf{banda passante} o \textbf{banda traslata} quando la stessa porzione di banda di frequenze è spostata a \textbf{frequenze maggiori}, e dunque in tal caso avremo:
-\begin{equation}
-    \frac{B}{f_0} \ll 1
-\end{equation}
-
-\vspace{0.5cm}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[xscale=1.1, yscale=1.2, font=\sffamily\small]
-        
-        % --- GRAFICO 1: BANDA BASE ---
-        \begin{scope}[shift={(0,0)}]
-            % Assi
-            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
-            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4,0) node[below right] {$\nu$};
-            
-            % Tappeto di rumore
-            \draw[thick, black!80, rounded corners=1pt] (0,0.1) -- (0.2,0.2) -- (0.4,0.1) -- (0.6,0.3) -- (0.8,0.15) -- (1,0.2) -- (1.3,0.1) -- (1.5,0.25) -- (1.8,0.1) -- (2.0, 0.15) -- (2.2, 0.1) -- (2.5,0.2) -- (2.8,0.1) -- (3.0,0.3) -- (3.3,0.15) -- (3.5,0.1) -- (3.8,0.2);
-            
-            % Segnale in Banda Base (Trapezio arancione attaccato all'asse Y)
-            \draw[thick, orange] (0.2, 0.15) -- (0.4, 1.5) -- (1.5, 1.5) -- (1.7, 0.15);
-            
-            % Etichette f1, f0, f2
-            \draw[thin, orange] (0.4, 0) -- (0.4, -0.15) node[below] {$f_1$};
-            \draw[thin, orange] (0.95, 0) -- (0.95, -0.15) node[below] {$f_0$};
-            \draw[thin, orange] (1.5, 0) -- (1.5, -0.15) node[below] {$f_2$};
-            
-            % Quota B
-            \draw[<->, orange] (0.4, -0.7) -- (1.5, -0.7) node[midway, below] {B};
-        \end{scope}
-        
-        % --- GRAFICO 2: BANDA PASSANTE ---
-        \begin{scope}[shift={(6,0)}]
-            % Assi
-            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
-            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.5,0) node[below right] {$\nu$};
-            
-            % Tappeto di rumore
-            \draw[thick, black!80, rounded corners=1pt] (0,0.1) -- (0.2,0.2) -- (0.4,0.1) -- (0.6,0.3) -- (0.8,0.15) -- (1,0.2) -- (1.3,0.1) -- (1.5,0.25) -- (1.8,0.1) -- (2.0, 0.15) -- (2.2, 0.1) -- (2.5,0.2) -- (2.8,0.1) -- (3.0,0.3) -- (3.3,0.15) -- (3.5,0.1) -- (3.8,0.3) -- (4.1, 0.15) -- (4.3, 0.2);
-            
-            % Segnale in Banda Passante (Trapezio arancione spostato a destra)
-            \draw[thick, orange] (1.8, 0.1) -- (2.0, 1.5) -- (3.1, 1.5) -- (3.3, 0.15);
-            
-            % Etichette f1, f0, f2
-            \draw[thin, orange] (2.0, 0) -- (2.0, -0.15) node[below] {$f_1$};
-            \draw[thin, orange] (2.55, 0) -- (2.55, -0.15) node[below] {$f_0$};
-            \draw[thin, orange] (3.1, 0) -- (3.1, -0.15) node[below] {$f_2$};
-            
-            % Quota B
-            \draw[<->, orange] (2.0, -0.7) -- (3.1, -0.7) node[midway, below] {B};
-        \end{scope}
-
-    \end{tikzpicture}
-\end{figure}
 
 \section{Alta Frequenza e Teorema di Shannon}
 
