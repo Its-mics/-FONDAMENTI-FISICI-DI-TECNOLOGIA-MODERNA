@@ -8,7 +8,7 @@
 \usepackage{microtype} % Migliora spaziature e sillabazione
 
 % --- Colori (Definiti prima per usarli ovunque) ---
-\usepackage[x11names, dvipsnames]{xcolor}
+\usepackage[x11names, dvipsnames, table]{xcolor}
 \definecolor{PoliBlue}{RGB}{0, 45, 114} % Blu accademico elegante
 \definecolor{OpticRed}{RGB}{200, 10, 30} % Rosso "laser" per i link
 \definecolor{ForestGreen}{RGB}{34, 139, 34}
@@ -319,8 +319,8 @@ La scaletta iniziale delle lezioni è organizzata secondo blocchi tematici che c
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
-        box/.style={draw=PoliBlue, fill=PoliBlue!5, text centered, font=\small, minimum height=1cm, minimum width=4cm, rounded corners=3pt},
-        labbox/.style={draw=OpticRed, fill=OpticRed!5, text centered, font=\small, minimum height=1cm, minimum width=5cm, rounded corners=3pt}
+        box/.style={draw=PoliBlue, fill=PoliBlue!5, text centered, align=center, font=\small, minimum height=1cm, minimum width=4cm, rounded corners=3pt},
+        labbox/.style={draw=OpticRed, fill=OpticRed!5, text centered, align=center, font=\small, minimum height=1cm, minimum width=5cm, rounded corners=3pt}
     ]
         
     % Settimana 1 (Settembre)
