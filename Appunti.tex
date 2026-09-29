@@ -164,275 +164,867 @@
 \begin{document}
 
 \begin{titlepage}
-    \centering
+    % --- Grafica di Sfondo (Richiede TikZ) ---
+    \begin{tikzpicture}[remember picture, overlay]
+        % Barra laterale blu
+        \fill[PoliBlue] (current page.north west) rectangle ([xshift=1.5cm]current page.south west);
+        
+        % Badge Anno Accademico in alto a destra
+        \node[fill=OpticRed, text=white, font=\sffamily\bfseries\Large, anchor=north east, minimum width=4cm, minimum height=1.5cm] 
+            at ([yshift=-3cm]current page.north east) {2026 / 2027};
+            
+        % Onde di segnale decorative in basso (tema del corso: segnali/frequenze)
+        \begin{scope}[shift={(current page.south west)}, xshift=1.5cm]
+            % Onda 1 (Rossa, lenta)
+            \draw[OpticRed, line width=2pt, opacity=0.6] 
+                (0, 4) sin (4, 5.5) cos (8, 4) sin (12, 2.5) cos (16, 4) sin (20, 5.5);
+            % Onda 2 (Blu, media)
+            \draw[PoliBlue, line width=1.5pt, opacity=0.4] 
+                (0, 3) sin (2.5, 1.5) cos (5, 3) sin (7.5, 4.5) cos (10, 3) sin (12.5, 1.5) cos (15, 3) sin (17.5, 4.5) cos (20, 3);
+            % Onda 3 (Verde, veloce - rumore/armoniche)
+            \draw[ForestGreen, line width=1pt, opacity=0.5] 
+                (0, 4.5) sin (1.5, 3) cos (3, 4.5) sin (4.5, 6) cos (6, 4.5) sin (7.5, 3) cos (9, 4.5) sin (10.5, 6) cos (12, 4.5) sin (13.5, 3) cos (15, 4.5) sin (16.5, 6) cos (18, 4.5) sin (19.5, 3);
+        \end{scope}
+    \end{tikzpicture}
+    
+    % --- Testo del Titolo ---
     \vspace*{4cm}
+    \begin{flushleft}
+        \hspace{1cm} % Sposta il testo a destra per non sovrapporsi alla barra blu
+        \begin{minipage}{0.85\textwidth}
+            {\fontsize{35}{45}\selectfont \textbf{\textcolor{PoliBlue}{Fondamenti Fisici}}}\\[0.3cm]
+            {\fontsize{35}{45}\selectfont \textbf{\textcolor{PoliBlue}{di Tecnologia Moderna}}}\\[0.8cm]
+            
+            % Linea separatrice
+            \textcolor{gray!50}{\rule{\textwidth}{3pt}}\\[1cm]
+            
+            {\huge \textbf{Michele Tedeschini}}\\[0.5cm]
+            {\Large \textcolor{gray!80}{\textit{Appunti del corso}}}
+        \end{minipage}
+    \end{flushleft}
     
-    {\Huge \textbf{\textcolor{PoliBlue}{Introduzione}}} \\[1.5cm]
-    
-    {\huge Fondamenti Fisici di Tecnologia Moderna} \\[2cm]
-    
-    {\Large \textbf{Agata Trovato, Federico Dogo}} \\[0.5cm]
-    {\large Università degli Studi di Trieste -- Dipartimento di Fisica} \\[3cm]
-    
-    {\large \textbf{TRIESTE, 2026}}
     \vfill
 \end{titlepage}
 
-\chapter{Presentazione dell'Insegnamento}
+% ==================================================
+% INDICE GENERALE
+% ==================================================
+\cleardoublepage
+% Aggiunge l'indice ai segnalibri del PDF a sinistra (fuori dal testo)
+\pdfbookmark[0]{Indice}{indice} 
+% Genera l'indice cliccabile
+\tableofcontents
+\cleardoublepage
 
-\section{Titolo, Scopo e Collocazione}
+\chapter{Introduzione ai Segnali}
+
+Un segnale è una funzione che convoglia una informazione riguardo un fenomeno. Tipicamente ciò avviene sottoforma di una onda elettromagnetica o di una corrente elettrica che trasporta dati da un sistema o una rete a un altro terminale.
+
+Consideriamo un segnale "semplice": sinusoidale periodico. Per esempio pensiamo a una persona che vocalizzi una nota per un certo lasso di tempo (qui non tratteremo segnali più complessi). Il segnale viene rappresentato come un onda caratterizzata da lunghezza d'onda $\lambda$, periodo $T$, e ampiezza $A$:
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=1.5]
+        % Assi tempo
+        \draw[-{Stealth}, thick, PoliBlue!80] (0,-1.5) -- (0,1.5);
+        \draw[-{Stealth}, thick, PoliBlue!80] (0,0) -- (3.5,0) node[right, text=PoliBlue] {$t \, , \quad x$};
+        
+        % Curva Coseno
+        \draw[thick, orange!70!yellow, domain=0:3, samples=100] plot (\x, {cos(\x*360/2)});
+        
+        % Quote (Ampiezza e Periodo)
+        \draw[|-|, thin, gray] (-0.2, 0) -- (-0.2, 1) node[midway, left, text=PoliBlue] {$A$};
+        \draw[|-|, thin, gray] (0, 1.2) -- (2, 1.2) node[midway, above, text=teal] {$T \, , \quad \lambda$};
+        
+        % Equazione a destra
+        \node[right] at (4, 0.5) {$s = A \cos (\omega t) = A \cos \left(\frac{2\pi}{T}t\right)$};
+    \end{tikzpicture}
+\end{figure}
 
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Titolo e Scopo:}
+    \item Per definizione la frequenza è l'inverso del periodo $\nu = 1 / T$ ed è indipendente dall'ampiezza.
+    \item Da ultimo, la potenza $P$ di un segnale periodico $s$ ci è data da $P = \langle s^2(t) \rangle$ (media temporale).
+\end{itemize}
+
+Possiamo allora rappresentare il nostro segnale in un piano diverso da quello precedente: al posto del tempo $t$ consideriamo la frequenza $\nu$ e al posto dell'ampiezza $A$ il segnale sarà caratterizzato dalla potenza $P$.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.2, yscale=1.2]
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue!80] (0,-1.5) -- (0,1.5);
+        \draw[-{Stealth}, thick, PoliBlue!80] (0,0) -- (3.5,0) node[below right, text=PoliBlue] {$t$};
+        \draw[thick, orange!70!yellow, domain=0:3, samples=100] plot (\x, {cos(\x*360/2)});
+        \draw[|-|, thin, gray] (-0.2, 0) -- (-0.2, 1) node[midway, left, text=PoliBlue] {$A$};
+        \draw[|-|, thin, gray] (0, 1.2) -- (2, 1.2) node[midway, above, text=orange] {$T$};
+        
+        % --- FRECCIA DI CONVERSIONE ---
+        \draw[-{Stealth[scale=1.5]}, line width=4pt, PoliBlue!70] (4,0) -- (5,0);
+        
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(5.5, -1.5)}]
+            \draw[-{Stealth}, thick, red] (0,0) -- (0,3) node[right] {$P$};
+            \draw[-{Stealth}, thick, red] (0,0) -- (4,0) node[above right] {$\nu$};
+            
+            % Spettro di potenza (Singolo picco)
+            \draw[thick, ForestGreen] (2, 0) -- (2, 1.5);
+            \draw[thick, ForestGreen] (1.95, 0) -- (2, 1.5) -- (2.05, 0); % Effetto "delta"
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Un segnale sinusoidale periodico che avrà periodo più breve $T_2$ rispetto a $T_1$ avrà frequenza $\nu_2 > \nu_1$.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.2, yscale=1.2]
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue] (0,-2) -- (0,2) node[left] {s};
+        \draw[-{Stealth}, thick, PoliBlue] (0,0) -- (4.5,0) node[below right] {t};
+        
+        % Curva T1 (Arancione, periodo lungo)
+        \draw[thick, orange, domain=0:4, samples=100] plot (\x, {1.2*cos(\x*360/3)});
+        
+        % Curva T2 (Giallo, periodo corto)
+        \draw[thick, orange!60!yellow, domain=0:4, samples=150] plot (\x, {1.2*cos(\x*360/1)});
+        
+        % Quote
+        \draw[|-|, thin, gray] (-0.3, 0) -- (-0.3, 1.2) node[midway, left, text=PoliBlue] {A};
+        \draw[|-|, thin, orange] (0, 1.5) -- (3, 1.5) node[midway, above] {$T_1$};
+        \draw[|-|, thin, orange!60!yellow] (1, -1.5) -- (2, -1.5) node[midway, below] {$T_2$};
+        
+        % --- FRECCIA DI CONVERSIONE ---
+        \draw[-{Stealth[scale=1.5]}, line width=4pt, PoliBlue!70] (5,0) -- (5.8,0);
+        
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6.5, -2)}]
+            \draw[-{Stealth}, thick, red] (0,0) -- (0,4) node[left] {P};
+            \draw[-{Stealth}, thick, red] (0,0) -- (5,0) node[above right] {$\nu$};
+            
+            % Picco T1 (Frequenza v1 minore -> a sinistra)
+            \draw[thick, orange] (1.5, 0) -- (1.5, 2);
+            \draw[thick, orange] (1.45, 0) -- (1.5, 2) -- (1.55, 0);
+            \node[below, text=orange] at (1.5, -0.2) {$\nu_1$};
+            
+            % Picco T2 (Frequenza v2 maggiore -> a destra)
+            \draw[thick, orange!60!yellow] (3.5, 0) -- (3.5, 2);
+            \draw[thick, orange!60!yellow] (3.45, 0) -- (3.5, 2) -- (3.55, 0);
+            \node[below, text=orange!60!yellow] at (3.5, -0.2) {$\nu_2$};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Un segnale sinusoidale periodico che avrà ampiezza maggiore $A_2$ rispetto a $A_1$ avrà potenza $P_2 > P_1$.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.2, yscale=1.2]
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue] (0,-2.2) -- (0,2.2) node[left] {s};
+        \draw[-{Stealth}, thick, PoliBlue] (0,0) -- (4.5,0) node[below right] {t};
+        
+        % Curva 1 (Arancione, Ampiezza minore A1, stesso periodo T)
+        \draw[thick, orange, domain=0:4, samples=100] plot (\x, {1.2*cos(\x*360/3.2)});
+        
+        % Curva 2 (Grigia, Ampiezza maggiore A2, stesso periodo T)
+        \draw[thick, gray!70, domain=0:4, samples=100] plot (\x, {1.8*cos(\x*360/3.2)});
+        
+        % Quote Ampiezze
+        \draw[|-|, thin, orange] (-0.3, 0) -- (-0.3, 1.2) node[midway, left] {$A_1$};
+        \draw[|-|, thin, gray!70] (-0.7, 0) -- (-0.7, 1.8) node[midway, left] {$A_2$};
+        
+        % Quota Periodo (Condivisa)
+        \draw[|-|, thin, PoliBlue] (0.8, 2) -- (4.0, 2) node[midway, above] {T};
+        
+        % --- FRECCIA DI CONVERSIONE ---
+        \draw[-{Stealth[scale=1.5]}, line width=4pt, PoliBlue!70] (4.8,0) -- (5.6,0);
+        
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6.2, -2.2)}]
+            \draw[-{Stealth}, thick, red] (0,0) -- (0,4.4) node[left] {P};
+            \draw[-{Stealth}, thick, red] (0,0) -- (5,0) node[above right] {$\nu$};
+            
+            % Etichette Assi P
+            \node[left, text=orange] at (0, 1.7) {$P_1$};
+            \node[left, text=gray!80]  at (0, 3) {$P_2$};
+            
+            % Picchi della trasformata. 
+            % Essendo la stessa frequenza (stesso T) i picchi cadono nello stesso punto.
+            % Li disegniamo leggermente sfalsati solo per renderli entrambi visibili, come nella slide.
+            
+            % Picco A1 (Arancione, Potenza minore)
+            \draw[thick, orange] (2.35, 0) -- (2.35, 1.7);
+            \draw[thick, orange] (2.3, 0) -- (2.35, 1.7) -- (2.4, 0);
+            
+            % Picco A2 (Grigio, Potenza maggiore)
+            \draw[thick, gray!80] (2.45, 0) -- (2.45, 3);
+            \draw[thick, gray!80] (2.4, 0) -- (2.45, 3) -- (2.5, 0);
+            
+            % Etichetta asse X (Frequenze uguali)
+            \node[below] at (2.4, -0.2) {\textcolor{orange}{$\nu_1$} = \textcolor{gray!80}{$\nu_2$}};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item E naturalmente valgono anche tutte le varie combinazioni...
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.2, yscale=1.2]
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue] (0,-2) -- (0,2) node[left] {s};
+        \draw[-{Stealth}, thick, PoliBlue] (0,0) -- (5,0) node[below right] {t};
+        
+        % Curva 1 (Arancione, Ampiezza alta, Periodo corto T1)
+        \draw[thick, orange, domain=0:4.5, samples=100] plot (\x, {1.2*cos(\x*360/2.5)});
+        
+        % Curva * (Nera, Ampiezza bassa, Periodo lungo T*)
+        \draw[thick, black, domain=0:4.5, samples=100] plot (\x, {0.6*cos(\x*360/4.5)});
+        
+        % Quote Ampiezze
+        \draw[|-|, thin, orange] (-0.5, 0) -- (-0.5, 1.2) node[midway, left] {$A_1$};
+        \draw[|-|, thin, black] (-0.2, 0) -- (-0.2, 0.6) node[midway, left] {$A_*$};
+        
+        % Quote Periodi
+        \draw[|-|, thin, orange] (1.25, 1.5) -- (3.75, 1.5) node[midway, above] {$T_1$};
+        \draw[|-|, thin, black] (0, -1.8) -- (4.5, -1.8) node[midway, above] {$T_*$};
+        
+        % --- FRECCIA DI CONVERSIONE ---
+        \draw[-{Stealth[scale=1.5]}, line width=4pt, PoliBlue!70] (5.3,0) -- (6.1,0);
+        
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6.8, -2)}]
+            \draw[-{Stealth}, thick, red] (0,0) -- (0,4) node[left] {P};
+            \draw[-{Stealth}, thick, red] (0,0) -- (5,0) node[above right] {$\nu$};
+            
+            % Etichette Assi P
+            \node[left, text=orange] at (0, 2) {$P_1$};
+            \node[left, text=black]  at (0, 1) {$P_*$};
+            
+            % Picco * (Periodo T* lungo -> Frequenza bassa -> a sinistra. Ampiezza bassa -> Potenza bassa)
+            \draw[thick, black] (1, 0) -- (1, 1);
+            \draw[thick, black] (0.95, 0) -- (1, 1) -- (1.05, 0);
+            \node[below, text=black] at (1, -0.2) {$\nu_*$};
+            
+            % Picco 1 (Periodo T1 corto -> Frequenza alta -> a destra. Ampiezza alta -> Potenza alta)
+            \draw[thick, orange] (2.5, 0) -- (2.5, 2);
+            \draw[thick, orange] (2.45, 0) -- (2.5, 2) -- (2.55, 0);
+            \node[below, text=orange] at (2.5, -0.2) {$\nu_1$};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+\subsection*{Composizione dei Segnali e Teoria di Fourier}
+
+Finora stiamo trattando segnali composti da una sola sinusoide: è bene ricordare che per la verità i segnali reali sono costituiti da varie componenti che coprono una varietà di frequenze. La teoria di Fourier ci aiuta a individuare le varie componenti.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=2, font=\sffamily\small]
+        
+        % Griglia e assi
+        \draw[gray!30, thin] (0,-1.5) grid (3*pi,1.5);
+        \draw[-{Stealth}, thin, gray] (0,0) -- (3*pi+0.5,0);
+        \draw[-{Stealth}, thin, gray] (0,-1.5) -- (0,1.5);
+        
+        % Labels asse Y
+        \foreach \y in {-1.5, -1, -0.5, 0, 0.5, 1, 1.5}
+            \node[left, text=gray, font=\tiny] at (0,\y) {\y};
+            
+        % Fascia Armoniche (Rettangolo viola in background)
+        \fill[blue!30!purple, opacity=0.3] (0, -0.45) rectangle (3*pi, 0.45);
+        
+        % Sintesi onda quadra ideale (Teal scuro)
+        \draw[thick, teal, opacity=0.7] (0,1) -- (pi,1) -- (pi,-1) -- (2*pi,-1) -- (2*pi,1) -- (3*pi,1);
+        
+        % Fondamentale (Blu)
+        \draw[thick, blue, domain=0:3*pi, samples=150] plot (\x, {sin(\x r)});
+        
+        % Armoniche dispari (Alcune tracciate per simulare la fascia)
+        \draw[purple, thin, domain=0:3*pi, samples=200] plot (\x, {1/3*sin(3*\x r)});
+        \draw[ForestGreen, thin, domain=0:3*pi, samples=200] plot (\x, {1/5*sin(5*\x r)});
+        \draw[orange, thin, domain=0:3*pi, samples=200] plot (\x, {1/7*sin(7*\x r)});
+        \draw[cyan, thin, domain=0:3*pi, samples=200] plot (\x, {1/9*sin(9*\x r)});
+        
+        % Somma (Arossata, approssimazione con le prime armoniche per simulare il grafico)
+        \draw[thick, red!60, domain=0:3*pi, samples=300] plot (\x, {sin(\x r) + 1/3*sin(3*\x r) + 1/5*sin(5*\x r) + 1/7*sin(7*\x r) + 1/9*sin(9*\x r) + 1/11*sin(11*\x r)});
+        
+        % --- SEZIONE MODIFICATA: Frecce e Testo ---
+        
+        % Fondamentale
+        \node[text=blue, font=\bfseries] (fond) at (1.8, 1.25) {Fondamentale};
+        \draw[-{Stealth[scale=1.2]}, ultra thick, blue] (fond.south east) -- (2.3, 0.75);
+        
+        % Somma
+        \node[text=blue, font=\bfseries] (somma) at (3.3, 0.85) {Somma};
+        \draw[-{Stealth[scale=1.2]}, ultra thick, red] (somma.south west) -- (3.0, 0.45);
+        
+        % Armoniche dispari
+        \node[text=blue, font=\bfseries, align=left] (arm) at (6.5, 1.0) {Armoniche\\dispari};
+        \draw[-{Stealth[scale=1.2]}, ultra thick, gray!90!black] (arm.south west) -- (5.6, 0.15);
+        
+        % ------------------------------------------
+        
+        % Titolo inferiore
+        \node[below, text=red, font=\bfseries\large] at (1.5*pi, -1.1) {Sintesi onda quadra (12 armoniche)};
+        
+    \end{tikzpicture}
+\end{figure}
+
+
+\section{Il Rumore}
+
+\subsection*{Introduzione al Rumore}
+
+Tra i vari motivi per cui quanto trattato finora corrisponde a un segnale ideale, c'è il fatto che non abbiamo considerato il rumore.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Nella realtà abbiamo \textbf{sempre} almeno un \textbf{rumore di fondo}, anche se di piccola entità, cioè ampiezza, ovvero potenza.
     \begin{itemize}[label=$\circ$]
-        \item Fondamenti
-        \item Fisici
-        \item Tecnologia
-        \item Moderna
-    \end{itemize}
-    
-    \vspace{0.5cm}
-    \item \textbf{Collocazione:}
-    \begin{itemize}[label=$\circ$]
-        \item Laurea triennale in fisica, anno terzo
-        \item Matematica e altri corsi di scienze
-        \item Professionalizzante
+        \item Per esempio, quando una persona parla, esiste sempre un rumore di fondo al di sopra del quale si cerca di alzare il volume della voce.
+        \item Inoltre, il rumore è introdotto \textbf{non solo dall'ambiente}, ma dagli apparecchi stessi che rilevano il segnale.
     \end{itemize}
 \end{itemize}
 
-\section{Partecipanti}
+Il rumore consiste in variazioni indesiderate del segnale originate nel segnale stesso o dal sistema di comunicazione:
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item \textbf{non può essere evitato;}
+    \item \textbf{però può essere analizzato e mitigato.}
+\end{itemize}
 
-Il corso è tenuto dai seguenti docenti, ciascuno focalizzato su moduli specifici:
+\subsection*{Rappresentazione del Rumore}
+
+Il rumore può essere rappresentato come una composizione di altre sinusoidi di varie lunghezza d'onda che si sovrappongono indistinguibilmente tra loro.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.2, yscale=1.2]
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue] (0,-1.5) -- (0,1.8) node[left] {A};
+        \draw[-{Stealth}, thick, PoliBlue] (0,0) -- (4.5,0) node[below right] {t};
+        
+        % Segnale principale
+        \draw[thick, orange, domain=0:4, samples=100] plot (\x, {1.2*cos(\x*360/3)});
+        
+        % Rumore (sovrapposizione di sinusoidi piccole)
+        \draw[thick, black, domain=0:4, samples=100] plot (\x, {0.15*cos(\x*360/1.8) + 0.1});
+        \draw[thick, ForestGreen, domain=0:4, samples=150] plot (\x, {0.2*sin(\x*360/2.1) - 0.05});
+        \draw[thick, orange!40, domain=0:4, samples=150] plot (\x, {0.15*cos(\x*360/1.1) - 0.15});
+        
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6.5, -1.5)}]
+            \draw[-{Stealth}, thick, red] (0,0) -- (0,3) node[left] {P};
+            \draw[-{Stealth}, thick, red] (0,0) -- (5,0) node[above right] {$\nu$};
+            
+            % Picco Segnale Principale
+            \draw[thick, orange] (2, 0) -- (2, 2.5);
+            \draw[thick, orange] (1.95, 0) -- (2, 2.5) -- (2.05, 0);
+            
+            % Picchi Rumore
+            \foreach \x/\h in {0.5/0.2, 0.8/0.25, 1.2/0.2, 2.8/0.25, 3.2/0.2, 3.8/0.25} {
+                \draw[thick, black] (\x, 0) -- (\x, \h);
+                \draw[thick, black] (\x-0.03, 0) -- (\x, \h) -- (\x+0.03, 0);
+            }
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+Il rumore, all'atto pratico, si somma al segnale alterandolo visivamente.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.1, yscale=1.1]
+
+        % Seed per avere un rumore casuale ma riproducibile
+        \pgfmathsetseed{12345}
+
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue] (0,-1.5) -- (0,1.8) node[left] {A};
+        \draw[-{Stealth}, thick, PoliBlue] (0,0) -- (4,0) node[below right] {t};
+
+        % Segnale + rumore
+        % Il segnale sinusoidale viene perturbato da piccole variazioni casuali
+        \draw[
+            thick,
+            orange,
+            domain=0:3.8,
+            samples=180
+        ]
+        plot (\x, {
+            1.2*cos(\x*360/3)
+            + 0.12*rand
+        });
+
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6,-1.5)}]
+
+            \draw[-{Stealth}, thick, red]
+                (0,0) -- (0,3) node[left] {P};
+
+            \draw[-{Stealth}, thick, red]
+                (0,0) -- (4.5,0) node[above right] {$\nu$};
+
+            % Fondo di rumore casuale
+            \draw[
+                thick,
+                black!80
+            ]
+            plot[
+                domain=0.05:4,
+                samples=80
+            ]
+            (\x,{0.10 + 0.12*rand});
+
+            % Picco del segnale
+            \draw[thick, orange]
+                (2,0) -- (2,2.5);
+
+            \draw[thick, orange]
+                (1.95,0) -- (2,2.5) -- (2.05,0);
+
+        \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+Il problema critico sorge quando il segnale è molto basso o il rumore è molto alto: in queste condizioni \textbf{non si distingue più il segnale dal rumore}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.1, yscale=1.1]
+
+        % Seed diverso per il secondo grafico
+        \pgfmathsetseed{67890}
+
+        % --- DOMINIO DEL TEMPO (Sinistra) ---
+        \draw[-{Stealth}, thick, PoliBlue]
+            (0,-1) -- (0,1.5) node[left] {A};
+
+        \draw[-{Stealth}, thick, PoliBlue]
+            (0,0) -- (4.5,0) node[below right] {t};
+
+        % Segnale debole, mostrato separatamente
+        \draw[
+            thick,
+            orange!70,
+            domain=0:4,
+            samples=150
+        ]
+        plot (\x,{0.30*cos(\x*360/3)});
+
+        % Segnale osservato: segnale + rumore
+        % Il rumore ora è molto più grande
+        \draw[
+            thick,
+            black,
+            domain=0:4,
+            samples=180
+        ]
+        plot (\x,{
+            0.30*cos(\x*360/3)
+            + 0.32*rand
+        });
+
+        % --- DOMINIO DELLA FREQUENZA (Destra) ---
+        \begin{scope}[shift={(6,-1)}]
+
+            \draw[-{Stealth}, thick, red]
+                (0,0) -- (0,2.5) node[left] {P};
+
+            \draw[-{Stealth}, thick, red]
+                (0,0) -- (4.5,0) node[above right] {$\nu$};
+
+            % Rumore elevato
+            \draw[
+                thick,
+                black!80
+            ]
+            plot[
+                domain=0.05:4,
+                samples=80
+            ]
+            (\x,{0.12 + 0.40*rand});
+
+            % Picco del segnale debole:
+            % ora è appena distinguibile dal rumore
+            \draw[thick, orange]
+                (2,0) -- (2,0.65);
+
+            \draw[thick, orange]
+                (1.95,0) -- (2,0.65) -- (2.05,0);
+
+        \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+
+\subsection*{Rapporto S/R o SNR}
+
+Dunque, ciò che si desidera avere lungo tutto il percorso di un segnale (che sia un segnale naturale che stiamo captando o che sia un segnale artificiale trasmesso e ricevuto) è un migliore possibile rapporto segnale-rumore, indicato con \textbf{S/R} o \textbf{SNR} (\textit{Signal to Noise Ratio}).
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Questo termine indica il \textbf{rapporto} tra il livello di \textbf{potenza} del \textbf{segnale} ricevuto $S$ e il livello di \textbf{potenza del rumore} $N$.
+    \item Essendo un rapporto di potenze, possiamo esprimerlo elegantemente come differenza in decibel (dB).
+\end{itemize}
+
+\begin{equation}
+    \text{SNR} = \frac{S}{N} = \frac{P_S}{P_N}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=1.5]
+
+        % Seed per avere un rumore casuale ma riproducibile
+        \pgfmathsetseed{24680}
+
+        % =========================================================
+        % ASSI
+        % =========================================================
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (0,3)
+            node[left] {$P$};
+
+        \draw[-{Stealth}, ultra thick, red]
+            (0,0) -- (5,0)
+            node[below right] {$\nu$};
+
+
+        % =========================================================
+        % RUMORE - NOISE FLOOR
+        % =========================================================
+
+        \draw[
+            thick,
+            black!80
+        ]
+        plot[
+            domain=0.05:4.7,
+            samples=160
+        ]
+        (\x,{
+            0.12
+            + 0.06*rand
+            + 0.04*sin(\x*900)
+        });
+
+
+        % =========================================================
+        % PICCO DEL SEGNALE
+        % =========================================================
+
+        % Parte centrale del picco
+        \draw[
+            thick,
+            orange
+        ]
+        plot[
+            domain=2.43:2.57,
+            samples=40
+        ]
+        (\x,{
+            1.45*exp(-((\x-2.5)/0.025)^2)
+        });
+
+
+        % =========================================================
+        % LIVELLI Ps E Pn
+        % =========================================================
+
+        % Linea verticale di riferimento
+        \draw[
+            thick,
+            PoliBlue,
+            <-> 
+        ]
+        (-0.75,0.12) -- (-0.75,1.45);
+
+        % Piccola separazione visiva tra P_N e P_S
+        \draw[
+            thick,
+            PoliBlue
+        ]
+        (-0.82,0.12) -- (-0.68,0.12);
+
+        \draw[
+            thick,
+            PoliBlue
+        ]
+        (-0.82,1.45) -- (-0.68,1.45);
+
+
+        % =========================================================
+        % ETICHETTE
+        % =========================================================
+
+        \node[
+            text=orange,
+            font=\bfseries
+        ]
+        at (-0.82,1.45)
+        [left]
+        {$P_S = S$};
+
+        \node[
+            text=black,
+            font=\bfseries
+        ]
+        at (-0.82,0.12)
+        [left]
+        {$P_N = N$};
+
+    \end{tikzpicture}
+\end{figure}
+
+\subsection*{Sorgenti e Tipi di Rumore}
+
+La potenza del rumore è il risultato di processi casuali come il flusso di cariche o di lacune in un dispositivo a stato solido, la propagazione attraverso la ionosfera o altri gas ionizzati o le vibrazioni termiche di qualsiasi componente a una temperatura superiore allo zero assoluto. Quindi le sorgenti del rumore possono essere:
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item emesse da \textbf{sorgenti esterne} e che sono raccolte dal ricevitore (cioè dall'area dell'antenna: atmosfera, spazio, \dots),
+    \item generate all'\textbf{interno} dai componenti stessi del sistema ricevente.
+\end{itemize}
+
+Tali disturbi interni possono essere dovuti a diversi processi, dando origine a vari tipi di rumore:
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Il \textbf{rumore termico}, noto anche come rumore di \textbf{Johnson} o di \textbf{Nyquist}, è il tipo più elementare di rumore, causato da movimenti/\textbf{vibrazioni} casuali di cariche o portatori di carica nei dispositivi e nei materiali:
+    \begin{itemize}[label=$\circ$]
+        \item è prodotto in tutti i dispositivi conduttori: perciò ogni sistema di comunicazione aggiunge rumore;
+    \end{itemize}
+    
+    \item Lo \textbf{shot noise} è dovuto alle fluttuazioni casuali dei portatori di carica;
+    
+    \item Il \textbf{rumore di sfarfallamento} (\textit{flicker noise} o \textit{pink noise}) si verifica nei componenti in cui la potenza del rumore varia inversamente con la frequenza, per cui viene spesso chiamato \textbf{rumore 1/f} (quindi interessa le basse frequenze, sotto \qty{1}{\kilo\hertz});
+    
+    \item Il \textbf{rumore del plasma} è causato dal movimento casuale delle cariche in un \textbf{gas ionizzato};
+    
+    \item Il \textbf{rumore quantistico} deriva dalla natura quantizzata dei portatori di carica e dei fotoni; spesso è insignificante rispetto ad altre fonti di rumore.
+\end{itemize}
+
+
+\chapter{Sistemi di Telecomunicazioni}
+
+Un sistema di comunicazioni muove le informazioni da una sorgente a una destinazione attraverso un canale, cercando di non alterarne il contenuto.
+
+In particolare, una radio opera su segnali elettromagnetici, agendo sulla loro \textbf{frequenza} e la \textbf{potenza}, per generare un segnale/frequenza portante o semplicemente portante, che possa essere propagata attraverso il canale desiderato.
 
 \vspace{0.5cm}
-\noindent
-\begin{minipage}[t]{0.48\textwidth}
-    \textbf{\textcolor{PoliBlue}{Agata Trovato}}
-    \begin{itemize}[label=$\circ$]
-        \item Teoria dei segnali
-        \item A partire da metà ottobre
-        \item Contatti:
-        \begin{itemize}[label=-]
-            \item \href{mailto:agata.trovato@units.it}{agata.trovato@units.it}
-            \item Edificio F, piano primo, stanza 114
-        \end{itemize}
-    \end{itemize}
-\end{minipage}
-\hfill
-\begin{minipage}[t]{0.48\textwidth}
-    \textbf{\textcolor{PoliBlue}{Federico Dogo}}
-    \begin{itemize}[label=$\circ$]
-        \item Dispositivi e laboratorio
-        \item Prime tre settimane
-        \item Contatti:
-        \begin{itemize}[label=-]
-            \item \href{mailto:federico.dogo@inaf.it}{federico.dogo@inaf.it}
-        \end{itemize}
-    \end{itemize}
-    \vspace{0.5cm}
-    \textbf{\textcolor{PoliBlue}{Nicholas Sesto Gorella}}
-\end{minipage}
-
-
-\chapter{Didattica e Programma}
-
-\section{Orari e Lezioni}
-
-La didattica si struttura attraverso:
-\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item Orari definiti a calendario.
-    \item Lezioni frontali in aula e sessioni pratiche in laboratorio.
-\end{itemize}
-
-Di seguito è riportata un'astrazione dell'orario settimanale che evidenzia gli slot dedicati al nostro corso di \textit{Fondamenti Fisici di Tecnologia Moderna}.
 
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[xscale=2.8, yscale=-2.2, font=\sffamily\small]
-        % Sfondo griglia
-        \foreach \x in {1,2,3,4,5} {
-            \fill[BoxGray] (\x-0.4, 8.8) rectangle (\x+0.4, 13.2);
-        }
-        
-        % Intestazioni giorni
-        \foreach \x/\day in {1/Lunedì, 2/Martedì, 3/Mercoledì, 4/Giovedì, 5/Venerdì}
-            \node[font=\bfseries\color{PoliBlue}] at (\x, 8.5) {\day};
-            
-        % Intestazioni ore e linee orizzontali
-        \foreach \y/\time in {9/09:00, 10/10:00, 11/11:00, 12/12:00, 13/13:00} {
-            \node[left, font=\bfseries\color{gray}] at (0.4, \y) {\time};
-            \draw[gray!30, dashed] (0.4,\y) -- (5.6,\y);
-        }
-        
-        % Blocchi Evidenziati (Corso in rosso)
-        % Martedì 10:00 - 11:00
-        \draw[OpticRed, ultra thick, fill=OpticRed!10, rounded corners=3pt] (1.6, 10) rectangle (2.4, 11);
-        \node[align=center, text width=2cm, font=\scriptsize\bfseries] at (2, 10.5) {FONDAMENTI\\FISICI\\Aula C/Ed. F};
-        
-        % Mercoledì 11:00 - 13:00
-        \draw[OpticRed, ultra thick, fill=OpticRed!10, rounded corners=3pt] (2.6, 11) rectangle (3.4, 13);
-        \node[align=center, text width=2cm, font=\scriptsize\bfseries] at (3, 12) {FONDAMENTI\\FISICI\\Aula C/Ed. F};
-        
-        % Giovedì 09:00 - 11:00
-        \draw[OpticRed, ultra thick, fill=OpticRed!10, rounded corners=3pt] (3.6, 9) rectangle (4.4, 11);
-        \node[align=center, text width=2cm, font=\scriptsize\bfseries] at (4, 10) {FONDAMENTI\\FISICI\\Aula C/Ed. F};
+    \resizebox{\textwidth}{!}{% Ridimensiona per far stare tutti i blocchi nella larghezza della pagina
+    \begin{tikzpicture}[
+        block/.style={rectangle, draw=PoliBlue, thick, minimum height=1.2cm, align=center, text width=2.2cm, fill=white, font=\sffamily\small},
+        arrow/.style={-{Stealth}, thick, PoliBlue}
+    ]
+        % Nodi (Blocchi)
+        \node[block] (sorg) {sorgente};
+        \node[block, right=0.6cm of sorg] (trasd1) {trasduttore};
+        \node[block, right=0.6cm of trasd1] (tx) {trasmettitore};
+        \node[block, right=0.6cm of tx] (canale) {canale};
+        \node[block, right=0.6cm of canale] (rx) {ricevitore};
+        \node[block, right=0.6cm of rx] (trasd2) {detector/\\trasduttore};
+        \node[block, right=0.6cm of trasd2] (dest) {destinazione};
+
+        % Frecce di collegamento
+        \draw[arrow] (sorg) -- (trasd1);
+        \draw[arrow] (trasd1) -- (tx);
+        \draw[arrow] (tx) -- (canale);
+        \draw[arrow] (canale) -- (rx);
+        \draw[arrow] (rx) -- (trasd2);
+        \draw[arrow] (trasd2) -- (dest);
+
+        % Indicatore tratteggiato per il "sistema di telecomunicazioni"
+        \coordinate (mid_sys) at ($(tx.south)!0.5!(rx.south)$);
+        \coordinate (label_pos) at ($(mid_sys) - (0, 1.8cm)$);
+
+        \draw[dashed, thick, gray!80] (tx.south) -- (label_pos) -- (rx.south);
+        \node[below=0.1cm of label_pos, font=\rmfamily\large, text=blue!90!black] {sistema di telecomunicazioni};
 
     \end{tikzpicture}
-    \caption{Estratto dell'orario settimanale con evidenziati i blocchi del corso.}
+    }
 \end{figure}
 
-\section{Programma Dettagliato}
+\vspace{0.5cm}
+\begin{itemize}[label=\textcolor{gray}{\textbullet}]
+    \item \textcolor{gray}{(qui ci occuperemo solo dei segmenti della radio; successivamente del canale)}
+\end{itemize}
 
-Nella tabella seguente sono riepilogati tutti gli argomenti trattati nel corso, suddivisi per moduli tematici.
+\section{Banda Base}
+
+Ragioniamo d'ora in poi in termini di frequenze. In molti casi i segnali prodotti hanno frequenze basse:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item pensiamo alla voce umana che viene emessa e udita tra i \qty{20}{\hertz} e i \qty{20}{\kilo\hertz}.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=1.5, font=\sffamily\small]
+        % Assi
+        \draw[-{Stealth}, thin] (0,0) -- (5,0) node[below] {\scriptsize Frequenza};
+        \draw[-{Stealth}, thin] (0.5,-0.2) -- (0.5,2);
+        
+        % Etichetta Asse Y ruotata
+        \node[rotate=90, anchor=south] at (0.2, 1) {\scriptsize Potenza di uscita};
+        
+        % Tacche e Testi asse X
+        \draw (1.5, 0.1) -- (1.5, -0.1) node[below] {\scriptsize \qty{20}{\hertz}};
+        \node[above] at (1.5, 0.1) {\scriptsize $f_L$};
+        
+        \draw (3.5, 0.1) -- (3.5, -0.1) node[below] {\scriptsize \qty{20}{\kilo\hertz}};
+        \node[above] at (3.5, 0.1) {\scriptsize $f_H$};
+        
+        % Tacche e Testi asse Y
+        \draw (0.4, 1.5) -- (0.6, 1.5) node[left, xshift=-0.2cm] {\scriptsize $P_{\text{mid}}$};
+        
+        % Curva a trapezio (Risposta dell'amplificatore)
+        \draw[thick] (0.8, 0.3) -- (1.5, 1.5) -- (3.5, 1.5) -- (4.2, 0.3);
+    \end{tikzpicture}
+    \caption*{Potenza di uscita in funzione della frequenza del segnale di ingresso di un amplificatore audio.}
+\end{figure}
+
+Anche altri segnali vengono prodotti nella cosiddetta \textbf{banda base}, ovvero alla loro frequenza naturale relativamente molto vicina alla frequenza \textbf{\qty{0}{\hertz}}:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item ovvero dal valore di \qty{0}{\hertz} al valore di $\nu_S$ (frequenza limite stabilita dalla forma d'onda del segnale):
+    \begin{itemize}[label=$\circ$]
+        \item un segnale video analogico di un broadcast televisivo va da corrente continua (o DC) a \qty{4.2}{\mega\hertz}.
+    \end{itemize}
+\end{itemize}
+
+\section{Banda Passante}
+
+Se pensiamo alle usuali telecomunicazioni, queste non occupano / si trovano a bassa frequenza direttamente in banda base, quanto piuttosto ad alta frequenza, ovvero in \textbf{banda passante}:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item per esempio è noto che le trasmissioni radiofoniche avvengono in canali di frequenza attorno i \qty{100}{\mega\hertz};
+    \item se pensiamo alle frequenze in uso per comunicare con lo spazio, queste sono oltre il \qty{1}{\giga\hertz}.
+\end{itemize}
 
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.5}
+    \centering
     \small
-    \begin{tabularx}{\textwidth}{@{}X@{}}
+    \renewcommand{\arraystretch}{1.1}
+    \begin{tabular}{lc}
         \toprule
-        \textbf{Titolo Argomento} \\
+        \textbf{Categorie} & \textbf{Gamma di frequenza} \\
         \midrule
-        Introduzione ai segnali, radici storiche delle serie di Fourier \\
-        \rowcolor{BoxGray} Serie di Fourier \\
-        Trasformate di Fourier: definizione, esempi, proprietà \\
-        \rowcolor{BoxGray} Teorema di Parseval, spettro di energia e potenza del segnale, principio di indeterminazione per i segnali secondo Gabor \\
-        Definizione processi stocastici, stazionari e rumore bianco; autocorrelazione e Teorema di Wiener-Kintchin; uso di decibel con esempi per l'acustica e il radar meteo \\
-        \rowcolor{BoxGray} Sistemi lineari tempo invarianti, filtri ideali, caratteristiche dei filtri analogici \\
-        Studio in tempo e frequenza di un circuito RC come filtro passa-alto e passa-basso; intro a retroazione e amplificatore operazionale \\
-        \rowcolor{BoxGray} Amplificatore operazionale: circuiti con retroazione negativa; DAC, DAC R2R \\
-        Filtri attivi del primo e secondo ordine; circuiti integratore, derivatore, logaritmico e moltiplicatore analogico; modulazione AM (nel dominio della frequenza) \\
-        \rowcolor{BoxGray} AM nel dominio del tempo e demodulazione; principi di modulazione e demodulazione FM (trattamento tempo e frequenza), modulazione digitale ASK, FSK, PSK; SSTV; cenni al campionamento \\
-        Dimostrazione del teorema del campionamento; Formula di ricostruzione di f(t); Spettro del segnale campionato, Aliasing, Quantizzazione uniforme, rumore di quantizzazione, SQRN; Quantizzazione non uniforme \\
-        \rowcolor{BoxGray} Schema ADC; Sample-and-hold; Flash ADC; Pipelined ADC; ADC ad approssimazioni successive; Sigma-Delta ADC; Trasformata di Fourier discreta (DFT); derivazione di DFT e della inversa \\
-        Proprietà DFT ed esempi di calcolo (analitico e in python) \\
-        \rowcolor{BoxGray} Simmetria DFT per segnali reali; Spectral leakage; Lemma di Danielson-Lanczos e FFT; Stima della densità spettrale per mezzo della DFT; teoremi di Parseval e di Wiener-Khintchin per la DFT \\
-        Discrete Cosine Transform (DCT); Introduzione allo standard di compressione delle immagini JPEG basato sulla DCT; entropia nella teoria dell'informazione \\
-        \rowcolor{BoxGray} Compressione JPEG e codifica di Huffman; Principio di funzionamento dell'OFDM; processi di rumore: rumore termico e shot noise; moto Browniano \\
+        % Evidenziazione in verde per la banda base (come il rettangolo nella slide)
+        \rowcolor{ForestGreen!10} \textcolor{ForestGreen}{\textbf{Suoni udibili}} & \textcolor{ForestGreen}{\qty{20}{\hertz} $\div$ \qty{20}{\kilo\hertz}} \\
+        \rowcolor{ForestGreen!10} \textcolor{ForestGreen}{\textbf{Segnale video TV in banda di base}} & \textcolor{ForestGreen}{\qty{0}{\hertz} $\div$ \qty{4.5}{\mega\hertz}} \\
+        Diffusione radio AM & \qty{540}{\kilo\hertz} $\div$ \qty{1600}{\kilo\hertz} \\
+        Comunicazioni radio ad alta frequenza & \qty{1.6}{\mega\hertz} $\div$ \qty{54}{\mega\hertz} \\
+        Televisione VHF (canali 2-6) & \qty{54}{\mega\hertz} $\div$ \qty{88}{\mega\hertz} \\
+        \midrule
+        Diffusione radio FM & \qty{88}{\mega\hertz} $\div$ \qty{108}{\mega\hertz} \\
+        Comunicazione radio VHF & \qty{108}{\mega\hertz} $\div$ \qty{174}{\mega\hertz} \\
+        Televisione VHF (canali 7-13) & \qty{174}{\mega\hertz} $\div$ \qty{216}{\mega\hertz} \\
+        \midrule
+        Comunicazioni marittime e governative & \qty{216}{\mega\hertz} $\div$ \qty{450}{\mega\hertz} \\
+        Comunicazioni d'affari & \qty{450}{\mega\hertz} $\div$ \qty{470}{\mega\hertz} \\
+        Televisione UHF (canali 14-69) & \qty{470}{\mega\hertz} $\div$ \qty{806}{\mega\hertz} \\
+        Allocazione di banda per comunicazioni fisse e mobili & \qty{806}{\mega\hertz} $\div$ \qty{902}{\mega\hertz} \\
+        Allocazione di banda per cellulari analogici e digitali & \qty{928}{\mega\hertz} $\div$ \qty{960}{\mega\hertz} \\
+        Telefonia, comunicazioni personali e altro & \qty{1710}{\mega\hertz} $\div$ \qty{1990}{\mega\hertz} \\
+        Dispositivi wireless & \qty{2310}{\mega\hertz} $\div$ \qty{2690}{\mega\hertz} \\
+        Televisione satellitare & \qty{3.7}{\giga\hertz} $\div$ \qty{4.2}{\giga\hertz} \\
+        Dispositivi wireless & \qty{5.0}{\giga\hertz} $\div$ \qty{5.5}{\giga\hertz} \\
         \bottomrule
-    \end{tabularx}
+    \end{tabular}
+    \caption*{Frequenze associate a segnali di impiego comune.}
 \end{table}
 
-\section{Calendario e Laboratori}
+\subsection{Definizioni di Banda}
 
-La scaletta iniziale delle lezioni è organizzata secondo blocchi tematici che ci accompagneranno tra settembre, ottobre, per poi proseguire con le attività di laboratorio nei mesi invernali.
+Consideriamo un segnale $s(t)$ con estremi di banda $(f_1; f_2)$: dunque la \textbf{larghezza di banda} è $B = f_2 - f_1$. \\
+Inoltre, denotiamo con $f_0$ la \textbf{frequenza di centro banda} di $s(t)$, cioè:
+\begin{equation}
+    f_0 = \frac{f_1 + f_2}{2}
+\end{equation}
+
+La \textbf{larghezza di banda relativa} è definita come $B / f_0$.
+
+\begin{nota}
+    Allora la \textbf{banda base} si ha quando $B \approx 2f_0$, oppure equivalentemente quando la larghezza di banda relativa è prossima al valore 2 (cioè, $B / f_0 \approx 2$).
+\end{nota}
+
+Si parla invece di \textbf{banda passante} o \textbf{banda traslata} quando la stessa porzione di banda di frequenze è spostata a \textbf{frequenze maggiori}, e dunque in tal caso avremo:
+\begin{equation}
+    \frac{B}{f_0} \ll 1
+\end{equation}
+
+\vspace{0.5cm}
 
 \begin{figure}[H]
     \centering
-    \begin{tikzpicture}[
-        box/.style={draw=PoliBlue, fill=PoliBlue!5, text centered, align=center, font=\small, minimum height=1cm, minimum width=4cm, rounded corners=3pt},
-        labbox/.style={draw=OpticRed, fill=OpticRed!5, text centered, align=center, font=\small, minimum height=1cm, minimum width=5cm, rounded corners=3pt}
-    ]
+    \begin{tikzpicture}[xscale=1.1, yscale=1.2, font=\sffamily\small]
         
-    % Settimana 1 (Settembre)
-    \node[box] (s28) at (0, 0) {\textbf{LUNEDÌ 28 SETTEMBRE} \\ INTRODUZIONE};
-    \node[box] (s29) at (5, 0) {\textbf{MARTEDÌ 29 SETTEMBRE} \\ SEGNALI E RADIO};
-    \node[box] (s30) at (10, 0) {\textbf{MERCOLEDÌ 30 SETTEMBRE} \\ PROPAGAZIONE};
-    
-    % Ottobre Inizio
-    \node[box] (o06) at (5, -1.5) {\textbf{MARTEDÌ 6 OTTOBRE} \\ MODULAZIONI};
-    
-    % Settimana 2 (Ottobre)
-    \node[box] (o12) at (0, -3) {\textbf{LUNEDÌ 12 OTTOBRE} \\ MATLAB};
-    \node[box] (o13) at (5, -3) {\textbf{MARTEDÌ 13 OTTOBRE} \\ LINK BUDGET};
-    \node[box] (o14) at (10, -3) {\textbf{MERCOLEDÌ 14 OTTOBRE} \\ ANTENNE CON MATLAB};
-    
-    % Laboratori (Novembre/Dicembre)
-    \node[labbox] (l1) at (2.5, -5) {\textbf{NOVEMBRE / DICEMBRE} \\ LABORATORIO RADIO (AREA)};
-    \node[labbox] (l2) at (7.5, -5) {\textbf{NOVEMBRE / DICEMBRE} \\ CAMERA ANECOICA (UNITS-C2)};
+        % --- GRAFICO 1: BANDA BASE ---
+        \begin{scope}[shift={(0,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4,0) node[below right] {$\nu$};
+            
+            % Tappeto di rumore
+            \draw[thick, black!80, rounded corners=1pt] (0,0.1) -- (0.2,0.2) -- (0.4,0.1) -- (0.6,0.3) -- (0.8,0.15) -- (1,0.2) -- (1.3,0.1) -- (1.5,0.25) -- (1.8,0.1) -- (2.0, 0.15) -- (2.2, 0.1) -- (2.5,0.2) -- (2.8,0.1) -- (3.0,0.3) -- (3.3,0.15) -- (3.5,0.1) -- (3.8,0.2);
+            
+            % Segnale in Banda Base (Trapezio arancione attaccato all'asse Y)
+            \draw[thick, orange] (0.2, 0.15) -- (0.4, 1.5) -- (1.5, 1.5) -- (1.7, 0.15);
+            
+            % Etichette f1, f0, f2
+            \draw[thin, orange] (0.4, 0) -- (0.4, -0.15) node[below] {$f_1$};
+            \draw[thin, orange] (0.95, 0) -- (0.95, -0.15) node[below] {$f_0$};
+            \draw[thin, orange] (1.5, 0) -- (1.5, -0.15) node[below] {$f_2$};
+            
+            % Quota B
+            \draw[<->, orange] (0.4, -0.7) -- (1.5, -0.7) node[midway, below] {B};
+        \end{scope}
+        
+        % --- GRAFICO 2: BANDA PASSANTE ---
+        \begin{scope}[shift={(6,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.5,0) node[below right] {$\nu$};
+            
+            % Tappeto di rumore
+            \draw[thick, black!80, rounded corners=1pt] (0,0.1) -- (0.2,0.2) -- (0.4,0.1) -- (0.6,0.3) -- (0.8,0.15) -- (1,0.2) -- (1.3,0.1) -- (1.5,0.25) -- (1.8,0.1) -- (2.0, 0.15) -- (2.2, 0.1) -- (2.5,0.2) -- (2.8,0.1) -- (3.0,0.3) -- (3.3,0.15) -- (3.5,0.1) -- (3.8,0.3) -- (4.1, 0.15) -- (4.3, 0.2);
+            
+            % Segnale in Banda Passante (Trapezio arancione spostato a destra)
+            \draw[thick, orange] (1.8, 0.1) -- (2.0, 1.5) -- (3.1, 1.5) -- (3.3, 0.15);
+            
+            % Etichette f1, f0, f2
+            \draw[thin, orange] (2.0, 0) -- (2.0, -0.15) node[below] {$f_1$};
+            \draw[thin, orange] (2.55, 0) -- (2.55, -0.15) node[below] {$f_0$};
+            \draw[thin, orange] (3.1, 0) -- (3.1, -0.15) node[below] {$f_2$};
+            
+            % Quota B
+            \draw[<->, orange] (2.0, -0.7) -- (3.1, -0.7) node[midway, below] {B};
+        \end{scope}
 
     \end{tikzpicture}
 \end{figure}
 
-Per avere una visione chiara del primo periodo, ecco un dettaglio del calendario del mese di \textbf{Ottobre}, con evidenziate (in rosso) le date chiave d'inizio e sviluppo del modulo principale.
+\section{Alta Frequenza e Teorema di Shannon}
 
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}[
-        cal/.style={
-            matrix of nodes,
-            nodes in empty cells,
-            nodes={minimum size=0.6cm, anchor=center, text=white, font=\sffamily\small},
-            row 1/.style={nodes={font=\sffamily\bfseries\color{gray!40}}},
-            column sep=0.3cm,
-            row sep=0.15cm
-        }
-    ]
-    
-    % Sfondo del calendario
-    \fill[black, rounded corners=8pt] (-3, 3) rectangle (3, -3);
-    
-    \node[text=white, font=\Large\sffamily\bfseries] at (0, 2.3) {October};
-    
-    % Cerchi di evidenziazione "decorativi" come nell'originale
-    \draw[orange, ultra thick] (-0.5, 2.3) circle (0.25cm);
-    \draw[orange, ultra thick] (0.5, 2.3) circle (0.25cm);
-
-    % Matrice Calendario
-    \matrix[cal] at (0, -0.2) {
-        S & M & T & W & T & F & S \\
-        27 & 28 & 29 & 30 & 1 & 2 & 3 \\
-        4 & 5 & 6 & 7 & 8 & 9 & 10 \\
-        11 & 12 & 13 & 14 & 15 & 16 & 17 \\
-        18 & 19 & 20 & 21 & 22 & 23 & 24 \\
-        25 & 26 & 27 & 28 & 29 & 30 & 31 \\
-        1 & 2 & 3 & 4 & 5 & 6 & 7 \\
-    };
-    
-    % Evidenziazioni date critiche (6, 7, 12, 13, 14)
-    \draw[red, ultra thick, rounded corners=5pt] (-1.3, -0.35) rectangle (0.3, 0.15); % Riquadro su 6, 7
-    \draw[red, ultra thick, rounded corners=5pt] (-1.3, -0.9) rectangle (1.2, -0.4);  % Riquadro su 12, 13, 14
-    
-    \end{tikzpicture}
-\end{figure}
-
-\chapter{Inquadramento dell'Insegnamento}
-
-\section{Risultati Attesi (Descrittori di Dublino)}
-
-Secondo i parametri di Dublino, i risultati attesi al termine di questo percorso sono:
+Le \textbf{motivazioni} per trasmettere a più alta frequenza sono varie:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Conoscenza e comprensione} dei principi fisici di funzionamento della comunicazione dei segnali;
-    \item \textbf{Capacità di applicare} conoscenza e comprensione acquisite in teoria e laboratorio di progetti;
-    \item \textbf{Autonomia di giudizio} nella scelta fra diverse soluzioni nel complesso mondo della tecnologia;
-    \item \textbf{Abilità comunicative} nell'organizzare i risultati di laboratorio;
-    \item \textbf{Capacità di collaborazione} in gruppo e di proposta di soluzioni nuove.
+    \item storicamente, le prime \textbf{trasmissioni transcontinentali} ebbero successo (pur non sapendone il motivo, almeno fino ad Appleton) perché questo tipo di onde elettromagnetiche si riflettono nell'\textbf{atmosfera} (ionosfera);
+    \item per un motivo analogo, ma opposto, si comunica con lo \textbf{spazio} a frequenze ancora più alte, perché \textbf{l'atmosfera è trasparente a tali frequenze};
+    \item di base ad alte frequenze possono essere veicolate più informazioni, dal momento che ci si possono permettere \textbf{larghezze di banda maggiori}, e quindi un \textbf{maggior data rate}.
 \end{itemize}
 
-\section{Utilità e Prerequisiti}
+\begin{teorema}{Teorema della codifica di canale (Shannon-Hartley)}{shannon}
+Dal teorema della codifica di canale di Shannon, sappiamo che il \textbf{limite massimo della capacità di canale}, ovvero banalmente il tasso di trasferimento dati che possiamo raggiungere, è dato da:
+\begin{equation}
+    C = B \log_2 \left( 1 + \frac{S}{N} \right)
+\end{equation}
+\end{teorema}
 
-\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Prerequisiti:}
-    \begin{itemize}[label=$\circ$]
-        \item Matematica e fisica di base.
-    \end{itemize}
-    
-    \item \textbf{Cosa useremo:}
-    \begin{itemize}[label=$\circ$]
-        \item Avere a disposizione un laptop / computer portatile.
-        \item Strumentazione ad alta frequenza (fornita in laboratorio).
-    \end{itemize}
-    
-    \item \textbf{Riferimenti:}
-    \begin{itemize}[label=$\circ$]
-        \item Sono sufficienti le dispense in formato presentazione distribuite online, che contengono una bibliografia per eventuali approfondimenti.
-    \end{itemize}
-\end{itemize}
-
-\section{Valutazione}
-
-Relativamente a questa parte dell'insegnamento, la valutazione avviene in diversi momenti chiave:
-
-\begin{enumerate}
-    \item \textbf{Esercitazioni di gruppo in laboratorio} con report finale (alcuni esempi delle attività pratiche):
-    \begin{enumerate}[label=\arabic*., ref=\arabic*]
-        \item Design di trasmettitore e ricevitore radio ad alta frequenza, a partire da componenti già selezionati, con calcolo e successivo test delle frequenze e del livello di potenza lungo la catena, e con calcolo della figura di rumore;
-        \item Misure su componenti radio ad alta frequenza (filtro e amplificatore di potenza);
-        \item Design di una antenna;
-        \item Misure dei parametri S con l'analizzatore di reti;
-        \item (Misura di \textit{link budget}).
-    \end{enumerate}
-    \vspace{0.5cm}
-    \item \textbf{Prova Orale:} Al colloquio verrà posta una domanda sui temi discussi all'interno dei report di laboratorio.
-\end{enumerate}
+Dunque, per incrementare la capacità $C$, possiamo \textbf{migliorare $S/N$}, e/oppure \textbf{allargare $B$} (ma in questo secondo caso attenzione al rumore, poiché allargando la banda di ricezione si cattura intrinsecamente una quantità maggiore di rumore termico).
 
 \end{document}
