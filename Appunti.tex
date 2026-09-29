@@ -857,8 +857,8 @@ In particolare, una radio opera su segnali elettromagnetici, agendo sulla loro \
     \item \textcolor{gray}{(qui ci occuperemo solo dei segmenti della radio; successivamente del canale)}
 \end{itemize}
 
-\section{Banda Base}
-
+\section{Banda Base e Banda Passante}
+\subsection*{Banda Base}
 Ragioniamo d'ora in poi in termini di frequenze. In molti casi i segnali prodotti hanno frequenze basse:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
     \item pensiamo alla voce umana che viene emessa e udita tra i \qty{20}{\hertz} e i \qty{20}{\kilo\hertz}.
@@ -1175,7 +1175,7 @@ Si parla invece di \textbf{banda passante} o \textbf{banda traslata} quando la s
     \end{tikzpicture}
 \end{figure}
 
-\section{Banda Passante}
+\subsection*{Banda Passante}
 
 Se pensiamo alle usuali telecomunicazioni, queste non occupano / si trovano a bassa frequenza direttamente in banda base, quanto piuttosto ad alta frequenza, ovvero in \textbf{banda passante}:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
@@ -1235,5 +1235,770 @@ Dal teorema della codifica di canale di Shannon, sappiamo che il \textbf{limite 
 \end{teorema}
 
 Dunque, per incrementare la capacità $C$, possiamo \textbf{migliorare $S/N$}, e/oppure \textbf{allargare $B$} (ma in questo secondo caso attenzione al rumore, poiché allargando la banda di ricezione si cattura intrinsecamente una quantità maggiore di rumore termico).
+
+Determinare una nomenclatura per i diversi gruppi di frequenze non è facile, dal momento che non c'è un approccio univoco: se ne può delineare una classificazione di massima.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Il blocco di frequenze fino a \qty{3}{\tera\hertz} (o \qty{0.1}{\milli\meter}) sono denominate \textbf{radiofrequenze} (RF): le onde radio però identificano le frequenze basse (sotto i \qty{300}{\mega\hertz}).
+    \item Sopra i \unit{\giga\hertz} (sopra i \qty{300}{\mega\hertz} per l'esattezza) si parla di \textbf{microonde}.
+\end{itemize}
+
+La faccenda si complica perché a livello \textbf{internazionale} l'intero spettro è stato suddiviso in macrobande, la cui nomenclatura non è univoca.
+
+\begin{figure}[H]
+    \centering
+    % Grafico logaritmico dello spettro (x = log10(frequenza in Hz))
+    % Scala x: 1 unità = 1 decade (potenza di 10). 0 = 1 Hz, 13 = 10 THz
+    \resizebox{\textwidth}{!}{
+    \begin{tikzpicture}[font=\sffamily\scriptsize, xscale=1.1, yscale=0.8]
+        
+        % --- Griglia Logaritmica ---
+        \foreach \d in {0,1,2,3,4,5,6,7,8,9,10,11,12,13} {
+            % Linea principale (Decadi)
+            \draw[gray!60, thin] (\d, -0.5) -- (\d, 5.5);
+            % Linee secondarie (logaritmiche: 2, 3, 4... 9)
+            \ifnum\d<13
+                \foreach \m in {2,3,4,5,6,7,8,9} {
+                    \pgfmathsetmacro{\x}{\d + log10(\m)}
+                    \draw[gray!20, very thin] (\x, -0.2) -- (\x, 5.5);
+                }
+            \fi
+        }
+        
+        % --- Etichette Asse X ---
+        \node[below] at (0, -0.5) {1 Hz};
+        \node[below] at (1, -0.5) {10 Hz};
+        \node[below] at (2, -0.5) {100 Hz};
+        \node[below] at (3, -0.5) {1 kHz};
+        \node[below] at (4, -0.5) {10 kHz};
+        \node[below] at (5, -0.5) {100 kHz};
+        \node[below] at (6, -0.5) {1 MHz};
+        \node[below] at (7, -0.5) {10 MHz};
+        \node[below] at (8, -0.5) {100 MHz};
+        \node[below] at (9, -0.5) {1 GHz};
+        \node[below] at (10, -0.5) {10 GHz};
+        \node[below] at (11, -0.5) {100 GHz};
+        \node[below] at (12, -0.5) {1 THz};
+        \node[below] at (13, -0.5) {10 THz};
+        
+        % --- Etichette Asse Y ---
+        \node[left, font=\sffamily\bfseries\small] at (-0.2, 0.5) {ITU};
+        \node[left, font=\sffamily\bfseries\small] at (-0.2, 2.5) {IEEE};
+        \node[left, font=\sffamily\bfseries\small, align=right] at (-0.2, 4.5) {EU\\NATO\\US ECM};
+
+        % ==========================================
+        % 1. BANDA ITU (y tra 0 e 1)
+        % Le frequenze ITU tagliano a 3*10^n. log10(3) = 0.477
+        % ==========================================
+        \def\yA{0} \def\yB{1}
+        \filldraw[fill=ForestGreen!80!black, draw=white, opacity=0.8] (3.477, \yA) rectangle (4.477, \yB) node[midway, text=white] {VLF};
+        \filldraw[fill=Purple!80!white, draw=white, opacity=0.8]      (4.477, \yA) rectangle (5.477, \yB) node[midway, text=white] {LF};
+        \filldraw[fill=Cyan!70!blue, draw=white, opacity=0.8]         (5.477, \yA) rectangle (6.477, \yB) node[midway, text=white] {MF};
+        \filldraw[fill=Orange!90!red, draw=white, opacity=0.8]        (6.477, \yA) rectangle (7.477, \yB) node[midway, text=white] {HF};
+        \filldraw[fill=RoyalBlue!80, draw=white, opacity=0.8]         (7.477, \yA) rectangle (8.477, \yB) node[midway, text=white] {VHF};
+        \filldraw[fill=Red!70, draw=white, opacity=0.8]               (8.477, \yA) rectangle (9.477, \yB) node[midway, text=white] {UHF};
+        \filldraw[fill=ForestGreen!70, draw=white, opacity=0.8]       (9.477, \yA) rectangle (10.477, \yB) node[midway, text=white] {SHF};
+        \filldraw[fill=Purple!70, draw=white, opacity=0.8]            (10.477, \yA) rectangle (11.477, \yB) node[midway, text=white] {EHF};
+        \filldraw[fill=Cyan!70, draw=white, opacity=0.8]              (11.477, \yA) rectangle (12.477, \yB) node[midway, text=white] {THF};
+
+        % ==========================================
+        % 2. BANDA IEEE (y tra 2 e 3)
+        % ==========================================
+        \def\yC{2} \def\yD{3}
+        \filldraw[fill=ForestGreen!80, draw=white, opacity=0.8] (6.477, \yC) rectangle (7.477, \yD) node[midway, text=black] {HF};
+        \filldraw[fill=Purple!70!gray, draw=white, opacity=0.8] (7.477, \yC) rectangle (8.477, \yD) node[midway, text=white] {VHF};
+        \filldraw[fill=Cyan!80!blue, draw=white, opacity=0.8]   (8.477, \yC) rectangle (9.000, \yD) node[midway, text=white] {UHF};
+        \filldraw[fill=Orange, draw=white, opacity=0.8]         (9.000, \yC) rectangle (9.301, \yD) node[midway, text=black] {L};
+        \filldraw[fill=RoyalBlue!70, draw=white, opacity=0.8]   (9.301, \yC) rectangle (9.602, \yD) node[midway, text=white] {S};
+        \filldraw[fill=Red!70, draw=white, opacity=0.8]         (9.602, \yC) rectangle (9.903, \yD) node[midway, text=white] {C};
+        \filldraw[fill=ForestGreen!70, draw=white, opacity=0.8] (9.903, \yC) rectangle (10.079, \yD) node[midway, text=black] {X};
+        \filldraw[fill=Purple!70, draw=white, opacity=0.8]      (10.079, \yC) rectangle (10.255, \yD) node[midway, text=white] {Ku};
+        \filldraw[fill=Cyan!70, draw=white, opacity=0.8]        (10.255, \yC) rectangle (10.423, \yD) node[midway, text=black] {K};
+        \filldraw[fill=Orange!70, draw=white, opacity=0.8]      (10.423, \yC) rectangle (10.602, \yD) node[midway, text=black] {Ka};
+        \filldraw[fill=RoyalBlue!40, draw=white, opacity=0.8]   (10.602, \yC) rectangle (10.875, \yD) node[midway, text=black] {V};
+        \filldraw[fill=Red!40, draw=white, opacity=0.8]         (10.875, \yC) rectangle (11.041, \yD) node[midway, text=black] {W};
+        \filldraw[fill=ForestGreen!30, draw=white, opacity=0.8] (11.041, \yC) rectangle (11.477, \yD) node[midway, text=black] {mm};
+
+        % ==========================================
+        % 3. BANDA EU/NATO/US ECM (y tra 4 e 5)
+        % ==========================================
+        \def\yE{4} \def\yF{5}
+        \filldraw[fill=ForestGreen!70!black, draw=white, opacity=0.8] (0, \yE) rectangle (8.398, \yF) node[midway, text=black] {A}; % fino a 250MHz
+        \filldraw[fill=Purple!70!gray, draw=white, opacity=0.8]       (8.398, \yE) rectangle (8.699, \yF) node[midway, text=white] {B}; % 500MHz
+        \filldraw[fill=Cyan!80!blue, draw=white, opacity=0.8]         (8.699, \yE) rectangle (9.000, \yF) node[midway, text=white] {C}; % 1GHz
+        \filldraw[fill=Orange, draw=white, opacity=0.8]               (9.000, \yE) rectangle (9.301, \yF) node[midway, text=black] {D}; % 2GHz
+        \filldraw[fill=RoyalBlue!70, draw=white, opacity=0.8]         (9.301, \yE) rectangle (9.477, \yF) node[midway, text=white] {E}; % 3GHz
+        \filldraw[fill=Red!70, draw=white, opacity=0.8]               (9.477, \yE) rectangle (9.602, \yF) node[midway, text=white] {F}; % 4GHz
+        \filldraw[fill=ForestGreen!70, draw=white, opacity=0.8]       (9.602, \yE) rectangle (9.778, \yF) node[midway, text=black] {G}; % 6GHz
+        \filldraw[fill=Purple!70, draw=white, opacity=0.8]            (9.778, \yE) rectangle (9.903, \yF) node[midway, text=white] {H}; % 8GHz
+        \filldraw[fill=Cyan!70, draw=white, opacity=0.8]              (9.903, \yE) rectangle (10.000, \yF) node[midway, text=black] {I}; % 10GHz
+        \filldraw[fill=Orange!70, draw=white, opacity=0.8]            (10.000, \yE) rectangle (10.301, \yF) node[midway, text=black] {J}; % 20GHz
+        \filldraw[fill=RoyalBlue!40, draw=white, opacity=0.8]         (10.301, \yE) rectangle (10.602, \yF) node[midway, text=black] {K}; % 40GHz
+        \filldraw[fill=Red!40, draw=white, opacity=0.8]               (10.602, \yE) rectangle (10.778, \yF) node[midway, text=black] {L}; % 60GHz
+        \filldraw[fill=ForestGreen!30, draw=white, opacity=0.8]       (10.778, \yE) rectangle (11.000, \yF) node[midway, text=black] {M}; % 100GHz
+
+    \end{tikzpicture}
+    }
+    \caption*{Classificazione dello spettro elettromagnetico secondo i principali standard internazionali.}
+\end{figure}
+
+\subsection*{Designazione delle Bande (Standard ITU)}
+
+L'Unione Internazionale delle Telecomunicazioni (ITU) divide lo spettro radio in bande logaritmiche, molto usate per applicazioni broadcast, marittime e aeronautiche.
+
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.3} % Dà un po' di respiro alle righe
+    \begin{tabularx}{\textwidth}{>{\bfseries\color{PoliBlue}}c c c >{\raggedright\arraybackslash}X}
+        \toprule
+        \rowcolor{PoliBlue!10} 
+        \textcolor{black}{Banda} & \textbf{Frequenze} & \textbf{Lunghezza d'onda} & \textbf{Uso Tipico} \\
+        \midrule
+        ELF & \qty{3}{\hertz} -- \qty{30}{\hertz} & \qty{100000}{\kilo\meter} -- \qty{10000}{\kilo\meter} & Trasmissione di potenza \\
+        SLF & \qty{30}{\hertz} -- \qty{300}{\hertz} & \qty{10000}{\kilo\meter} -- \qty{1000}{\kilo\meter} & \\
+        ULF & \qty{300}{\hertz} -- \qty{3000}{\hertz} & \qty{1000}{\kilo\meter} -- \qty{100}{\kilo\meter} & Frequenze vocali (Audio) \\
+        VLF & \qty{3}{\kilo\hertz} -- \qty{30}{\kilo\hertz} & \qty{100}{\kilo\meter} -- \qty{10}{\kilo\meter} & Radionavigazione a largo raggio. Comunicazioni sottomarine. \\
+        LF & \qty{30}{\kilo\hertz} -- \qty{300}{\kilo\hertz} & \qty{10}{\kilo\meter} -- \qty{1}{\kilo\meter} & Radiolocalizzazione marittima ed aeronautica. \\
+        MF & \qty{300}{\kilo\hertz} -- \qty{3000}{\kilo\hertz} & \qty{1}{\kilo\meter} -- \qty{100}{\meter} & Comunicazioni aeree e marittime. Radionavigazione. Broadcast AM. \\
+        HF & \qty{3}{\mega\hertz} -- \qty{30}{\mega\hertz} & \qty{100}{\meter} -- \qty{10}{\meter} & Collegamenti senza fili a lunga distanza fissi e mobili. Radioamatori (Onde Corte). \\
+        VHF & \qty{30}{\mega\hertz} -- \qty{300}{\mega\hertz} & \qty{10}{\meter} -- \qty{1}{\meter} & Broadcast FM e TV. Collegamenti in visibilità. Radiomobili civili e militari. \\
+        UHF & \qty{300}{\mega\hertz} -- \qty{3000}{\mega\hertz} & \qty{1}{\meter} -- \qty{10}{\centi\meter} & Ponti radio e radiomobili terrestri. Broadcast TV. Telefonia cellulare. Satelliti. \\
+        SHF & \qty{3}{\giga\hertz} -- \qty{30}{\giga\hertz} & \qty{10}{\centi\meter} -- \qty{1}{\centi\meter} & Ponti radio terrestri. Satelliti. Radar. \\
+        EHF & \qty{30}{\giga\hertz} -- \qty{300}{\giga\hertz} & \qty{1}{\centi\meter} -- \qty{1}{\milli\meter} & Onde millimetriche. Radar e sperimentazioni. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+\subsection*{Bande ad Alta Frequenza (Radar, Spazio e Microonde)}
+
+Salendo ancora più in alto con le frequenze (nel campo delle microonde), si entra in zone dello spettro fondamentali per le comunicazioni spaziali, i radar e i ponti radio ad altissima capacità. Per queste frequenze si adotta comunemente la letteratura IEEE.
+
+\vspace{0.3cm}
+
+\textbf{1. Frequenze per le comunicazioni spaziali (Satelliti e Deep Space)}
+\begin{table}[H]
+    \centering
+    \small
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{lcc}
+        \toprule
+        \rowcolor{PoliBlue!10}
+        \textbf{Banda} & \multicolumn{2}{c}{\textbf{Frequenza (GHz)}} \\
+        \rowcolor{PoliBlue!10}
+        & \textbf{Downlink} & \textbf{Uplink} \\
+        \midrule
+        \textbf{S (deep space)} & $2.29 - 2.30$ & $2.11 - 2.12$ \\
+        \textbf{S} & $2.20 - 2.29$ & $2.025 - 2.11$ \\
+        \textbf{C} & $3.4 - 4.2$ & $5.925 - 6.425$ \\
+        \textbf{X} & $7.25 - 7.75$ & $7.9 - 8.4$ \\
+                   & $8.4 - 8.5$ & $7.145 - 7.235$ \\
+        \textbf{Ku} & $10.7 - 12.75$ & $13.75 - 14.5$ \\
+        \textbf{Ka} & $17.7 - 21.2$ & $27.5 - 31$ \\
+                    & $25.5 - 27.5$ & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\vspace{0.3cm}
+
+\textbf{2. Classificazione IEEE completa (Microonde e Radar)}
+\begin{table}[H]
+    \centering
+    \footnotesize
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{>{\bfseries\color{PoliBlue}}c c c >{\raggedright\arraybackslash}X}
+        \toprule
+        \rowcolor{PoliBlue!10} 
+        \textcolor{black}{Designazione} & \textbf{Gamma di Freq.} & \textbf{Lunghezza d'onda} & \textbf{Usi Tipici} \\
+        \midrule
+        L & \qty{1}{\giga\hertz} -- \qty{2}{\giga\hertz} & \qty{15}{\centi\meter} -- \qty{30}{\centi\meter} & Telemetria militare, GPS, telefonia mobile (GSM), radioamatori. \\
+        S & \qty{2}{\giga\hertz} -- \qty{4}{\giga\hertz} & \qty{7.5}{\centi\meter} -- \qty{15}{\centi\meter} & Radar meteorologici e navali, satelliti, forni a microonde, Wi-Fi, Bluetooth, ZigBee. \\
+        C & \qty{4}{\giga\hertz} -- \qty{8}{\giga\hertz} & \qty{3.75}{\centi\meter} -- \qty{7.5}{\centi\meter} & Telecomunicazioni radio a lunga distanza. \\
+        X & \qty{8}{\giga\hertz} -- \qty{12}{\giga\hertz} & \qty{25}{\milli\meter} -- \qty{37.5}{\milli\meter} & Satelliti, radar, broadband terrestre, comunicazioni spaziali. \\
+        Ku & \qty{12}{\giga\hertz} -- \qty{18}{\giga\hertz} & \qty{16.7}{\milli\meter} -- \qty{25}{\milli\meter} & Comunicazioni satellitari. \\
+        K & \qty{18}{\giga\hertz} -- \qty{26.5}{\giga\hertz} & \qty{11.3}{\milli\meter} -- \qty{16.7}{\milli\meter} & Radar, comunicazioni satellitari, osservazioni astronomiche, radar automotive. \\
+        Ka & \qty{26.5}{\giga\hertz} -- \qty{40}{\giga\hertz} & \qty{5.0}{\milli\meter} -- \qty{11.3}{\milli\meter} & Comunicazioni satellitari ad alta risoluzione. \\
+        Q & \qty{33}{\giga\hertz} -- \qty{50}{\giga\hertz} & \qty{6.0}{\milli\meter} -- \qty{9.0}{\milli\meter} & Satelliti, comunicazioni terrestri a microonde, radioastronomia, radar automotive. \\
+        U & \qty{40}{\giga\hertz} -- \qty{60}{\giga\hertz} & \qty{5.0}{\milli\meter} -- \qty{7.5}{\milli\meter} & \\
+        V & \qty{50}{\giga\hertz} -- \qty{75}{\giga\hertz} & \qty{4.0}{\milli\meter} -- \qty{6.0}{\milli\meter} & Ricerca radar a onde millimetriche e spettroscopia. \\
+        W & \qty{75}{\giga\hertz} -- \qty{110}{\giga\hertz} & \qty{2.7}{\milli\meter} -- \qty{4.0}{\milli\meter} & Satelliti, radar militari per tracciamento bersagli, radar automotive. \\
+        F & \qty{90}{\giga\hertz} -- \qty{140}{\giga\hertz} & \qty{2.1}{\milli\meter} -- \qty{3.3}{\milli\meter} & Radioastronomia, radar avanzati, satelliti per broadcast televisivo (DBS). \\
+        D & \qty{110}{\giga\hertz} -- \qty{170}{\giga\hertz} & \qty{1.8}{\milli\meter} -- \qty{2.7}{\milli\meter} & Radioastronomia, ponti radio ad altissima frequenza, remote sensing, armi a energia diretta. \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+
+\section{Radio e Frequenze}
+
+Dunque, siccome le informazioni di interesse vengono veicolate tramite canali a \textbf{frequenza più alta rispetto alla banda base}, sono necessarie delle \textbf{conversioni} in frequenza.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Lo \textbf{scopo principale della radio} è proprio quello di permettere l'accesso alle trasmissioni attraverso onde elettromagnetiche a più alta frequenza.
+\end{itemize}
+
+Siccome nelle telecomunicazioni occorre compiere questo transito attraverso le alte frequenze \textbf{in due direzioni} (andata e ritorno), allora sono due i dispositivi d'interesse per una radio: \textbf{trasmettitore} e \textbf{ricevitore}.
+
+
+\subsection*{Trasmettitore (Up-conversion)}
+
+Un \textbf{trasmettitore (Tx o TX)} radio converte un segnale a bassa frequenza in un segnale ad alta frequenza (\textit{up-conversion}):
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item pensiamo al segnale corrispondente a una \textbf{voce}: un \textbf{microfono} trasduce il segnale sonoro in un segnale elettrico che passa alla radio, dove viene modificato in frequenza (e potenza) per finire all'antenna da cui avviene la \textbf{trasmissione};
+    \item nell'esempio qui sotto si immagina una \textit{up-conversion} di un tono da una frequenza a una più alta.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=1.2, font=\sffamily]
+        % Seed per rumore costante
+        \pgfmathsetseed{111}
+        
+        % Assi
+        \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+        \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.5,0) node[below right] {$\nu$};
+        
+        % Rumore di fondo
+        \draw[thick, black!80] plot[domain=0.05:4.2, samples=150] (\x, {0.15 + 0.1*rand + 0.05*sin(\x*1000)});
+        
+        % Picco in Banda Base (Bassa Frequenza)
+        \draw[thick, orange] (1, 0) -- (1, 1.5);
+        \draw[thick, orange] (0.95, 0) -- (1, 1.5) -- (1.05, 0);
+        
+        % Picco in Radiofrequenza (Alta Frequenza)
+        \draw[thick, orange] (3.5, 0) -- (3.5, 1.5);
+        \draw[thick, orange] (3.45, 0) -- (3.5, 1.5) -- (3.55, 0);
+        
+        % Freccia Up-conversion
+        \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (1.2, -0.4) to[bend right=20] (3.3, -0.4);
+    \end{tikzpicture}
+\end{figure}
+
+
+\subsection*{Ricevitore (Down-conversion)}
+
+Un \textbf{ricevitore (Rx o RX)} radio converte un segnale ad alta frequenza in un segnale a bassa frequenza (\textit{down-conversion}):
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item una antenna rileva un segnale che consegna alla radio: qui il segnale viene convertito a più bassa frequenza e passato a un trasduttore di onde elettriche in onde sonore, quale una \textbf{cassa acustica};
+    \item nell'esempio qui sotto si immagina la \textit{down-conversion} di un tono a una frequenza più bassa.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.5, yscale=1.2, font=\sffamily]
+        % Seed per rumore costante
+        \pgfmathsetseed{222}
+        
+        % Assi
+        \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+        \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.5,0) node[below right] {$\nu$};
+        
+        % Rumore di fondo
+        \draw[thick, black!80] plot[domain=0.05:4.2, samples=150] (\x, {0.15 + 0.1*rand + 0.05*sin(\x*1200)});
+        
+        % Picco in Banda Base (Bassa Frequenza)
+        \draw[thick, orange] (1, 0) -- (1, 1.5);
+        \draw[thick, orange] (0.95, 0) -- (1, 1.5) -- (1.05, 0);
+        
+        % Picco in Radiofrequenza (Alta Frequenza)
+        \draw[thick, orange] (3.5, 0) -- (3.5, 1.5);
+        \draw[thick, orange] (3.45, 0) -- (3.5, 1.5) -- (3.55, 0);
+        
+        % Freccia Down-conversion
+        \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (3.3, -0.4) to[bend left=20] (1.2, -0.4);
+    \end{tikzpicture}
+\end{figure}
+
+
+\subsection*{Frequenza Intermedia (IF)}
+
+Solitamente, soprattutto quando le trasmissioni avvengono alle alte frequenze sopra il GHz, il passaggio diretto da banda base a radiofrequenza (e viceversa) non avviene per limiti tecnologici nei dispositivi elettronici; bensì c'è un transito verso una \textbf{media frequenza}, detta appunto \textit{intermediate frequency} (\textbf{IF}).
+
+Vengono mostrati un caso \textbf{Tx} (a sinistra) e un caso \textbf{Rx} (a destra).
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.1, yscale=1.1, font=\sffamily\small]
+        
+        % Seed per il rumore
+        \pgfmathsetseed{333}
+        
+        % =========================================
+        % GRAFICO 1: Trasmettitore (Tx)
+        % =========================================
+        \begin{scope}[shift={(0,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:3.8, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Picco BB (Banda Base)
+            \draw[thick, orange] (0.8, 0) -- (0.8, 1.5);
+            \draw[thick, orange] (0.75, 0) -- (0.8, 1.5) -- (0.85, 0);
+            \node[below, text=orange, font=\bfseries] at (0.8, -0.1) {BB};
+            
+            % Picco IF (Frequenza Intermedia)
+            \draw[thick, ForestGreen] (2.0, 0) -- (2.0, 1.5);
+            \draw[thick, ForestGreen] (1.95, 0) -- (2.0, 1.5) -- (2.05, 0);
+            \node[below, text=ForestGreen, font=\bfseries] at (2.0, -0.1) {IF};
+            
+            % Picco RF (Radio Frequenza)
+            \draw[thick, brown!80!black] (3.2, 0) -- (3.2, 1.5);
+            \draw[thick, brown!80!black] (3.15, 0) -- (3.2, 1.5) -- (3.25, 0);
+            \node[below, text=brown!80!black, font=\bfseries] at (3.2, -0.1) {RF};
+            
+            % Frecce Up-conversion a stadi
+            \draw[-{Stealth[scale=1.2]}, line width=2pt, PoliBlue] (0.9, -0.6) to[bend right=30] (1.9, -0.6);
+            \draw[-{Stealth[scale=1.2]}, line width=2pt, PoliBlue] (2.1, -0.6) to[bend right=30] (3.1, -0.6);
+        \end{scope}
+
+        % =========================================
+        % GRAFICO 2: Ricevitore (Rx)
+        % =========================================
+        \begin{scope}[shift={(6,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:3.8, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Picco BB
+            \draw[thick, orange] (0.8, 0) -- (0.8, 1.5);
+            \draw[thick, orange] (0.75, 0) -- (0.8, 1.5) -- (0.85, 0);
+            \node[below, text=orange, font=\bfseries] at (0.8, -0.1) {BB};
+            
+            % Picco IF
+            \draw[thick, ForestGreen] (2.0, 0) -- (2.0, 1.5);
+            \draw[thick, ForestGreen] (1.95, 0) -- (2.0, 1.5) -- (2.05, 0);
+            \node[below, text=ForestGreen, font=\bfseries] at (2.0, -0.1) {IF};
+            
+            % Picco RF
+            \draw[thick, brown!80!black] (3.2, 0) -- (3.2, 1.5);
+            \draw[thick, brown!80!black] (3.15, 0) -- (3.2, 1.5) -- (3.25, 0);
+            \node[below, text=brown!80!black, font=\bfseries] at (3.2, -0.1) {RF};
+            
+            % Frecce Down-conversion a stadi
+            \draw[-{Stealth[scale=1.2]}, line width=2pt, PoliBlue] (3.1, -0.6) to[bend left=30] (2.1, -0.6);
+            \draw[-{Stealth[scale=1.2]}, line width=2pt, PoliBlue] (1.9, -0.6) to[bend left=30] (0.9, -0.6);
+        \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+
+
+\subsection*{Filtraggio e Selezione della Banda}
+
+Abbiamo già visto che in realtà la radio non converte un singolo tono, una singola frequenza, bensì una \textbf{banda di frequenze}.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Pensiamo ai segnali sonori: si tratta di una banda di frequenze e vogliamo trasmettere tutto ciò che è udibile; d'altra parte non vogliamo che si inseriscano altre frequenze possibile causa di rumore o interferenza.
+    \item Perciò quando trasmettiamo o riceviamo un segnale di qualsiasi natura, vogliamo \textbf{selezionare le frequenze} che ci interessano ed escludere le altre: questa operazione si dice \textbf{filtraggio} e si opera tramite i filtri.
+\end{itemize}
+
+Quindi un \textbf{TX} e un \textbf{RX} selezionano una certa larghezza di banda del rispettivo segnale \textbf{in input}; altrettanto fanno \textbf{in output}, così da restituire solo quanto voluto (e così da massimizzare la potenza trasmessa\dots)
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.1, yscale=1.1, font=\sffamily\small]
+        
+        \pgfmathsetseed{444}
+        
+        % =========================================
+        % GRAFICO 1: Trasmettitore (Filtro Up)
+        % =========================================
+        \begin{scope}[shift={(0,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.2,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:4.0, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Picco 1
+            \draw[thick, brown!80!black] (1, 0) -- (1, 1.3);
+            \draw[thick, brown!80!black] (0.95, 0) -- (1, 1.3) -- (1.05, 0);
+            
+            % Filtro (Trapezio arancione) BB
+            \draw[thick, orange] (0.4, 0) -- (0.5, 1.4) -- (1.5, 1.4) -- (1.6, 0);
+            
+            % Picco 2
+            \draw[thick, brown!80!black] (3, 0) -- (3, 1.3);
+            \draw[thick, brown!80!black] (2.95, 0) -- (3, 1.3) -- (3.05, 0);
+            
+            % Filtro (Trapezio arancione) RF
+            \draw[thick, orange] (2.4, 0) -- (2.5, 1.4) -- (3.5, 1.4) -- (3.6, 0);
+            
+            % Freccia Up
+            \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (1.2, -0.6) to[bend right=25] (2.8, -0.6);
+        \end{scope}
+
+        % =========================================
+        % GRAFICO 2: Ricevitore (Filtro Down)
+        % =========================================
+        \begin{scope}[shift={(6.5,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,2.5) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.2,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:4.0, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Picco 1
+            \draw[thick, brown!80!black] (1, 0) -- (1, 1.3);
+            \draw[thick, brown!80!black] (0.95, 0) -- (1, 1.3) -- (1.05, 0);
+            
+            % Filtro BB
+            \draw[thick, orange] (0.4, 0) -- (0.5, 1.4) -- (1.5, 1.4) -- (1.6, 0);
+            
+            % Picco 2
+            \draw[thick, brown!80!black] (3, 0) -- (3, 1.3);
+            \draw[thick, brown!80!black] (2.95, 0) -- (3, 1.3) -- (3.05, 0);
+            
+            % Filtro RF
+            \draw[thick, orange] (2.4, 0) -- (2.5, 1.4) -- (3.5, 1.4) -- (3.6, 0);
+            
+            % Freccia Down
+            \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (2.8, -0.6) to[bend left=25] (1.2, -0.6);
+        \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+
+\subsection*{Radio e Livelli di Potenza}
+
+Fin dall'inizio si è detto che la radio agisce, oltre che sulla frequenza, anche sulla \textbf{potenza}. 
+Per esempio, quando parliamo regoliamo il volume della voce in base a due parametri:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item la \textbf{distanza} del ricevente: maggiore questa distanza, più abbiamo bisogno di alzare il volume, cioè la potenza del segnale;
+    \item il \textbf{livello di rumore}: maggiore è il brusio, più vogliamo smarcarci dal rumore di fondo. Viceversa, chi ascolta vuole distinguere una voce dal rumore di fondo.
+\end{itemize}
+
+Altrettanto fa la radio: infatti, siccome la distanza e il rumore lungo il tragitto Tx-to-Rx alterano il segnale:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item il \textbf{trasmettitore} cerca di \textbf{alzare} la potenza trasmessa il più possibile senza alterare il segnale;
+    \item il \textbf{ricevitore} cerca di \textbf{recuperare} il segnale (ormai attenuato dalla distanza) e \textbf{alzarne} la potenza rispetto al rumore.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[xscale=1.1, yscale=1.1, font=\sffamily\small]
+        
+        \pgfmathsetseed{555}
+        
+        % =========================================
+        % GRAFICO 1: Trasmettitore (Amplificazione + Up)
+        % =========================================
+        \begin{scope}[shift={(0,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,3) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.2,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:4.0, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Segnale BB (Bassa Potenza)
+            \draw[thick, brown!80!black] (1, 0) -- (1, 0.8);
+            \draw[thick, brown!80!black] (0.95, 0) -- (1, 0.8) -- (1.05, 0);
+            \draw[thick, orange] (0.4, 0) -- (0.5, 0.9) -- (1.5, 0.9) -- (1.6, 0); % Filtro
+            
+            % Segnale RF (Alta Potenza - Amplificato)
+            \draw[thick, brown!80!black] (3, 0) -- (3, 2.5);
+            \draw[thick, brown!80!black] (2.95, 0) -- (3, 2.5) -- (3.05, 0);
+            \draw[thick, orange] (2.4, 0) -- (2.5, 2.6) -- (3.5, 2.6) -- (3.6, 0); % Filtro
+            
+            % Freccia Up
+            \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (1.2, -0.6) to[bend right=25] (2.8, -0.6);
+        \end{scope}
+
+        % =========================================
+        % GRAFICO 2: Ricevitore (Amplificazione + Down)
+        % =========================================
+        \begin{scope}[shift={(6.5,0)}]
+            % Assi
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (0,3) node[left] {P};
+            \draw[-{Stealth}, ultra thick, red] (0,0) -- (4.2,0) node[below right] {$\nu$};
+            
+            % Rumore
+            \draw[thick, black!80] plot[domain=0.05:4.0, samples=150] (\x, {0.12 + 0.08*rand});
+            
+            % Segnale RF Ricevuto (Attenuato, Bassa Potenza)
+            \draw[thick, brown!80!black] (3, 0) -- (3, 0.7);
+            \draw[thick, brown!80!black] (2.95, 0) -- (3, 0.7) -- (3.05, 0);
+            \draw[thick, orange] (2.4, 0) -- (2.5, 0.8) -- (3.5, 0.8) -- (3.6, 0); % Filtro
+            
+            % Segnale BB Recuperato (Amplificato, Alta Potenza)
+            \draw[thick, brown!80!black] (1, 0) -- (1, 1.8);
+            \draw[thick, brown!80!black] (0.95, 0) -- (1, 1.8) -- (1.05, 0);
+            \draw[thick, orange] (0.4, 0) -- (0.5, 1.9) -- (1.5, 1.9) -- (1.6, 0); % Filtro
+            
+            % Freccia Down
+            \draw[-{Stealth[scale=1.5]}, line width=3pt, PoliBlue] (2.8, -0.6) to[bend left=25] (1.2, -0.6);
+        \end{scope}
+
+    \end{tikzpicture}
+\end{figure}
+
+
+% ==================================================
+% NUOVA SEZIONE: ARCHITETTURE DEI RICEVITORI
+% ==================================================
+\section{Architetture dei Ricevitori Radio}
+
+\subsection{Ricevitore Eterodina (Conversione Diretta)}
+
+La denominazione \textbf{eterodina} fu inventata all'inizio del 1900 dal canadese Reginald Fessenden, con derivazione dal greco: \textit{heteros} = differente e \textit{dynamis} = potenza.
+
+Questo termine si riferisce a un ricevitore per segnali emessi da trasmettitori ad arco sintonizzati:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item il ricevitore era composto da un \textbf{mixer non lineare} e da un \textbf{oscillatore locale} costituito da un alternatore in alta frequenza (massimo \qty{100}{\kilo\hertz});
+    \item fu il primo ricevitore a \textbf{conversione diretta}: la conversione arrivava direttamente in bassa frequenza, cioè si ascoltava direttamente con la cuffia il segnale telegrafico (Morse) ricevuto;
+    \item tuttavia, l'alternatore usato come oscillatore locale si comportava a sua volta come un trasmettitore, ovvero \textbf{disturbava} il segnale d'interesse: il sistema fu abbandonato per passare alla supereterodina.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\small, >=Stealth, thick]
+        
+        % Nodo 1: Antenna (simbolo manuale)
+        \coordinate (ant_base) at (0, 0);
+        \draw (ant_base) -- (0, 1.5);
+        \draw (0, 1.5) -- (-0.3, 1.8);
+        \draw (0, 1.5) -- (0, 1.9);
+        \draw (0, 1.5) -- (0.3, 1.8);
+        \coordinate (ant_out) at (0, 0.5);
+        
+        % Nodo 2: Mixer
+        \node[circle, draw, minimum size=1.2cm, fill=white] (mixer) at (2, 0.5) {};
+        \draw (mixer.north west) -- (mixer.south east);
+        \draw (mixer.north east) -- (mixer.south west);
+        \node[above=0.1cm of mixer, font=\tiny] {Dispositivo non lineare};
+        
+        % Nodo 3: Oscillatore Locale
+        \node[circle, draw, minimum size=1.2cm, fill=white] (osc) at (2, -2) {};
+        \draw (1.7, -2) sin (1.85, -1.8) cos (2, -2) sin (2.15, -2.2) cos (2.3, -2);
+        \draw[->] (1.5, -2.5) -- (2.5, -1.5); % Freccia di sintonizzazione
+        
+        % Nodo 4: Audio (Altoparlante)
+        \coordinate (speaker_in) at (4.5, 0.5);
+        \draw[fill=gray!20] (4.5, 0.2) rectangle (4.8, 0.8);
+        \draw[fill=gray!20] (4.8, 0.2) -- (5.3, -0.2) -- (5.3, 1.2) -- (4.8, 0.8);
+        \node[above=0.4cm] at (5, 0.5) {\scriptsize AUDIO};
+        
+        % Collegamenti
+        \draw[->] (ant_out) -- (mixer.west);
+        \draw[->] (osc.north) -- (mixer.south);
+        \draw[->] (mixer.east) -- (speaker_in);
+        
+        % Etichette con box tratteggiato
+        \node[draw, dotted, fill=white, inner sep=4pt] (label_ant) at (-1.5, 1.5) {\scriptsize Antenna};
+        \draw[dotted] (label_ant.east) -- (-0.1, 1.5);
+        
+        \node[draw, dotted, fill=white, inner sep=4pt] (label_osc) at (2, -3.5) {\scriptsize Oscillatore Locale};
+        \draw[dotted] (label_osc.north) -- (osc.south);
+        
+    \end{tikzpicture}
+    \caption*{Schema a blocchi semplificato di un ricevitore eterodina a conversione diretta.}
+\end{figure}
+
+
+\subsection{Ricevitore Supereterodina}
+
+Negli anni 1910/1915 Edwin Armstrong e Levy indipendentemente modificarono il principio della eterodina, costruendo l'oscillatore locale con un circuito a triodo (inventato da de Forest nel 1913). 
+
+Invece di convertire la frequenza radio in ingresso dall'antenna direttamente in bassa frequenza, si fece una \textbf{conversione alla frequenza intermedia (IF)} fissa di \qty{50}{\kilo\hertz}. 
+A questa frequenza IF si applicò un \textbf{amplificatore selettivo}, composto da filtro e amplificatore, prima che il trasduttore/detector ne estraessero il segnale acustico da inviare agli altoparlanti. Il sistema fu chiamato \textbf{supereterodina} (super inteso per supersonico).
+
+\begin{nota}
+    Il grandissimo vantaggio di questa tecnica consiste nel fatto che le diverse frequenze provenienti dalle diverse stazioni trasmittenti vengono \textbf{tutte convertite alla stessa frequenza intermedia} prima dell'amplificazione e del filtraggio. Gli stadi di amplificazione e filtraggio sono quindi più semplici ed economici da produrre perché operano a una frequenza intermedia fissa: non hanno più bisogno di essere regolabili per adattarsi alle diverse frequenze delle stazioni trasmittenti.
+\end{nota}
+
+In pratica il funzionamento è il seguente:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item il segnale ricevuto (\(f_{RF}\)) viene combinato nel mixer con il segnale generato da un oscillatore locale (\(f_{LO}\)) e convertito a un nuovo valore di frequenza. 
+    \item Questa nuova frequenza intermedia è tipicamente la \textbf{"differenza"} fra la frequenza dell'oscillatore locale e quella del segnale ricevuto:
+    \begin{equation}
+        f_{IF} = | f_{RF} - f_{LO} |
+    \end{equation}
+    \item \textcolor{gray}{\textit{Nota: matematicamente è presente anche la frequenza "somma" ($f_{RF} + f_{LO}$), che talvolta viene utilizzata in specifiche architetture al posto della differenza.}}
+\end{itemize}
+
+
+\subsection{Schema a Blocchi di un Ricevitore Supereterodina}
+
+Per comprendere meglio il funzionamento di un ricevitore radio moderno, analizziamo il suo schema a blocchi completo. I concetti fondamentali alla base dell'architettura sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item il segnale in ingresso dall'antenna si trova a una frequenza \textbf{RF > IF};
+    \item al centro della catena, si converte la frequenza tramite l'oscillatore locale (LO) facendola passare da RF a IF;
+    \item l'uscita IF deve avere un alto \textbf{SNR} (rapporto segnale/rumore) per essere inviata all'utilizzatore/trasduttore finale.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Stealth]
+        
+        % ==========================================
+        % MACRO PER DISEGNARE I COMPONENTI
+        % ==========================================
+        % Amplificatore (Triangolo orizzontale)
+        \newcommand{\drawamp}[3]{
+            \draw[fill=white, thick] (#1, #2-0.6) -- (#1+1.2, #2) -- (#1, #2+0.6) -- cycle;
+            \node at (#1+0.4, #2) {\textbf{#3}};
+        }
+        % Filtro (Rettangolo con onde)
+        \newcommand{\drawfilter}[3]{
+            \draw[fill=white, thick] (#1-0.6, #2-0.6) rectangle (#1+0.6, #2+0.6);
+            \node[above] at (#1, #2+0.6) {\textbf{#3}};
+            % Onde del filtro
+            \draw[thick] (#1-0.4, #2+0.2) sin (#1-0.2, #2+0.35) cos (#1, #2+0.2) sin (#1+0.2, #2+0.05) cos (#1+0.4, #2+0.2);
+            \draw[thick] (#1-0.4, #2-0.1) sin (#1-0.2, #2+0.05) cos (#1, #2-0.1) sin (#1+0.2, #2-0.25) cos (#1+0.4, #2-0.1);
+            \draw[thick] (#1-0.4, #2-0.4) sin (#1-0.2, #2-0.25) cos (#1, #2-0.4) sin (#1+0.2, #2-0.55) cos (#1+0.4, #2-0.4);
+            % Linea sbarrata (simbolo passa-banda)
+            \draw[thick] (#1-0.3, #2+0.5) -- (#1+0.3, #2-0.1);
+        }
+        
+        % ==========================================
+        % ZONE COLORATE (Evidenziazioni stile slide)
+        % ==========================================
+        % 1. Front-End (Verde)
+        \draw[ForestGreen, ultra thick, dashed, rounded corners] (0.8, -1.8) rectangle (6.5, 2.0);
+        \node[ForestGreen, font=\sffamily\bfseries\large, anchor=south west] at (0.8, 2.0) {1. RX Front-End};
+
+        % 2. Down-Conversion (Rosso)
+        \draw[OpticRed, ultra thick, dashed, rounded corners] (6.8, -5.5) rectangle (8.8, 1.5);
+        \node[OpticRed, font=\sffamily\bfseries\large, anchor=south] at (7.8, 1.5) {2. Down-Conversion};
+
+        % 3. IF Section (Blu)
+        \draw[PoliBlue, ultra thick, dashed, rounded corners] (9.2, -1.8) rectangle (13.5, 1.5);
+        \node[PoliBlue, font=\sffamily\bfseries\large, anchor=south west] at (9.2, 1.5) {3. RX IF};
+
+
+        % ==========================================
+        % CATENA PRINCIPALE (Da sinistra a destra)
+        % ==========================================
+        % Input RF
+        \node[left, text=OpticRed, font=\sffamily\bfseries\large] at (0, 1.5) {RF input};
+        \filldraw[black] (0, 0) circle (2pt);
+        \draw[thick, ->] (0, 0) -- (1, 0);
+        
+        % Testi Input
+        \node[above, text=OpticRed, align=center] at (0, 0.2) {-115 dBm\\to\\-80 dBm};
+        \node[below, align=center] at (0, -0.2) {\textbf{RX}\\27.5 - 30 GHz\\[0.2cm] CH1 - 27.7 GHz\\CH12 - 29.9 GHz\\Ad. Ch - 100 MHz};
+
+        % LNA 1
+        \drawamp{1}{0}{LNA 1}
+        \draw[thick, ->] (2.2, 0) -- (3, 0);
+        \node[below, text=OpticRed] at (1.6, -0.8) {25 dB};
+
+        % LNA 2
+        \drawamp{3}{0}{LNA 2}
+        \draw[thick, ->] (4.2, 0) -- (5.2, 0);
+        \node[below, text=OpticRed] at (3.6, -0.8) {25 dB};
+
+        % Filtro F1
+        \drawfilter{5.8}{0}{F1}
+        \draw[thick, ->] (6.4, 0) -- (7.3, 0);
+        \node[below, text=OpticRed, align=center] at (5.8, -0.8) {\textcolor{purple}{2500 MHz BW}\\-3 dB};
+
+        % Mixer M1
+        \node[circle, draw, thick, fill=white, minimum size=1cm] (mixer) at (7.8, 0) {};
+        \draw[thick] (mixer.north west) -- (mixer.south east);
+        \draw[thick] (mixer.north east) -- (mixer.south west);
+        \node[above] at (7.8, 0.6) {\textbf{M1}};
+        \draw[thick, ->] (8.3, 0) -- (9.4, 0);
+        \node[above, font=\tiny\bfseries] at (8.85, 0) {IF1 - TBD};
+
+        % Filtro F2
+        \drawfilter{10.0}{0}{F2}
+        \draw[thick, ->] (10.6, 0) -- (11.5, 0);
+        \node[below, text=OpticRed, align=center] at (10.0, -0.8) {\textcolor{black}{TBD}\\\textcolor{purple}{200 MHz BW}\\-2 dB};
+
+        % AMP 1
+        \drawamp{11.5}{0}{AMP 1}
+        \node[below, text=OpticRed] at (12.1, -0.8) {16 dB};
+
+        % Output IF
+        \draw[thick] (12.7, 0) -- (13.2, 0) -- (13.2, -1.5);
+        \draw[thick, ->] (13.2, -1.5) -- (14.2, -1.5);
+        \node[above, text=OpticRed, align=center] at (13.7, -1.4) {-64 dBm\\to\\-29 dBm};
+        \node[right, text=OpticRed, font=\sffamily\bfseries\large] at (14.2, -2.5) {IF output};
+
+
+        % ==========================================
+        % CATENA OSCILLATORE LOCALE (LO) - Dal basso
+        % ==========================================
+        % Collegamento al Mixer
+        \draw[thick, <-] (7.8, -0.5) -- (7.8, -1.0);
+        
+        % Moltiplicatore x2 (Triangolo verso l'alto)
+        \draw[fill=white, thick] (7.4, -1.8) -- (8.2, -1.8) -- (7.8, -1.0) -- cycle;
+        \node at (7.8, -1.5) {\textbf{x2}};
+        \draw[thick, <-] (7.8, -1.8) -- (7.8, -2.2);
+        
+        % Buffer / Amplificatore LO
+        \draw[fill=white, thick] (7.5, -2.8) -- (8.1, -2.8) -- (7.8, -2.2) -- cycle;
+        \draw[thick, <-] (7.8, -2.8) -- (7.8, -3.3);
+        \node[left, text=OpticRed] at (7.5, -2.5) {-10 dB};
+        \node[right, font=\tiny\bfseries] at (7.9, -2.9) {TBD - TBD GHz};
+
+        % Blocco LO (VCO + PLL)
+        \draw[dashed, thick, fill=gray!5] (6.9, -5.0) rectangle (8.9, -3.3);
+        \node[above left] at (7.5, -3.3) {\textbf{LO1}};
+        
+        % VCO
+        \node[circle, draw, thick, fill=white, minimum size=0.8cm] (vco) at (7.8, -3.7) {};
+        \draw[thick] (7.5, -3.7) sin (7.65, -3.55) cos (7.8, -3.7) sin (7.95, -3.85) cos (8.1, -3.7);
+        \node[above] at (7.8, -3.3) {\textbf{VCO}};
+        \draw[thick, <-] (7.8, -4.1) -- (7.8, -4.4);
+        
+        % Loop VCO -> PLL
+        \draw[thick] (7.8, -3.1) -- (7.1, -3.1) -- (7.1, -4.6) -- (7.3, -4.6);
+        
+        % PLL
+        \draw[fill=white, thick] (7.3, -4.8) rectangle (8.3, -4.3);
+        \node at (7.8, -4.55) {\textbf{PLL}};
+        
+        % f_ref
+        \draw[thick, OpticRed, <-] (7.8, -5.0) -- (7.8, -5.4) node[right, text=black] {$f_{\text{ref}}$};
+
+    \end{tikzpicture}
+    }
+\end{figure}
+
+Il diagramma soprastante può essere idealmente suddiviso in tre macro-sezioni funzionali, di cui andiamo ora ad analizzare il comportamento.
+
+\subsubsection*{1. RX Front-End}
+La primissima parte del circuito, posta subito a valle dell'antenna, prende il nome di \textit{Front-End}. È composto tipicamente da:
+\begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
+    \item \textbf{Amplificatori a basso rumore (LNA - Low Noise Amplifier)}: sono amplificatori speciali capaci di elevare il livello di potenza di un segnale estremamente debole (fino a \qty{-115}{\deci\bel m}) introdotto dall'antenna, cercando di \textbf{non alzare il rumore} termico di fondo.
+    \item \textbf{Filtro reiezione di immagine (F1)}: un filtro passa-banda che ripulisce il segnale in ingresso da interferenze fuori banda prima della conversione.
+\end{itemize}
+\begin{nota}[colback=ForestGreen!5, colframe=ForestGreen, title={\textbf{Cosa succede nel Front-End?}}]
+    Qui cambia in modo significativo la \textbf{potenza} (viene aumentata fortemente) e viene in parte \textbf{selezionata la banda} di frequenza desiderata. Tuttavia, \textbf{non cambia la frequenza} portante del segnale.
+\end{nota}
+
+\subsubsection*{2. Down-Conversion}
+Il cuore del sistema supereterodina è la conversione di frequenza. I componenti chiave sono:
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item \textbf{Mixer (Mescolatore M1)}: è un circuito intrinsecamente non lineare che opera matematicamente una \textbf{moltiplicazione} tra segnali. Nel dominio delle frequenze, questo si traduce in somme o sottrazioni di frequenze.
+    \item \textbf{Oscillatore Locale (LO)}: deve generare e fornire un segnale stabile e pulito al mixer per convertire il segnale ricevuto (a frequenza RF) nel nuovo segnale a frequenza IF. Solitamente, per garantire assoluta precisione, questo segnale è comandato e stabilizzato da un \textbf{PLL} (\textit{Phase-Locked Loop}) accoppiato a un \textbf{VCO} (\textit{Voltage-Controlled Oscillator}).
+\end{itemize}
+\begin{nota}[colback=OpticRed!5, colframe=OpticRed, title={\textbf{Cosa succede nella Down-Conversion?}}]
+    Questo è l'unico stadio in cui \textbf{cambia la frequenza} del segnale (da RF a IF). La potenza subisce variazioni modeste, solitamente una leggera perdita introdotta dal processo di miscelazione (\textit{conversion loss}).
+\end{nota}
+
+\subsubsection*{3. RX IF (Frequenza Intermedia)}
+L'ultima fase del ricevitore opera su una frequenza più bassa e fissa (la IF). È composto da:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Filtro selettore (F2)}: un filtro passa-banda molto stretto e preciso (essendo la IF fissa, questo filtro può essere ottimizzato per prestazioni eccellenti).
+    \item \textbf{Amplificatore/i (AMP 1)}: stadi di amplificazione convenzionali che portano il segnale al livello necessario per il detector o il convertitore analogico-digitale (ADC).
+\end{itemize}
+\begin{nota}[colback=PoliBlue!5, colframe=PoliBlue, title={\textbf{Cosa succede nello stadio IF?}}]
+    Viene \textbf{selezionata finemente la banda} di frequenza isolando esclusivamente il canale di interesse, e viene \textbf{aumentata la potenza} di quanto necessario all'utilizzatore. Anche qui, \textbf{non c'è spostamento di frequenza}.
+\end{nota}
 
 \end{document}
