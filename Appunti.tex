@@ -2733,83 +2733,116 @@ La scelta di quale frequenza RF sia la risposta desiderata e quale quella dell'i
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+
         % ==========================================
-        % ASSI E SETUP
+        % TITOLO SLIDE (OPZIONALE)
         % ==========================================
-        % Asse Superiore (Ingressi)
-        \draw[->, ultra thick] (0, 3) -- (12, 3) node[below] {$f$};
-        % Asse Inferiore (Uscita)
-        \draw[->, ultra thick] (0, 0) -- (12, 0) node[below] {$f$};
-        %
+        \node[anchor=north west, font=\sffamily\bfseries\small] at (0, 5.8) {Immagine:};
+
         % ==========================================
-        % SPETTRO SUPERIORE
+        % SPETTRO SUPERIORE (INGRESSI)
         % ==========================================
-        % Segnale d'ingresso Desiderato (Blu) - f_IN = 1.0 MHz
-        \def\fin{3.5}
-        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
-            \draw[blue, line width=1.5pt] (\fin+\x, 3) -- (\fin+\x, 3+\h);
+        % Asse Superiore
+        \draw[->, ultra thick] (0.5, 3.5) -- (11.5, 3.5) node[below=1pt] {$f$};
+        
+        % Tacche asse superiore (allineate a 0.5, 1.0, 1.5, 2.0, 2.5 MHz)
+        \foreach \x in {2.0, 4.0, 6.0, 8.0, 10.0} {
+            \draw[thick] (\x, 3.6) -- (\x, 3.4);
         }
-        \node[blue, below=0.1cm] at (\fin, 3) {$f_{IN} = \qty{1.0}{\mega\hertz}$};
-        \node[blue, align=center] (lbl_in) at (\fin-1.0, 4.2) {spettro del segnale\\d'ingresso};
-        \draw[->, blue, thin] (lbl_in.east) -- (\fin-0.2, 4);
-        %
-        % Oscillatore Locale (Verde) - f_LO = 1.5 MHz
-        \def\flo{6}
-        \draw[ForestGreen, line width=2pt] (\flo, 3) -- (\flo, 5.5);
-        \node[ForestGreen, below=0.1cm] at (\flo, 3) {$f_{LO} = \qty{1.5}{\mega\hertz}$};
-        %
-        % Segnale Immagine (Rosso) - f_IM = 2.0 MHz
-        \def\fim{8.5}
+
+        % 1. Segnale d'ingresso Desiderato (Blu) - f_IN = 1.0 MHz (x = 4.0)
+        \def\fin{4.0}
         \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
-            \draw[red, line width=1.5pt] (\fim+\x, 3) -- (\fim+\x, 3+\h);
+            \draw[blue, line width=1.5pt] (\fin+\x, 3.5) -- (\fin+\x, 3.5+\h);
         }
-        \node[red, below=0.1cm] at (\fim, 3) {$f_{IM} = \qty{2.0}{\mega\hertz}$};
-        \node[red, align=center] (lbl_im) at (\fim+1.0, 4.2) {spettro del segnale\\immagine};
-        \draw[->, red, thin] (lbl_im.west) -- (\fim+0.2, 4);
-        %
+        \node[blue, below=2pt, font=\sffamily\bfseries\scriptsize] at (\fin, 3.5) {$f_{IN} = 1,0\text{ MHz}$};
+        
+        % Etichetta e freccia Spettro Ingresso
+        \node[blue, align=center] (lbl_in) at (\fin-1.5, 4.9) {spettro del segnale\\d'ingresso};
+        \draw[->, black, thin] (lbl_in.east) -- (\fin-0.1, 4.6);
+
+        % 2. Oscillatore Locale (Verde) - f_LO = 1.5 MHz (x = 6.0)
+        \def\flo{6.0}
+        \draw[ForestGreen, line width=2pt] (\flo, 3.5) -- (\flo, 5.8);
+        \node[ForestGreen, below=2pt, font=\sffamily\bfseries\scriptsize] at (\flo, 3.5) {$f_{LO} = 1,5\text{ MHz}$};
+
+        % 3. Segnale Immagine (Rosso) - f_IM = 2.0 MHz (x = 8.0)
+        \def\fim{8.0}
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[red, line width=1.5pt] (\fim+\x, 3.5) -- (\fim+\x, 3.5+\h);
+        }
+        \node[red, below=2pt, font=\sffamily\bfseries\scriptsize] at (\fim, 3.5) {$f_{IM} = 2,0\text{ MHz}$};
+        
+        % Etichetta e freccia Spettro Immagine
+        \node[red, align=center] (lbl_im) at (\fim+1.5, 4.9) {spettro del segnale\\immagine};
+        \draw[->, black, thin] (lbl_im.west) -- (\fim+0.1, 4.6);
+
+
         % ==========================================
-        % MIXER AL CENTRO
+        % MIXER E PERCORSI SEGNALI
         % ==========================================
-        \node[circle, draw=blue, thick, fill=white, minimum size=1cm, path picture={\draw[thick, blue] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick, blue] (path picture bounding box.north east) -- (path picture bounding box.south west);}] (mixer) at (4.5, 1.2) {};
-        %
-        % Percorso Blu (Desiderato)
-        \draw[->, blue, ultra thick] (\fin, 2.5) -- (\fin, 1.7) -- (4.5, 1.7) -- (mixer.north);
-        % Percorso Rosso (Immagine)
-        \draw[->, red, ultra thick] (\fim, 2.5) -- (\fim, 1.7) -- (4.5, 1.7); % Si unisce prima del mixer
+        \def\fmix{5.0}
+        \def\ymix{1.8}
+
+        % Simbolo Mixer
+        \node[circle, draw=blue!80!black, ultra thick, fill=white, minimum size=0.75cm] (mixer) at (\fmix, \ymix) {};
+        \draw[blue!80!black, ultra thick] (mixer.north west) -- (mixer.south east);
+        \draw[blue!80!black, ultra thick] (mixer.north east) -- (mixer.south west);
+
+        % Percorso Blu (f_IN)
+        \draw[blue, ultra thick] (\fin, 2.8) -- (\fin, 2.3) -- (\fmix, 2.3);
+        % Percorso Rosso (f_IM)
+        \draw[red, ultra thick] (\fim, 2.8) -- (\fim, 2.3) -- (\fmix, 2.3);
+        % Ingresso unico combinato nel Mixer
+        \draw[->, blue!50!red, ultra thick] (\fmix, 2.3) -- (mixer.north);
+
         % Percorso Verde (LO)
-        \draw[->, ForestGreen, ultra thick] (\flo, 2.8) -- (\flo, 1.2) -- (mixer.east);
-        % Freccia uscita Mixer
-        \draw[->, blue!50!red, ultra thick] (mixer.south) -- (4.5, 0.5);
-        %
+        \draw[->, ForestGreen, ultra thick] (\flo, 2.8) -- (\flo, \ymix) -- (mixer.east);
+
+        % Uscita Mixer
+        \draw[->, blue!50!red, ultra thick] (mixer.south) -- (\fmix, 1.0);
+
+
         % ==========================================
-        % SPETTRO INFERIORE (SOVRAPPOSIZIONE)
+        % SPETTRO INFERIORE (USCITA CONVERTITA)
         % ==========================================
-        \def\fout{2.5} % Posizione x in uscita
-        % Disegno interleaving/sovrapposizione (Rosso e Blu sfalsati di 0.05 per renderli visibili)
-        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
-            \draw[red, line width=1.5pt] (\fout+\x+0.05, 0) -- (\fout+\x+0.05, \h);
-            \draw[blue, line width=1.5pt] (\fout+\x-0.05, 0) -- (\fout+\x-0.05, \h);
-        }
-        % Testi sotto l'uscita
-        \node[blue, right] at (\fout+0.5, 0.8) {$f_{OUT} = f_{LO} - f_{IN} = \qty{0.5}{\mega\hertz}$};
-        \node[black, right] at (\fout+1.0, 0.4) {ma anche...};
-        \node[red, right] at (\fout+0.5, 0.0) {$f_{OUT} = f_{IM} - f_{LO} = \qty{0.5}{\mega\hertz}$};
-        % Etichetta sovrapposizione
-        \node[black, align=center] (lbl_overlap) at (\fout-1.5, 1.3) {I segnali convertiti\\si sovrappongono!};
-        \draw[->, black, thick] (lbl_overlap.south east) -- (\fout-0.2, 0.8);
-        %
+        % Asse Inferiore
+        \draw[->, ultra thick] (0.5, 0) -- (11.5, 0) node[below=1pt] {$f$};
+
         % Tacche asse inferiore
-        \foreach \x in {1, 2.5, 6, 8} {
+        \foreach \x in {2.0, 4.0, 6.0, 8.0, 10.0} {
             \draw[thick] (\x, 0.1) -- (\x, -0.1);
         }
-        % Tacche asse superiore
-        \foreach \x in {1, 3.5, 6, 8.5} {
-            \draw[thick] (\x, 3.1) -- (\x, 2.9);
-        }
+
+        % Spettro sovrapposto a f_OUT = 0.5 MHz (x = 2.0)
+        \def\fout{2.0}
+        % Linee alternate blu e rosse affiancate per rappresentare la sovrapposizione
+        \draw[red, line width=1.5pt]  (\fout-0.40, 0) -- (\fout-0.40, 0.4);
+        \draw[blue, line width=1.5pt] (\fout-0.32, 0) -- (\fout-0.32, 0.5);
+        \draw[red, line width=1.5pt]  (\fout-0.24, 0) -- (\fout-0.24, 0.7);
+        \draw[blue, line width=1.5pt] (\fout-0.16, 0) -- (\fout-0.16, 0.8);
+        \draw[red, line width=1.5pt]  (\fout-0.08, 0) -- (\fout-0.08, 1.0);
+        \draw[blue, line width=1.5pt] (\fout, 0)      -- (\fout, 1.3);
+        \draw[red, line width=1.5pt]  (\fout+0.08, 0) -- (\fout+0.08, 1.0);
+        \draw[blue, line width=1.5pt] (\fout+0.16, 0) -- (\fout+0.16, 0.8);
+        \draw[red, line width=1.5pt]  (\fout+0.24, 0) -- (\fout+0.24, 0.7);
+        \draw[blue, line width=1.5pt] (\fout+0.32, 0) -- (\fout+0.32, 0.5);
+        \draw[red, line width=1.5pt]  (\fout+0.40, 0) -- (\fout+0.40, 0.4);
+
+        % Etichetta sovrapposizione
+        \node[black, align=center] (lbl_overlap) at (\fout-1.1, 1.5) {I segnali convertiti\\si sovrappongono!};
+        \draw[->, black, thick] (lbl_overlap.south east) -- (\fout-0.1, 1.0);
+
+        % Formule e testi a destra dell'uscita (Sotto il mixer)
+        \node[blue, font=\sffamily\bfseries\scriptsize] at (5.2, 0.7) {$f_{OUT} = f_{LO} - f_{IN} = 0,5\text{ MHz}$};
+        \node[black, font=\sffamily\scriptsize] at (5.2, 0.35) {ma anche...};
+        \node[red, font=\sffamily\bfseries\scriptsize] at (5.2, -0.35) {$f_{OUT} = f_{IM} - f_{LO} = 0,5\text{ MHz}$};
+
     \end{tikzpicture}%
     }
-    \caption*{Drammatica dimostrazione grafica del problema dell'immagine: sia il segnale a \qty{1.0}{\mega\hertz} che l'interferenza a \qty{2.0}{\mega\hertz}, se miscelati con un LO a \qty{1.5}{\mega\hertz}, generano una componente IF identica a \qty{0.5}{\mega\hertz}.}
+    \caption*{Dimostrazione grafica del problema dell'immagine: sia il segnale a $1,0\text{ MHz}$ che l'interferenza a $2,0\text{ MHz}$, se miscelati con un LO a $1,5\text{ MHz}$, generano una componente IF identica a $0,5\text{ MHz}$.}
 \end{figure}
+
 
 
 
