@@ -3767,6 +3767,222 @@ Di volta in volta occorre prestare attenzione a quale amplificazione ci stiamo r
 \end{nota}
 
 
+Prendiamo qui un esempio di amplificatore audio (casse, auricolari, \dots) in cui un segnale in input, rappresentato da un generatore con una resistenza $R_i$, viene amplificato da un amplificatore a resistenza $R_{in}$. Il segnale in output dall'amplificatore viene raccolto da un carico che si occupa di trattare il segnale (trasdurlo, leggerlo, \dots), e che è caratterizzato da una resistenza $R_L$.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
+        % --- Definizione stili ---
+        \tikzset{
+            box/.style={draw=black!70, fill=white, minimum width=2.5cm, minimum height=1.2cm, align=center},
+            term/.style={circle, draw=black, fill=white, inner sep=1pt, minimum size=4pt}
+        }
+
+        % --- Lato Ingresso (Sinistra) ---
+        \node[align=left] at (-1.5, 0.6) {Dunque,};
+        \node[align=left] at (-1.5, 0) {in ingresso};
+        \node[align=left] at (-1.5, -0.6) {in uscita};
+
+        % Testi generatore
+        \node[align=center, font=\scriptsize] at (1, 0.4) {\qty{1}{\milli\volt}\\$v_i = V_i \sin \omega_i t$};
+        \node[align=center, font=\scriptsize] at (1, -0.6) {\qty{40}{\volt}\\$v_o = V_o \sin (\omega_i t + \theta)$};
+        \node at (2.5, -0.1) {con};
+
+        % Filo d'ingresso
+        \draw (1.8, 0.1) -- (3.2, 0.1);
+        \draw (1.8, -0.3) -- (3.2, -0.3);
+        
+        \node[term, label=left:{$v_i$}] (vi_top) at (3.2, 0.1) {};
+        \node[term] (vi_bot) at (3.2, -0.3) {};
+        \node[font=\tiny] at (3.4, 0.1) {$+$};
+        \node[font=\tiny] at (3.4, -0.3) {$-$};
+
+        % --- Box Resistenze Input ---
+        \draw[fill=white, draw=black!70] (3.8, -0.5) rectangle (5.3, 0.6);
+        \draw (3.8, 0.4) -- (4.1, 0.4) -- (4.2, 0.5) -- (4.4, 0.3) -- (4.6, 0.5) -- (4.8, 0.3) -- (4.9, 0.4) -- (5.3, 0.4);
+        \node[font=\tiny] at (4.55, 0.65) {$R_i = \qty{5}{\kilo\ohm}$};
+        
+        \draw (3.8, -0.3) -- (4.1, -0.3) -- (4.2, -0.2) -- (4.4, -0.4) -- (4.6, -0.2) -- (4.8, -0.4) -- (4.9, -0.3) -- (5.3, -0.3);
+        \node[font=\tiny] at (4.55, -0.1) {$R_{in} = \qty{50}{\kilo\ohm}$};
+        \node[font=\tiny, text=PoliBlue] at (4.1, 0.75) {$i_i$};
+        \draw[->, PoliBlue] (3.8, 0.75) -- (4.0, 0.75);
+
+        % --- Box Amplificatore Centrale ---
+        \node[box] (amp) at (6.8, 0.05) {\scriptsize Amplificatore\\ \scriptsize audio};
+        \draw (5.3, 0.4) -- (amp.west |- 0, 0.4);
+        \draw (5.3, -0.3) -- (amp.west |- 0, -0.3);
+
+        % --- Lato Uscita (Destra) ---
+        \node[term, label=left:{$v_o$}] (vo_top) at (8.5, 0.4) {};
+        \node[term] (vo_bot) at (8.5, -0.3) {};
+        \draw (amp.east |- 0, 0.4) -- (vo_top);
+        \draw (amp.east |- 0, -0.3) -- (vo_bot);
+        \node[font=\tiny] at (8.7, 0.4) {$+$};
+        \node[font=\tiny] at (8.7, -0.3) {$-$};
+
+        % Cassa / Load
+        \draw[fill=white, draw=black!70, thick] (9.0, 0.4) -- (9.3, 0.4) -- (9.3, 0.7) -- (10.0, 0.9) -- (10.0, -0.8) -- (9.3, -0.6) -- (9.3, -0.3) -- (9.0, -0.3);
+        \draw[fill=white, draw=black!70, thick] (9.0, 0.4) rectangle (9.3, -0.3);
+        \draw (vo_top) -- (9.0, 0.4);
+        \draw (vo_bot) -- (9.0, -0.3);
+        \node[font=\tiny] at (9.6, 0.4) {$R_L$};
+        \node[font=\tiny] at (9.6, -0.3) {\qty{8}{\ohm}};
+
+        % Equazioni correnti affiancate
+        \node[align=left, font=\scriptsize] at (4.8, -1.2) {con \quad $i_i = I_i \sin \omega_i t$\\[1ex] \phantom{con} \quad $i_o = I_o \sin \omega_i t$};
+        
+        \node[align=left, font=\scriptsize] at (8.0, -2.2) {
+            $\displaystyle I_i = \frac{V_i}{R_i + R_{in}} = \frac{\qty{1}{\milli\volt}}{\qty{5}{\kilo\ohm} + \qty{50}{\kilo\ohm}} = \qty{18.2}{\nano\ampere}$\\[2ex]
+            $\displaystyle I_o = \frac{V_o}{R_L} = \frac{\qty{40}{\volt}}{\qty{8}{\ohm}} = \qty{5}{\ampere}$
+        };
+    \end{tikzpicture}
+\end{figure}
+
+Calcoliamo il guadagno:
+
+\vspace{0.3cm}
+\begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        |A_v| &= \frac{V_o}{V_i} = \frac{\qty{40}{\volt}}{\qty{1}{\milli\volt}} = 4 \times 10^4 \\[2ex]
+        |A_i| &= \frac{I_o}{I_i} = \frac{\qty{5}{\ampere}}{\qty{18.2}{\nano\ampere}} = 275 \times 10^6
+    \end{align*}
+\end{minipage}
+
+\begin{minipage}{0.45\textwidth}
+    \begin{equation*}
+        A_p = \frac{P_o}{P_i} = \frac{\displaystyle \frac{V_o}{\sqrt{2}} \frac{I_o}{\sqrt{2}}}{\displaystyle \frac{V_i}{\sqrt{2}} \frac{I_i}{\sqrt{2}}} = \frac{V_o}{V_i} \frac{I_o}{I_i} = |A_v||A_i| = 40 \times 10^3 \times 275 \times 10^6 = 11 \times 10^{12}
+    \end{equation*}
+\end{minipage}
+\vspace{0.5cm}
+
+Alternativamente, se $R_i$ è la resistenza fornita all'uscita dall'utilizzatore del segnale, l'amplificazione di potenza è data da:
+\begin{equation*}
+    A_p = \frac{P_L}{P_i} = \frac{|V_o|^2 / R_L}{|V_i|^2 / R_i} = |A_v|^2 \cdot \frac{R_i}{R_L}
+\end{equation*}
+
+
+% ==================================================
+% NUOVA SEZIONE: I DECIBEL
+% ==================================================
+\subsection{I Decibel}
+
+Il valore del guadagno di potenza, tensione e corrente è talvolta espresso in decibel, o dB (un decimo di bel):
+\begin{align}
+    A_{p\text{dB}} &= 10 \log A_p \\
+    A_{v\text{dB}} &= 20 \log |A_v| \\
+    A_{i\text{dB}} &= 20 \log |A_i|
+\end{align}
+
+Proprio perché espressi in quantità logaritmiche, i decibel sono comodi perché riducono numeri molto grandi (pensiamo al valore del guadagno di potenza dell'esempio precedente) in numeri molto più piccoli da trattare. Inoltre permettono di calcolare moltiplicazioni tra diversi termini di guadagno come addizioni.
+
+È bene ricordare che i decibel \textbf{non sono una unità di misura, bensì esprimono un guadagno, cioè un rapporto tra quantità o grandezze} $G$. Pertanto, sono ciò che si intende come ``numero puro'', senza unità di misura. Se $G_i$ è la grandezza in input o iniziale, e $G_o$ è la grandezza in output o finale, allora:
+\begin{equation}
+    \text{dB} = 10 \log \left(\frac{G_o}{G_i}\right)
+\end{equation}
+
+Nel caso specifico dell'amplificazione di potenza, i dB esprimono un rapporto tra potenze $P$:
+\begin{equation}
+    \textcolor{OpticRed}{\text{dB} = 10 \log \left(\frac{P_o}{P_i}\right)}
+\end{equation}
+Quindi, quando si tratta di livelli di potenza, \textbf{i dB non rappresentano un valore assoluto di potenza, bensì un aumento (o riduzione) di potenza tra due livelli}.
+
+\subsection*{Esprimere un Valore Assoluto: dBm e dBW}
+
+Invece, per esprimere \textbf{un valore assoluto in decibel}, e quindi per esprimere una grandezza, occorre porre una unità di misura di riferimento al posto della grandezza in input. Per esempio, se prendiamo come unità di riferimento \qty{1}{\milli\watt} o \qty{1}{\watt}, allora abbiamo rispettivamente:
+\begin{align}
+    \textcolor{OpticRed}{\text{dBm}} &\textcolor{OpticRed}{= 10 \log \left(\frac{P_o}{\qty{1}{\milli\watt}}\right)} \\
+    \textcolor{OpticRed}{\text{dBW}} &\textcolor{OpticRed}{= 10 \log \left(\frac{P_o}{\qty{1}{\watt}}\right)}
+\end{align}
+
+Con i dBm o i dBW indichiamo una grandezza di potenza; mentre con i dB un rapporto tra grandezze di potenza, un numero puro. In altre parole, i dBm e i dBW ci indicano il livello di potenza del segnale in un certo punto; mentre i dB ci indicano la differenza di potenza del segnale tra due punti.
+
+\subsection*{Calcoli Pratici nelle Radio}
+
+Per esempio, in un sistema come una radio, possiamo dover considerare elementi che aumentano o diminuiscono la potenza di un segnale (una antenna, un amplificatore, un attenuatore, \dots). 
+Quando introduciamo un elemento che aumenta la potenza del segnale, aggiungiamo un guadagno (positivo); quando introduciamo un elemento che riduce la potenza del segnale, aggiungiamo una attenuazione o perdita (negativo). 
+Allora, in questi casi dobbiamo rispettivamente \textbf{sommare e sottrarre dB; e non sommare e sottrarre dBm e dBW}.
+
+\vspace{0.5cm}
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small]
+
+        % Macro per disegnare blocchi e amplificatori
+        \newcommand{\drawblock}[3]{ % x, y, etichetta top
+            \draw[fill=PoliBlue!30, draw=PoliBlue, thick] (#1, #2) rectangle (#1+1.2, #2+1.2);
+            \node[above, font=\scriptsize] at (#1+0.6, #2+1.3) {#3};
+        }
+        \newcommand{\drawamp}[2]{ % x, y
+            \draw[fill=PoliBlue!30, draw=PoliBlue, thick] (#1, #2) -- (#1+1.2, #2+0.6) -- (#1, #2+1.2) -- cycle;
+        }
+
+        % --- ESEMPIO 1 (Sinistra) ---
+        \node[left, font=\scriptsize] at (-0.2, 0.6) {esempio 1:};
+        
+        \drawblock{0}{0}{sorgente}
+        \draw[->, thick] (1.2, 0.6) -- (1.5, 0.6);
+        \drawamp{1.5}{0}
+        \draw[->, thick] (2.7, 0.6) -- (3.0, 0.6);
+        \drawamp{3.0}{0}
+        \node[above, font=\scriptsize] at (3.0, 1.3) {serie amplificatori}; % Etichetta centrata tra i due amp
+        \draw[->, thick] (4.2, 0.6) -- (4.5, 0.6);
+        \drawblock{4.5}{0}{terminale}
+
+        % Valori Esempio 1
+        \node[below, align=center] at (0.6, -0.2) {8.5\\[1ex] dBm};
+        \node[below, align=center] at (2.1, -0.2) {+5\\[1ex] dB};
+        \node[below, align=center] at (3.6, -0.2) {+10\\[1ex] dB};
+        \node[below, align=center] at (5.1, -0.2) {23.5\\[1ex] dBm};
+
+        % --- ESEMPIO 2 (Destra) ---
+        \begin{scope}[shift={(10,0)}]
+            \node[left, font=\scriptsize] at (-0.2, 0.6) {esempio 2:};
+            
+            \drawblock{0}{0}{sorgente}
+            \draw[->, thick] (1.2, 0.6) -- (1.5, 0.6);
+            \drawamp{1.5}{0}
+            \draw[->, thick] (2.7, 0.6) -- (3.0, 0.6);
+            \drawamp{3.0}{0}
+            \node[above, font=\scriptsize] at (3.0, 1.3) {serie amplificatori};
+            \draw[->, thick] (4.2, 0.6) -- (4.5, 0.6);
+            \drawblock{4.5}{0}{terminale}
+
+            % Valori Esempio 2
+            \node[below, align=center] at (0.6, -0.2) {-55\\[1ex] dBm};
+            \node[below, align=center] at (2.1, -0.2) {+15\\[1ex] dB};
+            \node[below, align=center] at (3.6, -0.2) {+5\\[1ex] dB};
+            \node[below, align=center] at (5.1, -0.2) {-35\\[1ex] dBm};
+        \end{scope}
+
+    \end{tikzpicture}%
+    }
+\end{figure}
+\vspace{0.5cm}
+
+Da un punto di vista matematico, possiamo avere un certo valore di potenza espresso in mW o W (unità di misura lineari) o tramite dBm e dBW (unità di misura logaritmiche). Le operazioni che possiamo condurre su un certo valore iniziale $X_i$ di potenza consistono nell'aumentare o diminuire il livello di potenza. 
+
+In termini logaritmici, questo incremento o riduzione si compie tramite addizioni o sottrazioni di dB (e non di dBm o dBW). Se partiamo da un valore di potenza iniziale $X_i$ in dBm, tutto ciò che introduciamo per modificare tale livello di potenza sarà $y_1, y_2, \dots$ in dB, ovvero:
+\begin{equation}
+    X_i [\text{dBm}] \pm y_1 [\text{dB}] \pm y_2 [\text{dB}] \dots = X_{\text{finale}} [\text{dBm}]
+\end{equation}
+
+e \textbf{NON avremo mai}:
+\begin{equation}
+    X_i [\text{dBm}] \pm y_1 [\text{dBm}] \pm y_2 [\text{dBm}] \dots = X_{\text{finale}} [\text{dBm}]
+\end{equation}
+
+Proprio perché i dB indicano un \textbf{rapporto di incremento relativo tra grandezze e non un valore assoluto in sé}. Se anziché in termini di dB, affrontiamo questi passaggi in \textbf{termini lineari}, allora notiamo che queste \textbf{addizioni/sottrazioni divengono moltiplicazioni/divisioni}. 
+
+Ovvero, in forma lineare, a partire da un valore iniziale di potenza espresso in mW o W, ogni elemento introdotto nella catena per modificare il livello di potenza si esprime in termini moltiplicativi (o di divisione): questi termini moltiplicativi, che sono adimensionali, corrispondono alle somme espressi in dB nella (5). 
+
+Se adottassimo l'equazione (6) come vera, allora, trasformandola in termini lineari, avremmo che gli $y_1, y_2, \dots$ verrebbero moltiplicati tra loro come unità assolute:
+\begin{equation*}
+    X_i [\text{W}] \cdot y_1 [\text{W}] \cdot y_2 [\text{W}] \dots y_n [\text{W}] = X_{\text{finale}} [\text{W}^n]
+\end{equation*}
+il che non è vero, perché trattiamo sempre livelli di potenza in [W] e non in [W$^n$].
+
+
 
 
 \end{document}
