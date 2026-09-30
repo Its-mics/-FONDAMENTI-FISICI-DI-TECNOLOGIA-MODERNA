@@ -39,6 +39,10 @@
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{0.75em}
 \usepackage{placeins}
+% Definizione dei colori personalizzati
+\definecolor{myyellow}{RGB}{255, 223, 93}   % Personalizza i valori RGB come preferisci
+\definecolor{myred}{RGB}{211, 47, 47}
+\colorlet{myorange}{orange!90!black}
 
 % --- Titoli di Sezione (Stile Libro Universitario Moderno) ---
 \usepackage{titlesec}
@@ -60,7 +64,7 @@
 \usepackage{subcaption} 
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
-\usetikzlibrary{positioning, arrows.meta, angles, quotes, trees, patterns, calc, matrix, positioning, shapes.geometric, arrows.meta, fit, backgrounds, calc, arrows.meta, angles, quotes, trees, patterns, calc, matrix, shadows, fit, shapes.geometric, decorations.pathmorphing, patterns, shapes.arrows}
+\usetikzlibrary{positioning, decorations.pathmorphing, arrows.meta, angles, quotes, trees, patterns, calc, matrix, positioning, shapes.geometric, arrows.meta, fit, backgrounds, calc, arrows.meta, angles, quotes, trees, patterns, calc, matrix, shadows, fit, shapes.geometric, decorations.pathmorphing, patterns, shapes.arrows}
 
 \pgfplotsset{
     standard/.style={
@@ -4758,6 +4762,7 @@ Siccome non è pratico calcolare tempi sufficientemente lunghi ($T \to \infty$),
     \item Perciò possiamo considerare che la \textit{root mean square} (radice della media dei quadrati) calcolata come $\frac{1}{T}\int_0^T n^2(t) dt \equiv \sigma_n^2$ nel dominio del tempo, \textbf{non è altro che l'area sottesa dal rumore nel dominio delle frequenze} (vale lo stesso discorso per i filtri passabanda).
 \end{enumerate}
 
+
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}[
@@ -4838,7 +4843,8 @@ Siccome non è pratico calcolare tempi sufficientemente lunghi ($T \to \infty$),
 \end{figure}
 
 
-\subsection{Rumore Bianco e Modello del Resistore}
+
+\subsection*{Rumore Bianco e Modello del Resistore}
 
 Gli \textbf{effetti del rumore} si caratterizzano in termini di \textbf{temperatura di rumore} e \textbf{figura di rumore}. Queste caratteristiche si applicano a tutti i sistemi, indipendentemente dalla sorgente, purché lo spettro del rumore sia relativamente piatto sulla larghezza di banda del sistema. 
 Il rumore con uno spettro di frequenza piatto è chiamato \textbf{rumore bianco (white noise)}. Solitamente, nei sistemi a radiofrequenza e microonde, ci si trova sempre in queste condizioni.
@@ -4846,48 +4852,48 @@ Il rumore con uno spettro di frequenza piatto è chiamato \textbf{rumore bianco 
 Per stabilire la potenza del rumore di un dispositivo, si può prendere in considerazione un modello fisico molto semplice: una \textbf{resistenza alla temperatura T (Kelvin)}. Gli elettroni nella resistenza sono in moto casuale; questi movimenti producono piccole fluttuazioni casuali di tensione ai terminali del resistore.
 
 \begin{figure}[H]
-    \centering
-    \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
-        \pgfmathsetseed{88}
-        % --- GRAFICO PSD RUMORE BIANCO ---
-        \begin{scope}[shift={(0,0)}]
-            \fill[gray!20] (0,0) rectangle (4, 3);
-            \draw[->] (0,0) -- (4.2, 0) node[below] {$f$};
-            \draw[->] (0,0) -- (0, 3.2) node[above] {$\overline{v_n^2}$ (log scale)};
-            % Curva 1/f e parte piatta
-            \draw[ultra thick, black] (0.2, 3) .. controls (0.5, 0.8) and (0.8, 0.6) .. (1.2, 0.6) -- (4, 0.6);
-            \draw[dashed] (1.2, 0) -- (1.2, 0.6);
-            \node[below] at (1.2, 0) {$f_c$};
-            \node[above right] at (1.2, 0.6) {Corner};
-            % Annotazioni
-            \node[align=left, font=\scriptsize] at (1.5, 2.5) {Note that this is the noise "Power Spectral\\Density" (PSD), unit [W/Hz] or [$V^2$/Hz]};
-            \draw[->, blue] (1.5, 2.2) -- (0.2, 1.8);
-            % Cerchio sul rumore bianco
-            \draw[blue, thick] (2.8, 0.6) ellipse (1cm and 0.4cm);
-            \node[align=left, font=\scriptsize] at (4.5, 1.5) {At radio frequencies,\\noise power density\\is independent of\\frequency and is\\"white" (it contains\\all frequencies)};
-            \node[draw, single arrow, fill=gray!30] at (-1.5, 1) {\scriptsize Frequency Domain};
-        \end{scope}
-        % --- MODELLO CIRCUITALE RESISTENZA ---
-        \begin{scope}[shift={(2,-3.5)}]
-            % Circuito Resistenza
-            \draw (0, 1.5) circle (1.5pt) node[above] {$T^\circ K$};
-            \draw (0, 1.5) -- (0, 1.0);
-            \draw (0, 1.0) -- (-0.2, 0.8) -- (0.2, 0.5) -- (-0.2, 0.2) -- (0, 0); % Zigzag R
-            \draw (0, 0) -- (0, -0.5) circle (1.5pt);
-            \node[left] at (-0.2, 0.5) {$R$};
-            \draw[->] (0.3, 1.2) -- (0.3, -0.2) node[midway, right] {$v(t)$};
-            % Grafico segnale
-            \draw[->] (1, 0.5) -- (9, 0.5) node[right] {$t$};
-            \draw[->] (1.2, -1) -- (1.2, 2.5) node[left] {$v(t)$};
-            \draw[black, samples=200, domain=1.2:8.8] plot (\x, {0.5 + 0.8*sin(\x*200) + 0.4*rand + 0.3*cos(\x*150)});
-        \end{scope}
-    \end{tikzpicture}%
-    }
+    \includegraphics[width=0.45\textwidth]{Immagini/white nouse.png}
+    \begin{tikzpicture}
+    \begin{scope}[shift={(2,-3.5)}]
+    % ================= CIRCUITO RESISTENZA =================
+        % Terminale superiore con nodo aperto e temperatura
+        \draw (-4.5, 1.3) -- (-4.5, 0.6);
+        \filldraw[fill=white] (-4.5, 1.3) circle (2pt) node[above left=-2pt] {$T^\circ K$};
+        
+        % Disegno della resistenza (Zigzag)
+        \draw (-4.5, 0.6) 
+        -- (-4.65, 0.45) 
+        -- (-4.35, 0.30) 
+        -- (-4.65, 0.15) 
+        -- (-4.35, 0.00) 
+        -- (-4.65, -0.15) 
+        -- (-4.35, -0.30) 
+        -- (-4.5, -0.45);
+            
+        % Terminale inferiore con nodo aperto
+        \draw (-4.5, -0.45) -- (-4.5, -1.3);
+        \filldraw[fill=white] (-4.5, -1.3) circle (2pt);
+        
+        % Etichette circuito
+        \node[left=3pt] at (-4.65, 0) {$R$};
+        \node[right=4pt] at (-4.35, 0) {$v(t)$};
+
+        % ================= GRAFICO SEGNALE v(t) =================
+        % Asse del tempo (t) - Orizzontale
+        \draw[->] (-3.0, 0) -- (4.0, 0) node[below] {$t$};
+        
+        % Asse della tensione v(t) - Verticale al centro
+        \draw[->] (0, -1.4) -- (0, 1.4) node[above] {$v(t)$};
+        
+        % Segnale di rumore termico centrato sull'asse t
+        \draw[thick, samples=350, domain=-2.7:3.7] 
+            plot (\x, {0.35*sin(\x*160) + 0.3*sin(\x*390) + 0.2*sin(\x*800) + 0.18*rand});
+    \end{scope}
+    \end{tikzpicture}
 \end{figure}
 
 
-\subsection{La Legge di Planck e l'Approssimazione di Rayleigh-Jeans}
+\subsection*{La Legge di Planck e l'Approssimazione di Rayleigh-Jeans}
 
 A margine della classica trattazione di Johnson-Nyquist, consideriamo che questa tensione casuale generata dal resistore ha un valore medio nullo, ma una \textit{root mean square} (valore efficace) $V_n \equiv \sigma_n$ non nullo. 
 Fisicamente, l'espressione esatta di questo valore deriva dalla \textbf{legge di Planck} sulla radiazione di corpo nero:
@@ -4914,9 +4920,9 @@ Sostituendo questo denominatore semplificato nella radice, i termini $hf$ si eli
     V_n = \sqrt{4kTBR}
 \end{equation}
 
-\subsection{Teorema del Massimo Trasferimento di Potenza}
+\subsection*{Teorema del Massimo Trasferimento di Potenza}
 
-Se connettiamo questo "dispositivo-resistore rumoroso" (rappresentabile con l'equivalente di Thévenin: un generatore di tensione $V_n$ in serie a una resistenza $R$) a un carico resistivo esterno, ci chiediamo quanta potenza di rumore venga trasferita.
+Se connettiamo questo "dispositivo-resistore rumoroso" (a sinistra, un generatore di tensione $V_n$ in serie a una resistenza $R$) a un carico resistivo esterno (a destra), ci chiediamo quanta potenza di rumore venga trasferita.
 
 Per il \textbf{teorema del massimo trasferimento di potenza} (o legge di Jacobi), la massima potenza trasferita si ha nelle condizioni di adattamento di impedenza, ovvero quando il carico ha \textbf{proprio la stessa resistenza R}.
 Cosicché la potenza di rumore $N$ trasferita dal dispositivo alla temperatura $T$ al carico è data, attraverso le leggi di Ohm e della potenza ($P = V_{carico}^2 / R$), da:
@@ -4930,72 +4936,127 @@ Le seguenti immagini rappresentano in forma circuitale e spettrale la situazione
     \item la \textbf{densità spettrale di rumore} $N_0 = N / B = kT$, misurata per esempio in \textbf{W/Hz} o \textbf{dBm/Hz}. Indica il livello di rumore puntuale in un banda infinitesima di frequenza $dHz$.
 \end{itemize}
 
+
 \begin{figure}[H]
     \centering
     \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+    \begin{tikzpicture}[
+        >=Stealth, 
+        font=\sffamily\scriptsize, 
+        thick,
+        resistor/.style={
+            decoration={zigzag, segment length=4pt, amplitude=3pt, post length=3pt, pre length=3pt},
+            decorate
+        }
+    ]
         % --- CIRCUITO 1: THEVENIN ED EQUIVALENTE ---
         \begin{scope}[shift={(0,0)}]
-            % Generatore Rumore
-            \draw (0,0) circle (0.4cm);
-            \draw (-0.2,0) sin (-0.1,0.1) cos (0,0) sin (0.1,-0.1) cos (0.2,0);
-            \node[below] at (0,-0.4) {$V_n$};
-            % Resistenza Interna
-            \draw (0,0.4) -- (0,1) -- (0.2, 1.1) -- (-0.2, 1.3) -- (0.2, 1.5) -- (-0.2, 1.7) -- (0, 1.8) -- (0, 2) -- (1, 2);
-            \node[left] at (-0.2, 1.4) {$R$};
+            % Generatore AC Vn
+            \draw (0, 0.5) circle (0.3cm);
+            \draw (-0.15, 0.5) sin (-0.075, 0.58) cos (0, 0.5) sin (0.075, 0.42) cos (0.15, 0.5);
+            \node[left] at (-0.3, 0.5) {$V_n$};
+            
+            % Resistenza interna R
+            \draw[resistor] (0, 1.2) -- (0, 2.2);
+            \node[left] at (-0.1, 1.7) {$R$};
+            
+            % Collegamenti di sinistra
+            \draw (0, 0.8) -- (0, 1.2);
+            \draw (0, 2.2) -- (1.2, 2.2);
+            \draw (0, 0.2) -- (0, 0.0) -- (1.2, 0.0) -- (1.2, 0.5);
+            
             % Filtro Ideale Passabanda
-            \draw (1, 0.5) rectangle (3, 2.5);
-            \node[align=center] at (2, 2.0) {Ideal\\bandpass\\filter};
-            \draw[->] (1.3, 0.8) -- (2.7, 0.8) node[right] {$f$};
-            \fill[gray!50] (1.8, 0.8) rectangle (2.2, 1.3);
-            \draw[<->] (1.8, 0.6) -- (2.2, 0.6) node[midway, below] {$B$};
-            % Carico Adattato
-            \draw (3, 2) -- (4, 2) -- (4, 1.8) -- (3.8, 1.6) -- (4.2, 1.4) -- (3.8, 1.2) -- (4.2, 1.0) -- (4, 0.8) -- (4, 0);
-            \node[right] at (4.2, 1.4) {$R$};
-            % Collegamenti di ritorno
-            \draw (0,-0.4) -- (0,-1) -- (4,-1) -- (4,0);
-            \draw (1,-1) -- (1,0.5);
-            \draw (3,-1) -- (3,0.5);
+            \draw (1.2, 0.3) rectangle (3.2, 2.4);
+            \node[align=center, font=\sffamily\tiny] at (2.2, 1.85) {Ideal\\bandpass\\filter};
+            
+            % Picco/Grafico interno al filtro
+            \draw[->, thin] (1.5, 0.7) -- (2.9, 0.7) node[right, font=\tiny] {$f$};
+            \draw[thick] (1.6, 0.7) -- (1.9, 0.7) -- (1.9, 1.1) -- (2.4, 1.1) -- (2.4, 0.7) -- (2.8, 0.7);
+            \draw[<->, thin] (1.9, 0.55) -- (2.4, 0.55) node[midway, fill=white, inner sep=0.2pt, font=\tiny] {$B$};
+            
+            % Terminali/Nodi del filtro
+            \filldraw[fill=white] (1.2, 2.2) circle (1.5pt);
+            \filldraw[fill=white] (1.2, 0.5) circle (1.5pt);
+            \filldraw[fill=white] (3.2, 2.2) circle (1.5pt);
+            \filldraw[fill=white] (3.2, 0.5) circle (1.5pt);
+            
+            % Carico Adattato R
+            \draw (3.2, 2.2) -- (4.2, 2.2);
+            \draw (3.2, 0.5) -- (4.2, 0.5);
+            \draw[resistor] (4.2, 2.2) -- (4.2, 0.5);
+            \node[right] at (4.3, 1.35) {$R$};
         \end{scope}
+
         % --- CIRCUITO 2: BLOCCO RUMORE ARBITRARIO ---
-        \begin{scope}[shift={(5.5,0)}]
-            \draw (0, 0.5) rectangle (2, 2.5);
-            \node[align=center] at (1, 1.5) {Arbitrary\\white\\noise\\source};
-            \draw (2, 2) -- (3, 2) -- (3, 1.8) -- (2.8, 1.6) -- (3.2, 1.4) -- (2.8, 1.2) -- (3.2, 1.0) -- (3, 0.8) -- (3, -1) -- (2, -1);
-            \node[right] at (3.2, 1.4) {$R$};
-            % Freccia Potenza
-            \draw[->, ultra thick] (2.2, 2.3) -- (2.8, 2.3) node[above] {$N_o$};
-            \draw[<-, thick] (2.2, 1.4) -- (2.6, 1.4) node[right] {$R$};
+        \begin{scope}[shift={(5.2,0)}]
+            \draw (0, 0.3) rectangle (1.8, 2.4);
+            \node[align=center, font=\sffamily\tiny] at (0.9, 1.35) {Arbitrary\\white\\noise\\source};
+            
+            \draw (1.8, 2.2) -- (3.0, 2.2);
+            \draw (1.8, 0.5) -- (3.0, 0.5);
+            \draw[resistor] (3.0, 2.2) -- (3.0, 0.5);
+            \node[right] at (3.1, 1.35) {$R$};
+            
+            % Freccia Potenza No
+            \draw[->] (2.0, 2.4) -- (2.7, 2.4) node[midway, above, font=\scriptsize] {$N_o$};
+            % Impedenza d'uscita R
+            \draw[<-, thick] (1.9, 1.35) -- (2.3, 1.35) node[right, font=\scriptsize] {$R$};
+            
+            % Terminali
+            \filldraw[fill=white] (1.8, 2.2) circle (1.5pt);
+            \filldraw[fill=white] (1.8, 0.5) circle (1.5pt);
         \end{scope}
-        % --- CIRCUITO 3: EQUIVALENTE TEMPERATURA EQUIVALENTE ---
-        \begin{scope}[shift={(9.5,0)}]
-            \draw[dashed] (1, 1.4) circle (1.2cm);
-            \node[above left] at (0, 2.3) {$T_e$};
-            \draw (1, 2) -- (1, 1.8) -- (0.8, 1.6) -- (1.2, 1.4) -- (0.8, 1.2) -- (1.2, 1.0) -- (1, 0.8) -- (1, -1);
-            \node[left] at (0.8, 1.4) {$R$};
-            \draw (1,2) -- (3, 2) -- (3, 1.8) -- (2.8, 1.6) -- (3.2, 1.4) -- (2.8, 1.2) -- (3.2, 1.0) -- (3, 0.8) -- (3, -1) -- (1, -1);
-            \node[right] at (3.2, 1.4) {$R$};
-            \draw[->, ultra thick] (2.2, 2.3) -- (2.8, 2.3) node[above] {$N_o$};
-            \node at (4.5, 1.4) {$T_e = \dfrac{N_o}{kB}$};
+
+        % --- CIRCUITO 3: TEMPERATURA EQUIVALENTE ---
+        \begin{scope}[shift={(9.2,0)}]
+            \draw[dashed] (0.8, 1.35) circle (0.85cm);
+            \node[above left, font=\scriptsize] at (0.3, 1.9) {$T_e$};
+            
+            \draw[resistor] (0.8, 2.2) -- (0.8, 0.5);
+            \node[right] at (0.8, 1.35) {$R$};
+            
+            \draw (0.8, 2.2) -- (2.2, 2.2);
+            \draw (0.8, 0.5) -- (2.2, 0.5);
+            \draw[resistor] (2.2, 2.2) -- (2.2, 0.5);
+            \node[right] at (2.3, 1.35) {$R$};
+            
+            % Freccia Potenza No
+            \draw[->] (1.2, 2.4) -- (1.9, 2.4) node[midway, above, font=\scriptsize] {$N_o$};
+            
+            % Equazione Te
+            \node[right, font=\small] at (2.7, 1.35) {$T_e = \dfrac{N_o}{kB}$};
+            
+            % Terminali
+            \filldraw[fill=white] (1.65, 2.2) circle (1.5pt);
+            \filldraw[fill=white] (1.65, 0.5) circle (1.5pt);
         \end{scope}
+
         % --- GRAFICO DENSITÀ SPETTRALE (In basso a destra) ---
-        \begin{scope}[shift={(8,-4)}]
-            \draw[->, thick] (0,0) -- (6,0) node[below] {frequency (Hz)};
-            \draw[->, thick] (0,0) -- (0,2.5) node[above] {$N_0(f)$};
-            \node[right] at (0, 2.5) {(W/Hz)};
-            \node[left] at (0, 1.5) {$N_0$};
-            % Tratteggio banda generica
-            \draw[pattern=north east lines, pattern color=gray] (0,0) rectangle (5.5, 1.5);
-            \draw[thick] (0, 1.5) -- (5.5, 1.5);
-            % Banda evidenziata B
-            \draw[pattern=crosshatch, pattern color=black] (1.5,0) rectangle (2.5, 1.5);
-            \draw[thick, dashed] (1.5, 0) -- (1.5, 1.7);
-            \draw[thick, dashed] (2.5, 0) -- (2.5, 1.7);
-            \draw[<->, thick] (1.5, -0.4) -- (2.5, -0.4) node[midway, below] {$B$};
+        \begin{scope}[shift={(8.2,-3.8)}]
+            \draw[->] (0,0) -- (5.2, 0) node[below, font=\scriptsize] {frequency (Hz)};
+            \draw[->] (0,0) -- (0, 2.3) node[above, font=\scriptsize] {$N_0(f)$};
+            \node[right, font=\scriptsize] at (0.1, 2.0) {(W/Hz)};
+            \node[left, font=\scriptsize] at (0, 1.5) {$N_0$};
+            
+            % Tratteggio rumore di fondo
+            \fill[pattern=north east lines, pattern color=black!80] (0,0) rectangle (4.5, 1.5);
+            \draw (0, 1.5) -- (4.5, 1.5);
+            
+            % Banda evidenziata B con incrocio (crosshatch)
+            \fill[pattern=crosshatch, pattern color=black] (1.4,0) rectangle (2.4, 1.5);
+            
+            % Linee tratteggiate verticali
+            \draw[dashed] (1.4, 0) -- (1.4, 1.7);
+            \draw[dashed] (2.4, 0) -- (2.4, 1.7);
+            
+            % Freccia B in basso
+            \draw[<->] (1.4, -0.4) -- (2.4, -0.4) node[midway, below, font=\scriptsize] {$B$};
         \end{scope}
     \end{tikzpicture}%
     }
 \end{figure}
+
+
 
 
 
