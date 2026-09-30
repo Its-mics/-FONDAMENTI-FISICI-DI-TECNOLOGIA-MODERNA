@@ -60,7 +60,7 @@
 \usepackage{subcaption} 
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
-\usetikzlibrary{positioning, arrows.meta, angles, quotes, trees, patterns, calc, matrix, positioning, shapes.geometric, arrows.meta, fit, backgrounds, calc, arrows.meta, angles, quotes, trees, patterns, calc, matrix, shadows, fit, shapes.geometric}
+\usetikzlibrary{positioning, arrows.meta, angles, quotes, trees, patterns, calc, matrix, positioning, shapes.geometric, arrows.meta, fit, backgrounds, calc, arrows.meta, angles, quotes, trees, patterns, calc, matrix, shadows, fit, shapes.geometric, decorations.pathmorphing, patterns, shapes.arrows}
 
 \pgfplotsset{
     standard/.style={
@@ -4002,7 +4002,1000 @@ Se adottassimo l'equazione (6) come vera, allora, trasformandola in termini line
 \end{equation*}
 il che non è vero, perché trattiamo sempre livelli di potenza in [W] e non in [W$^n$].
 
+% ==================================================
+% CONTINUAZIONE: IL LINK BUDGET SATELLITARE
+% ==================================================
+Guardando da un punto di vista pratico, possiamo pensare ai \textbf{dBm} o \textbf{dBW come unità di misura assoluta di potenza puntuale} all'interno di una serie di passaggi; invece \textbf{il transito} da uno step al successivo si esprime con i \textbf{dB}. 
 
+La figura rappresenta un tipico \textit{link budget} nelle telecomunicazioni (in questo caso tra un satellite e una stazione di terra). 
+Si legge da sinistra verso destra: in alto sono riportati i vari elementi fisici della catena di telecomunicazioni; nel resto della figura i diversi livelli di potenza e di guadagno che incontriamo passando da elemento a elemento. Le frecce (qui in rosso/arancio) esprimono guadagni o perdite di potenza espresse in dB tra due step successivi della catena. 
+Se vogliamo sapere l'effettiva potenza in un determinato punto della catena dobbiamo far riferimento ai dBm o dBW.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        
+        % =========================================================
+        % SCHEMATIZZAZIONE BLOCCHI IN ALTO
+        % =========================================================
+        
+        % --- SATELLITE ---
+        \draw[thick] (-0.2, 8.2) rectangle (3.1, 10.3);
+        \node[font=\sffamily\small, anchor=north] at (1.45, 10.2) {SATELLITE};
+        
+        % Tx (Triangolo)
+        \draw[thick] (0.0, 8.5) -- (0.0, 9.7) -- (0.9, 9.1) -- cycle;
+        \node at (0.3, 9.1) {Tx};
+        
+        % Connessioni e Box L_FTX
+        \draw[->] (0.9, 9.1) -- (1.5, 9.1) node[midway, below=2pt] {$P_{\text{Tx}}$};
+        \draw[thick, fill=white] (1.5, 8.6) rectangle (2.3, 9.6);
+        \node at (1.9, 9.1) {$L_{\text{FTX}}$};
+        \draw[->] (2.3, 9.1) -- (3.3, 9.1) node[midway, below=2pt] {$P_{\text{T}}$};
+
+        % Antenna Satellite
+        \draw[fill=gray!40, thick] (3.4, 8.4) arc (-90:90:0.18 and 0.7) arc (90:270:0.18 and 0.7);
+        \node[above, align=center] at (3.4, 10.3) {$G_{\text{Tmax}} / L_{\text{T}}$};
+
+        % Spazio Libero (Free Space Link)
+        \draw[->] (3.6, 9.1) -- (6.3, 9.1) node[midway, above] {$L = L_{\text{FS}} L_{\text{A}}$};
+
+        % --- EARTH STATION ---
+        % Antenna Earth Station
+        \draw[fill=gray!40, thick] (6.5, 8.4) arc (-90:90:0.18 and 0.7) arc (90:270:0.18 and 0.7);
+        \node[above, align=center] at (6.5, 10.3) {$G_{\text{Rmax}} / L_{\text{R}}$};
+
+        \draw[thick] (6.8, 8.2) rectangle (10.1, 10.3);
+        \node[font=\sffamily\small, anchor=north] at (8.45, 10.2) {EARTH STATION};
+
+        \draw[->] (6.6, 9.1) -- (7.3, 9.1) node[midway, below=2pt] {$P_{\text{R}}$};
+        \draw[thick, fill=white] (7.3, 8.6) rectangle (8.1, 9.6);
+        \node at (7.7, 9.1) {$L_{\text{FRX}}$};
+        \draw[->] (8.1, 9.1) -- (8.9, 9.1) node[midway, below=2pt] {$P_{\text{RxL}}$};
+        \draw[thick, fill=white] (8.9, 8.6) rectangle (9.8, 9.6);
+        \node at (9.35, 9.1) {Rx};
+
+
+        % =========================================================
+        % LINEE VERTICALI DI RIFERIMENTO E RETINI (HATCHING)
+        % =========================================================
+        
+        % Coordinata X delle 4 linee principali
+        % Linea 1: x = 0.9 (da Tx)
+        % Linea 2: x = 3.4 (da Antenna Sat)
+        % Linea 3: x = 6.5 (da Antenna Earth)
+        % Linea 4: x = 8.6 (da P_RxL)
+
+        % Discesa linee guida dall'alto
+        \draw[thin] (0.9, 8.5) -- (0.9, 0.8);
+        \draw[thin] (3.4, 8.4) -- (3.4, 0.8);
+        \draw[thin] (6.5, 8.4) -- (6.5, 0.8);
+        \draw[thin] (8.6, 8.6) -- (8.6, 0.8);
+
+        % Retinato a sinistra di Linea 1
+        \fill[pattern=north west lines, pattern color=black!60] (0.6, 1.2) rectangle (0.9, 7.8);
+        \draw[thick] (0.9, 1.2) -- (0.9, 7.8);
+
+        % Retinato a destra di Linea 4
+        \fill[pattern=north west lines, pattern color=black!60] (8.6, 1.2) rectangle (8.9, 7.8);
+        \draw[thick] (8.6, 1.2) -- (8.6, 7.8);
+
+
+        % =========================================================
+        % GRAFICO LINK BUDGET (VETTORI ARANCIONI)
+        % =========================================================
+
+        % 1) Punto di partenza: 10 dBW su Linea 1
+        \node[left, align=center] at (0.9, 5.5) {10\\dBW};
+
+        % 2) Freccia 1: discesa lieve da Linea 1 (10 dBW) a Linea 2 (9 dBW)
+        \draw[->, line width=2.5pt, orange!90!black, >=Stealth] (0.9, 5.2) -- (3.4, 4.8);
+        \node[below, align=center] at (3.2, 4.8) {9\\dBW};
+
+        % 3) Freccia 2: guadagno verticale su Linea 2 (+35.2 dB fino a EIRP)
+        \draw[->, line width=2.5pt, orange!90!black, >=Stealth] (3.4, 4.8) -- (3.4, 7.0);
+        \node[right=3pt, font=\sffamily\bfseries] at (3.4, 5.9) {+35.2 dB};
+        \node[above, align=center] at (3.4, 7.0) {EIRP\\= 44.2\\dBW};
+
+        % 4) Freccia 3: attenuazione nello spazio libero (1/L = -206.4 dB)
+        \draw[->, line width=2.5pt, orange!90!black, >=Stealth] (3.4, 7.0) -- (6.5, 1.3);
+        \node[midway, above right=-2pt, font=\sffamily\bfseries] at (4.4, 4.1) {1/L = -206.4 dB};
+        \node[below left, align=center] at (6.5, 1.3) {-162.2\\dBW};
+
+        % 5) Freccia 4: guadagno antenna ricevente su Linea 3 (+51.2 dB)
+        \draw[->, line width=2.5pt, orange!90!black, >=Stealth] (6.5, 1.3) -- (6.5, 2.9);
+        \node[right=3pt, font=\sffamily\bfseries] at (6.5, 2.1) {+51.2 dB};
+        \node[above left, align=center] at (6.5, 2.9) {-111\\dBW};
+
+        % 6) Freccia 5: uscita verso C_D
+        \draw[->, line width=2.5pt, orange!90!black, >=Stealth] (6.5, 2.9) -- (8.6, 2.4);
+
+
+        % =========================================================
+        % BOX OUTPUT SULLA DESTRA
+        % =========================================================
+
+        % Box C_D
+        \draw[rounded corners=6pt, fill=white, thick] (9.3, 2.0) rectangle (11.8, 2.8);
+        \node[align=center, font=\sffamily\small] at (10.55, 2.4) {C$_{\text{D}}$ = P$_{\text{Rx}}$\\[1pt]\textbf{-111.5 dBW}};
+        \draw[->, thick] (8.6, 2.4) -- (9.3, 2.4);
+
+        % Box N_0D
+        \draw[rounded corners=6pt, fill=white, thick] (9.3, 0.7) rectangle (11.8, 1.5);
+        \node[align=center, font=\sffamily\small] at (10.55, 1.1) {N$_{\text{0D}}$\\[1pt]\textbf{-206.4 dBW/Hz}};
+        \draw[->, thick] (8.6, 1.1) -- (9.3, 1.1);
+
+        % Testo Risultato Finale
+        \node[below, font=\sffamily\bfseries\small] at (10.55, 0.5) {(C/N$_0$)$_{\text{D}}$ = 94.9 dBHz};
+
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+
+\subsection*{Riassunto concettuale sui Decibel}
+
+In conclusione, il problema con i decibel sta nel fatto che, siccome vi si fa riferimento come a quantità logaritmiche, spesso nelle equazioni si finisce per focalizzare l'attenzione sul logaritmo e \textbf{non sul rapporto tra quantità}, che è ciò che rende i decibel l'espressione di un guadagno e non un valore assoluto. Proviamo idealmente a rimuovere il logaritmo e vedremo che \textbf{i dB in quanto rapporto sono adimensionali}.
+
+\begin{nota}[colback=PoliBlue!5, colframe=PoliBlue, title={\textbf{Regola fondamentale per i calcoli}}]
+    Dunque, \textbf{dBm (o dBW) e dB sono entità diverse}, che si possono sommare/sottrarre tra loro con un senso logico, ma che non si possono commutare dall'uno all'altro. Anzi, a un valore in dBm o dBW può essere addizionato/sottratto \textbf{solo a valori in dB} (e mai ad altri dBm o dBW), per giungere a un valore finale di nuovo espresso in dBm o dBW.
+\end{nota}
+
+Da ultimo, notiamo che dalla definizione di decibel discende che una potenza ridotta o aumentata di \textbf{3 dB} rispetto a una potenza di riferimento equivale, in termini lineari, rispettivamente a un \textbf{valore dimezzato o raddoppiato} rispetto la potenza di riferimento. Infatti:
+\begin{align*}
+    P_o &= 2P_i \implies 10 \log(2) \approx \mathbf{3 \text{ \textbf{dB}}} \\
+    P_o &= 0.5P_i \implies 10 \log(0.5) \approx \mathbf{-3 \text{ \textbf{dB}}}
+\end{align*}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\small]
+        \begin{axis}[
+            width=8.5cm, height=6.5cm,
+            xmode=log,
+            xmin=0.1, xmax=1,
+            ymin=0, ymax=10,
+            % Ticks ed etichette sull'asse X
+            xtick={0.1, 0.5, 1},
+            xticklabels={0.1, 0.5, 1},
+            extra x ticks={0.2, 0.3, 0.4, 0.6, 0.7, 0.8, 0.9},
+            extra x tick labels={},
+            % Ticks ed etichette sull'asse Y
+            ytick={0, 3, 10},
+            yticklabels={0, 3, 10},
+            extra y ticks={1, 2, 4, 5, 6, 7, 8, 9},
+            extra y tick labels={},
+            % Griglia
+            grid=both,
+            grid style={line width=0.3pt, draw=gray!50},
+            % Etichette degli assi
+            xlabel={Ratio},
+            ylabel={dB},
+            ylabel style={rotate=0, at={(axis description cs:-0.08,0.5)}, anchor=east},
+            xlabel style={at={(axis description cs:0.5,-0.08)}, anchor=north},
+            % Stile del riquadro
+            axis line style={thick},
+            tick style={thick, black},
+            scale only axis
+        ]
+            % Plot della funzione di attenuazione: -10 * log10(x)
+            \addplot[domain=0.1:1, samples=100, ultra thick, PoliBlue] {-10*log10(x)};
+            
+            % Linea tratteggiata di riferimento a 0.5 -> 3 dB
+            \draw[dashed, thick, gray!70] (axis cs:0.1, 3) -- (axis cs:0.5, 3) -- (axis cs:0.5, 0);
+            
+            % Punti evidenziati (Blu)
+            \filldraw[PoliBlue] (axis cs:0.1, 10) circle (2.2pt);
+            \filldraw[PoliBlue] (axis cs:0.5, 3) circle (2.2pt);
+            \filldraw[PoliBlue] (axis cs:1, 0) circle (2.2pt);
+        \end{axis}
+    \end{tikzpicture}
+    \caption*{Grafico dell'attenuazione in decibel in funzione del rapporto tra le potenze. Il dimezzamento della potenza (Ratio = 0.5) corrisponde esattamente a una perdita di $\approx$ 3 dB.}
+\end{figure}
+
+
+
+\subsection{Amplificatori di potenza reali}
+
+Nell'amplificazione di un segnale bisogna fare attenzione a \textbf{non modificare l'informazione} contenuta nel segnale e a \textbf{non introdurne di nuova}. Pertanto, vogliamo che il segnale in uscita dall'amplificatore sia una \textit{replica esatta} di quello in ingresso, tranne che, ovviamente, per la sua maggiore ampiezza. 
+
+In altre parole, le "oscillazioni" della forma d'onda in uscita devono essere identiche a quelle della forma d'onda in ingresso. Un \textbf{amplificatore ideale} di questo tipo è dunque \textbf{lineare}. Ogni variazione nella forma d'onda è una indesiderata \textbf{distorsione non lineare}.
+
+Consideriamo un amplificatore con un guadagno di potenza $G$. 
+In un \textbf{amplificatore ideale}, la potenza d'uscita è \textbf{direttamente proporzionale} alla potenza d'ingresso, cioè $P_{out} = G \cdot P_{in}$. Inoltre tale relazione vale per qualsiasi valore di $P_{in}$ e per qualsiasi banda di frequenza.
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Per esempio, se $P_{in} = 0$, allora $P_{out} = 0$;
+    \item se $P_{in} = 10^6 \text{ W}$ e $G = \text{10 dB}$ (cioè guadagno lineare $\times 10$), allora sarà $P_{out} = 10^7 \text{ W}$.
+\end{itemize}
+Tuttavia, fisicamente è impossibile fornire potenza infinita, per cui i dispositivi reali presentano dei limiti invalicabili.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        % --- RIGA (a): AMPLIFICATORE IDEALE ---
+        \node[font=\bfseries] at (-1, 0.5) {(a)};
+        
+        % 1. Input Signal
+        \begin{scope}[shift={(0,0)}]
+            \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+            \draw[OpticRed, ultra thick, samples=100, domain=0:2.2] plot (\x, {0.3*sin(\x*360/0.4)});
+            \node[above] at (1.2, 0.6) {Input};
+        \end{scope}
+        
+        % 2. Amplifier Symbol
+        \begin{scope}[shift={(3, -0.6)}]
+            \draw[fill=gray!30, thick] (0,0) -- (0, 1.2) -- (1.5, 0.6) -- cycle;
+            \node[above] at (0.75, 1.3) {Ideal amplifier};
+            \draw[->, very thick] (-0.5, 0.6) -- (0, 0.6);
+            \draw[->, very thick] (1.5, 0.6) -- (2.0, 0.6);
+        \end{scope}
+        
+        % 3. Output Signal (Pure Sine)
+        \begin{scope}[shift={(5.5,0)}]
+            \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+            \draw[OpticRed, ultra thick, samples=100, domain=0:2.2] plot (\x, {0.9*sin(\x*360/0.4)});
+            \node[above] at (1.2, 1.0) {Output};
+        \end{scope}
+        
+        % 4. Gain and Phase vs Freq (Flat)
+        \begin{scope}[shift={(9, -0.2)}]
+            \draw[->] (-1,0) -- (1.5,0) node[below] {$\nu$};
+            \draw[PoliBlue, ultra thick] (-0.5, 0) -- (-0.5, 0.8) -- (0.5, 0.8) -- (0.5, 0);
+            \node[above] at (0, 0.8) {Gain};
+            \draw[dashed, blue, thick] (-0.8, -0.6) -- (0.8, 0.6);
+            \node[right] at (0.8, 0.5) {Phase};
+            \draw (-0.1, 0.1) -- (-0.1, -0.1) node[below] {$\nu_0$};
+        \end{scope}
+        
+        % 5. Linear Output vs Input
+        \begin{scope}[shift={(11.5, -0.3)}]
+            \draw[->] (0,0) -- (2,0) node[below, align=center] {Input\\amplitude};
+            \draw[->] (0,0) -- (0,1.5) node[above, rotate=90, anchor=south, yshift=0.1cm, align=center] {Output\\amplitude};
+            \draw[ultra thick, PoliBlue] (0,0) -- (1.3, 1.3);
+        \end{scope}
+
+
+        % --- RIGA (b): AMPLIFICATORE REALE ---
+        \begin{scope}[shift={(0, -3.5)}]
+            \node[font=\bfseries] at (-1, 0.5) {(b)};
+            
+            % 1. Input Signal
+            \begin{scope}[shift={(0,0)}]
+                \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+                \draw[OpticRed, ultra thick, samples=100, domain=0:2.2] plot (\x, {0.3*sin(\x*360/0.4)});
+                \node[above] at (1.2, 0.6) {Input};
+            \end{scope}
+            
+            % 2. Amplifier Symbol
+            \begin{scope}[shift={(3, -0.6)}]
+                \draw[fill=gray!30, thick] (0,0) -- (0, 1.2) -- (1.5, 0.6) -- cycle;
+                \node[above] at (0.75, 1.3) {Real amplifier};
+                \draw[->, very thick] (-0.5, 0.6) -- (0, 0.6);
+                \draw[->, very thick] (1.5, 0.6) -- (2.0, 0.6);
+            \end{scope}
+            
+            % 3. Output Signal (Saturated / Distorted)
+            \begin{scope}[shift={(5.5,0)}]
+                \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+                % Simuliamo la saturazione troncando i picchi con max/min
+                \draw[OpticRed, ultra thick, samples=150, domain=0:2.2] plot (\x, { max(-0.75, min(0.75, 1.5*sin(\x*360/0.4))) });
+                \node[above] at (1.2, 1.0) {Output};
+            \end{scope}
+            
+            % 4. Gain and Phase vs Freq (Non-ideal)
+            \begin{scope}[shift={(9, -0.2)}]
+                \draw[->] (-1,0) -- (1.5,0) node[below] {$\nu$};
+                % Campana di risonanza per il Gain
+                \draw[PoliBlue, ultra thick, samples=50, domain=-1:1] plot (\x, {0.9*exp(-(\x*\x)/0.05)});
+                \node[above] at (0, 0.9) {Gain};
+                % Fase non lineare (curva s)
+                \draw[dashed, blue, thick, samples=50, domain=-0.9:0.9] plot (\x, {0.6*sin(\x*180)});
+                \node[right] at (0.8, 0.6) {Phase};
+                \draw (-0.1, 0.1) -- (-0.1, -0.1) node[below] {$\nu_0$};
+            \end{scope}
+            
+            % 5. Nonlinear Output vs Input (Saturating)
+            \begin{scope}[shift={(11.5, -0.3)}]
+                \draw[->] (0,0) -- (2,0) node[below, align=center] {Input\\amplitude};
+                \draw[->] (0,0) -- (0,1.5) node[above, rotate=90, anchor=south, yshift=0.1cm, align=center] {Output\\amplitude};
+                % Curva che satura ad asintoto orizzontale
+                \draw[ultra thick, PoliBlue, samples=50, domain=0:1.8] plot (\x, {1.2 * (1 - exp(-2*\x))});
+            \end{scope}
+        \end{scope}
+    \end{tikzpicture}%
+    }
+    \caption*{(a) Un amplificatore ideale è lineare e presenta risposta in frequenza "piatta". (b) Un amplificatore reale ha un guadagno e una fase dipendenti dalla frequenza; inoltre, per grandi valori di input satura, tagliando le forme d'onda ed esibendo un comportamento non lineare.}
+\end{figure}
+
+\subsection*{Saturazione e Compressione}
+
+Possiamo comprendere graficamente questo limite guardando la \textbf{caratteristica ingresso-uscita}, ovvero la relazione effettiva tra la potenza di uscita e quella di ingresso di un componente reale, solitamente tracciata su scala logaritmica (in dBm).
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Partiamo dalla \textbf{condizione di linearità}, ovvero il tratto inclinato a $45^\circ$ che evidenzia come l'aumento di potenza in uscita sia rigorosamente proporzionale alla potenza in ingresso: si tratta della gamma di potenze per le quali vale l'approssimazione $P_{out} = G \cdot P_{in}$.
+    \item Aumentando la potenza in input, a un certo punto la retta si piega per raggiungere un tratto orizzontale, dove comincia la \textbf{non linearità}.
+    \begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+        \item La piega iniziale è detta \textbf{compressione}. 
+        \item Il tratto orizzontale vero e proprio è detto \textbf{saturazione}: all'aumentare della potenza in ingresso, non c'è alcuna variazione (se non leggerissima) nella potenza in output, che rimane invariabilmente costante a un limite massimo fisico.
+        \item Una potenza di ingresso spinta in un regime ancora più elevato causerà la rottura o il \textbf{guasto} (Failure) dell'amplificatore.
+    \end{itemize}
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
+        % Seed per il rumore di fondo
+        \pgfmathsetseed{42}
+
+        % --- ASSI CARTESIANI ---
+        \draw[->] (0, 0) -- (9, 0) node[below] {$P_{\text{in}}$ (dBm)};
+        \draw[->] (0, 0) -- (0, 6) node[above, rotate=90, anchor=south, yshift=0.2cm] {$P_{\text{out}}$ (dBm)};
+        
+        % Tacche asse X
+        \foreach \x in {1, 2, ..., 8} {
+            \draw (\x, 0) -- (\x, 0.15);
+        }
+        % Tacche asse Y
+        \foreach \y in {1, 2, ..., 5} {
+            \draw (0, \y) -- (0.15, \y);
+        }
+
+        % --- CURVA DI TRASFERIMENTO ---
+        % Tratto Lineare
+        \draw[ultra thick, PoliBlue] (0, 0) -- (3, 3);
+        
+        % Tratto di Compressione (Curva di raccordo)
+        \draw[ultra thick, PoliBlue] (3, 3) .. controls (4, 4) and (4.5, 4.5) .. (5.5, 4.5);
+        
+        % Tratto di Saturazione (Orizzontale)
+        \draw[ultra thick, PoliBlue] (5.5, 4.5) -- (7.5, 4.5);
+        
+        % Failure (Rottura irregolare)
+        \draw[ultra thick, OpticRed] (7.5, 4.5) decorate [decoration={zigzag, amplitude=2pt, segment length=3pt}] {-- (8.0, 4.5)};
+
+        % Estensione ideale tratteggiata
+        \draw[dashed, thick, gray] (3, 3) -- (6, 6);
+
+        % --- RUMORE DI FONDO (Noise floor) ---
+        \draw[gray!80!black, line width=0.8pt] plot [domain=0:8, samples=150] (\x, {0.6 + 0.15*rand});
+        \node[above, font=\scriptsize, text=gray!80!black] at (5, 0.7) {Noise floor};
+        \draw[->, thin, gray] (5, 0.7) -- (5, 0.4);
+
+        % --- ETICHETTE E FRECCE ---
+        % Compression
+        \node[below, font=\scriptsize] at (6, 3.5) {Compression};
+        \draw[->, thin] (6, 3.5) -- (5.2, 4.1);
+        
+        % Failure
+        \node[below, font=\scriptsize, text=OpticRed] at (7.8, 4.2) {Failure};
+        \draw[->, thin, OpticRed] (7.8, 4.2) -- (7.8, 4.4);
+
+        % --- INSET SIMBOLO AMPLIFICATORE ---
+        \begin{scope}[shift={(0.8, 3.2)}, scale=0.6]
+            \draw[fill=white, thick] (1,0) -- (1, 1.4) -- (2.5, 0.7) -- cycle;
+            \node at (1.5, 0.7) {G};
+            \draw[->, thick] (0.2, 0.7) -- (1, 0.7) node[midway, above, font=\scriptsize] {$P_{\text{in}}$};
+            \draw[->, thick] (2.5, 0.7) -- (3.3, 0.7) node[midway, above, font=\scriptsize] {$P_{\text{out}}$};
+        \end{scope}
+    \end{tikzpicture}
+    \caption*{Caratteristica di trasferimento di un amplificatore reale. Notare la soglia inferiore (Noise floor) sotto la quale il segnale si perde nel rumore, e il limite superiore imposto dalla saturazione del dispositivo.}
+\end{figure}
+
+
+% ==================================================
+% CONTINUAZIONE: INTERVALLO DINAMICO E DISTORSIONE
+% ==================================================
+
+Ma \textbf{in realtà}, nessun amplificatore reale può funzionare in questo modo, cioè essere lineare lungo un intervallo illimitato di livelli di potenza.
+
+In pratica, le assunzioni di linearità sono sostanzialmente valide solo entro un intervallo di livelli. In tale intervallo, detto intervallo dinamico o \textbf{dynamic range} del componente (o del sistema), non si hanno distorsioni del segnale, come vedremo. Gli estremi di tale intervallo sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item come \textbf{estremo superiore}, il livello di potenza a cui il dispositivo comincia a \textbf{saturare}, ovvero quando la potenza di uscita non aumenta più linearmente all'aumentare della potenza di ingresso;
+    \item come \textbf{estremo inferiore} il \textbf{noise floor}.
+\end{itemize}
+
+\subsection*{Effetti della Saturazione: Distorsione nel tempo}
+
+La \textbf{saturazione} è una condizione in cui, all'aumentare della potenza in ingresso dell'amplificatore, non si assiste a un corrispondente aumento della potenza in uscita dall'amplificatore.
+
+In condizioni di \textbf{linearità} il \textbf{guadagno è costante}: variando la potenza del segnale in ingresso, la potenza del segnale d'uscita sarà variata sempre dello stesso guadagno rispetto l'ingresso.
+
+In condizioni di \textbf{saturazione} più aumento la potenza in ingresso più \textbf{si riduce il guadagno}, dal momento che la potenza in uscita è stabile al valore di saturazione.
+
+Il problema principale della saturazione non è tanto la perdita di guadagno (che corrisponde a uno spreco di potenza), quanto le distorsioni che si creano. Infatti, amplificando in condizioni di saturazione, la potenza del segnale in uscita non può crescere in ampiezza oltre la soglia di saturazione, pur aumentando il segnale in ingresso. 
+Il risultato è una \textbf{distorsione del segnale} (fenomeno di \textit{clipping}), ben visibile nel dominio del tempo.
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.45\textwidth]{Immagini/Screenshot 2026-09-30 alle 20.58.15.png}
+\end{figure}
+
+\subsection*{Effetti della Saturazione: Distorsione in frequenza}
+
+Questo mancato guadagno di potenza viene ridistribuito tra le altre componenti in frequenza che non hanno ancora raggiunto la saturazione. Queste componenti di frequenza vedono così aumentare il loro peso relativo in potenza rispetto al contributo minore che avevano nel segnale originale non amplificato.
+
+Nelle immagini in basso, vediamo, nel piano frequenza-potenza, un segnale composto da un tono principale a una certa frequenza (arancione), accompagnato da un altro tono secondario a una frequenza differente (celeste) di più debole potenza.
+
+
+\begin{enumerate}
+    \item Applichiamo un amplificatore tale da far aumentare di 10 dB il livello di potenza dei due toni (figura a sinistra): prima e dopo l'amplificatore, la differenza di potenza tra i toni rimane uguale.
+    \item Se l'amplificatore è in \textbf{regime di linearità} (figura al centro), aumentando la potenza di ingresso, otterrò in uscita un livello di potenza aumentato sempre di 10 dB per entrambi i toni: quindi il tono secondario rimane debole rispetto a quello principale.
+    \item Invece, se l'amplificatore è in \textbf{saturazione} (figura a destra), un aumento di potenza in ingresso non ha effetti sul picco del tono principale: esso rimane fisso a $P_{\text{SAT}}$. Questo guadagno mancato si riversa nel tono secondario: se il tono secondario viene amplificato e il tono principale no, allora \textbf{il gap di potenza tra i due si riduce}; ovvero, il contributo in potenza del tono secondario diventa maggiore rispetto a quanto avveniva nel segnale originario. Ecco che si è creata una distorsione.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        \pgfmathsetseed{100}
+
+        % --- MACRO PER GLI SPETTRI ---
+        \newcommand{\drawspectrum}[3]{ % x_shift, main_in_y, sec_in_y
+            % Assi
+            \draw[->, ultra thick, OpticRed] (#1, 0) -- (#1+4, 0) node[below] {$\nu$};
+            \draw[->, ultra thick, OpticRed] (#1, 0) -- (#1, 3) node[left] {P};
+            
+            % Rumore di fondo
+            \draw[black, thin] plot [domain=0.1:3.9, samples=100] ({\x+#1}, {0.1 + 0.1*rand + 0.05*sin(\x*500)});
+            
+            % Tono Principale (Arancione) IN
+            \draw[orange, ultra thick] (#1+1.5, 0) -- (#1+1.5, #2);
+            \fill[orange] (#1+1.5, #2) circle (1.5pt);
+            
+            % Tono Secondario (Celeste) IN
+            \draw[cyan, ultra thick] (#1+2.0, 0) -- (#1+2.0, #3);
+            \fill[cyan] (#1+2.0, #3) circle (1.5pt);
+        }
+
+        % --- 1. SEGNALE INIZIALE (Sinistra) ---
+        \drawspectrum{0}{0.8}{0.4}
+        \node[text=purple] at (0.6, 0.6) {P$_{\text{in}}$};
+        
+        % Frecce guadagno 10 dB
+        \draw[->, ForestGreen, ultra thick] (1.5, 0.8) -- (1.5, 1.8) node[midway, left] {10 dB};
+        \fill[ForestGreen] (1.5, 1.8) circle (1.5pt);
+        \draw[->, ForestGreen, ultra thick] (2.0, 0.4) -- (2.0, 1.4) node[midway, right] {10 dB};
+        \fill[ForestGreen] (2.0, 1.4) circle (1.5pt);
+        
+        % P_out label
+        \node[text=purple] at (2.8, 2.0) {P$_{\text{out}}$};
+        \draw[dotted, purple] (1.5, 1.8) -- (2.8, 1.9);
+        \draw[dotted, purple] (2.0, 1.4) -- (2.8, 1.9);
+
+        % --- 2. REGIME LINEARE (Centro) ---
+        \drawspectrum{5}{1.6}{0.8}
+        
+        % Frecce guadagno 10 dB
+        \draw[->, ForestGreen, ultra thick] (6.5, 1.6) -- (6.5, 2.6) node[midway, left] {10 dB};
+        \fill[ForestGreen] (6.5, 2.6) circle (1.5pt);
+        \draw[->, ForestGreen, ultra thick] (7.0, 0.8) -- (7.0, 1.8) node[midway, right] {10 dB};
+        \fill[ForestGreen] (7.0, 1.8) circle (1.5pt);
+
+        % --- 3. REGIME DI SATURAZIONE (Destra) ---
+        \drawspectrum{10}{2.4}{1.2}
+        
+        % Linea di Saturazione (P_SAT)
+        \draw[dashed, black, thin] (10, 2.4) -- (14, 2.4);
+        \node[text=orange, left] at (10, 2.4) {P$_{\text{SAT}}$};
+        
+        % Il picco principale NON si alza (è bloccato a P_SAT)
+        % (Disegniamo una freccina verde schiacciata o inesistente)
+        
+        % Il picco secondario sale ancora di 10 dB (o comunque si alza riducendo il gap)
+        \draw[->, ForestGreen, ultra thick] (12.0, 1.2) -- (12.0, 2.2);
+        \fill[ForestGreen] (12.0, 2.2) circle (1.5pt);
+        
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+\subsection*{Punto di compressione a 1 dB ($P_{1\text{dB}}$)}
+
+Per quanto appena visto, è bene \textbf{lavorare in regime di linearità} (o al suo culmine) dell'amplificatore e/o \textbf{filtrare bene} ogni altro possibile segnale non voluto. Gli \textbf{effetti di distorsione dovuti alla non linearità} sono misurati per mezzo di alcuni parametri noti di un dispositivo. 
+
+Tra questi, il parametro più immediato per discriminare tra condizione di linearità e condizione di non linearità di un amplificatore è il cosiddetto \textbf{punto di compressione a 1dB} ($P_{1\text{dB}}$).
+
+\begin{definizione}[title={\textbf{Definizione di $P_{1\text{dB}}$}}]
+    Il punto di compressione a \qty{1}{\deci\bel} è quel \textbf{valore di potenza in ingresso} per cui il \textbf{guadagno misurato} di un dispositivo attivo risulta essere \textbf{inferiore di 1 dB rispetto al valore teorico} assunto in regime di funzionamento \textbf{lineare}. 
+    
+    In altre parole, è quel punto di potenza in ingresso individuato dalla potenza in uscita misurata in compressione che è esattamente \qty{1}{\deci\bel} sotto al prolungamento ideale della retta di linearità.
+\end{definizione}
+
+Praticamente, si va a guardare dove la compressione comincia ad allontanarsi dalla linearità: ove la compressione misurata è a \qty{-1}{\deci\bel} dal prolungamento ideale della linearità, lì in corrispondenza, sull'asse delle ascisse, si rileva la potenza in ingresso $P_{1\text{dB}}$.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.85\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        
+        % --- GRIGLIA ---
+        \draw[step=0.5cm, gray!40, very thin] (0,0) grid (12, 6);
+        \draw[step=1cm, gray!70, thin] (0,0) grid (12, 6);
+        
+        % --- ASSI ---
+        \draw[->] (0,0) -- (12.5, 0) node[below left, xshift=-2cm, yshift=-0.5cm] {Input power (dBm)};
+        \draw[->] (0,0) -- (0, 6.5) node[above left, rotate=90, anchor=south, yshift=0.5cm] {Output power (dBm)};
+
+        % Labels X axis (da -100.5 a -76.5)
+        \foreach \x/\val in {0/-100.5, 1/-98.5, 2/-96.5, 3/-94.5, 4/-92.5, 5/-90.5, 6/-88.5, 7/-86.5, 8/-84.5, 9/-82.5, 10/-80.5, 11/-78.5, 12/-76.5} {
+            \node[below, rotate=45, anchor=north east, font=\tiny] at (\x, 0) {\val 0};
+        }
+
+        % Labels Y axis (da -8.85 a 5.15)
+        \foreach \y/\val in {0/-8.85, 1/-6.85, 2/-4.85, 3/-2.85, 4/-0.85, 5/1.15, 6/3.15, 6.5/4.15, 7/5.15} {
+            \ifdim \y cm > 6cm \else
+                \node[left, font=\tiny] at (0, \y) {\val};
+            \fi
+        }
+
+        % --- CURVE ---
+        % Prolungamento Ideale Lineare (Azzurro chiaro)
+        \draw[cyan!50, ultra thick] (0, 0) -- (8, 6.4);
+        
+        % Curva Reale (Blu scuro)
+        \draw[PoliBlue, ultra thick] (0,0) -- (4, 3.2) .. controls (6, 4.8) and (7, 5.2) .. (8, 5.4) .. controls (10, 5.7) .. (12, 5.8);
+
+        % --- P1dB MARKERS ---
+        % Segmento rosso 1dB a x=7
+        % La curva ideale a x=7 è a y=5.6. La reale è a y=5.1.
+        \draw[OpticRed, line width=4pt] (7, 5.1) -- (7, 5.6);
+        \node[left, OpticRed, font=\bfseries] at (6.8, 5.35) {1 dB};
+
+        % Freccia verde verso il basso per P1dB
+        \draw[->, ForestGreen, ultra thick] (7, 4.9) -- (7, 0.2);
+        \node[right, ForestGreen, font=\bfseries] at (7, 1.0) {P1dB};
+
+        % --- P_SAT LINE ---
+        % Asintoto orizzontale a ~ y=6 (corrispondente a circa 3.15 / 4.15 sul grafico slide)
+        \draw[orange, thick, <-] (0, 6) -- (12, 6);
+        \node[orange, above right, font=\bfseries] at (0.2, 6) {Psat};
+
+    \end{tikzpicture}%
+    }
+    \caption*{Grafico di determinazione del punto di compressione a 1 dB ($P_{1\text{dB}}$). Si cerca sull'asse delle ascisse (potenza in ingresso) il punto in cui la curva reale dista verticalmente esattamente 1 dB dalla retta di proiezione ideale.}
+\end{figure}
+
+
+
+\subsection*{Serie di amplificatori di potenza}
+
+Quando più \textbf{amplificatori} possono essere messi \textbf{in serie} con lo scopo di ottenere una maggiore performance di guadagno, occorre controllare che \textbf{ogni stadio} presenti, oltre a coerenza col restante progetto (frequenze, consumi), caratteristiche di \textbf{linearità}: in altre parole, ogni stadio deve stare sotto la $P_{\text{SAT}}$ (o meglio, sotto il $P_{1\text{dB}}$) del componente specifico.
+
+Per esempio, mettere in serie amplificatori la cui $P_{\text{SAT}}$ è \qty{0}{\deci\bel m}, non mi permetterà mai di superare i \qty{10}{\deci\bel m} di potenza in uscita, indipendentemente da quanti amplificatori aggiunga o da quanto sia il loro guadagno.
+
+\vspace{0.3cm}
+\textbf{Altro esempio pratico:}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[font=\sffamily]
+        % Colore blu originale del diagramma
+        \definecolor{DiagramBlue}{RGB}{31, 112, 193}
+
+        % Stili per i blocchi di ingresso/uscita e per la linea
+        \tikzset{
+            block/.style={
+                fill=DiagramBlue,
+                text=white,
+                font=\bfseries\sffamily,
+                minimum width=1.5cm,
+                minimum height=0.75cm,
+                inner sep=0pt
+            },
+            line/.style={
+                draw=DiagramBlue,
+                thin
+            }
+        }
+
+        % Macro per disegnare l'amplificatore e i relativi valori
+        \newcommand{\drawamp}[3]{ % #1: posizione x, #2: potenza dBm, #3: guadagno dB
+            % Triangolo dell'amplificatore
+            \fill[DiagramBlue] (#1-0.55, 0.45) -- (#1+0.55, 0) -- (#1-0.55, -0.45) -- cycle;
+            % Valori inferiori (in font Serif/Roman come nell'originale)
+            \node[font=\rmfamily, align=center, anchor=north] at (#1, -0.65) {#2\\[3pt]#3};
+        }
+
+        % Blocchi INPUT e OUTPUT
+        \node[block] (in) at (0,0) {INPUT};
+        \node[block] (out) at (10,0) {OUTPUT};
+
+        % Linea di collegamento continua sottostante
+        \draw[line] (in.east) -- (out.west);
+
+        % Stadi di amplificazione
+        \drawamp{2.0}{0 dBm}{20 dB}
+        \drawamp{4.0}{$-5$~dBm}{30 dB}
+        \drawamp{6.0}{20 dBm}{15 dB}
+        \drawamp{8.0}{30 dBm}{30 dB}
+
+    \end{tikzpicture}
+\end{figure}
+
+
+Sulla base della catena mostrata in figura, calcoliamo i livelli di potenza:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item se input fornisce \qty{-70}{\deci\bel m}, output sarà \qty{+25}{\deci\bel m} ($=-70 \text{ dBm} + 20 \text{ dB} + 30 \text{ dB} + 15 \text{ dB} + 30 \text{ dB}$) $\rightarrow$ \textbf{linearità};
+    \item se input fornisce \qty{-65}{\deci\bel m}, output sarà \qty{+30}{\deci\bel m} ($=-65 \text{ dBm} + 20 \text{ dB} + 30 \text{ dB} + 15 \text{ dB} + 30 \text{ dB}$) $\rightarrow$ \textbf{linearità};
+    \item se input fornisce \qty{-60}{\deci\bel m}, output sarà \textbf{\qty{+30}{\deci\bel m}} perché l'ultimo stadio è limitato dalla sua $P_{\text{SAT}}$ $\rightarrow$ \textbf{\textcolor{OpticRed}{saturazione}}.
+\end{itemize}
+In generale, ciò vale non solo per lo stadio finale, bensì va controllato anche in ogni stadio intermedio.
+
+\subsection*{Metodo grafico per verificare la saturazione}
+
+Per verificare velocemente il corretto dimensionamento e l'assenza di saturazione in una catena complessa si utilizza un metodo grafico a linee spezzate:
+\begin{enumerate}
+    \item Sull'asse $x$ si dispongono tutti gli \textbf{elementi della catena} in successione discreta.
+    \item Sull'asse $y$ si pongono i \textbf{valori di potenza} (in dBm).
+    \item Si costruiscono due curve spezzate sovrapposte:
+    \begin{itemize}[label=\textcolor{ForestGreen}{$\circ$}]
+        \item una curva che unisce la \textbf{potenza prevista in uscita} ($P_{out}$) da ogni stadio;
+        \item una curva che unisce il \textbf{punto di compressione a 1 dB} (o $P_{\text{SAT}}$) in uscita di ogni stadio. Per gli amplificatori, questo limite è fornito dal \textit{datasheet}; per i componenti passivi (filtri, switch), si assume convenzionalmente un valore limite altissimo (es. \qty{100}{\deci\bel m}) in quanto non saturano alle potenze in gioco.
+    \end{itemize}
+    \item \textbf{Verifica:} se in un punto qualsiasi la curva della $P_{out}$ incrocia o supera la curva del punto di compressione, in quello stadio abbiamo \textbf{saturazione} e perdita di linearità.
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[font=\sffamily\scriptsize]
+        
+        % --- ASSI E GRIGLIA ---
+        % Asse Y da -25 a 100. Scaliamo visivamente: y_plot = y_val / 25
+        \draw[step=1cm, gray!40, thin] (0, -1) grid (10, 4);
+        \draw[->, thick] (0, -1) -- (10.5, -1) node[right] {Stadi};
+        \draw[->, thick] (0, -1) -- (0, 4.5) node[above] {Potenza (dBm)};
+
+        % Etichette asse Y
+        \foreach \y/\val in {-1/-25, 0/0, 1/25, 2/50, 3/75, 4/100} {
+            \node[left, font=\tiny] at (0, \y) {\val};
+            \draw[thick] (0, \y) -- (0.1, \y);
+        }
+
+        % Etichette asse X (Componenti)
+        % IFin, Attenuatore, AMP, LPF, Mixer, Switch, BPF, Switch, Driver, PA
+        \newcommand{\xnames}{{"IFin", "Atten.", "AMP", "LPF", "Mixer", "Switch", "BPF", "Switch", "Driver", "PA"}}
+        \foreach \x [count=\i from 0] in {0.5, 1.5, 2.5, 3.5, 4.5, 5.5, 6.5, 7.5, 8.5, 9.5} {
+            \draw[thick] (\x, -1) -- (\x, -1.1);
+            \pgfmathparse{\xnames[\i]}
+            \node[below, rotate=0, align=center, font=\tiny] at (\x, -1.1) {\pgfmathresult};
+        }
+
+        % --- CURVA 2: LIMITE P1dB / SATURAZIONE (Grigio/Nero) ---
+        % Valori approssimati dal grafico foto: 
+        % IF=100, Att=100, AMP=15, LPF=100, Mix=100, Sw=100, BPF=100, Sw=100, Drv=25, PA=40
+        \draw[black!60, ultra thick, mark=*, mark options={fill=black!60}] plot coordinates {
+            (0.5, 4) (1.5, 4) (2.5, 0.6) (3.5, 4) (4.5, 4) (5.5, 4) (6.5, 4) (7.5, 4) (8.5, 1) (9.5, 1.6)
+        };
+
+        % --- CURVA 1: POTENZA IN USCITA P_OUT (Blu) ---
+        % Valori approssimati dal grafico foto:
+        % IF=0, Att=-5, AMP=25, LPF=10, Mix=-2, Sw=-5, BPF=-10, Sw=-15, Drv=15, PA=35
+        \draw[PoliBlue, ultra thick, mark=*, mark options={fill=PoliBlue}] plot coordinates {
+            (0.5, 0) (1.5, -0.2) (2.5, 1.0) (3.5, 0.4) (4.5, -0.08) (5.5, -0.2) (6.5, -0.4) (7.5, -0.6) (8.5, 0.6) (9.5, 1.4)
+        };
+
+        % --- EVIDENZIAZIONE DELL'ERRORE (SATURAZIONE) ---
+        % Cerchio rosso dove la linea blu supera quella grigia (stadio AMP)
+        \draw[OpticRed, ultra thick, dashed] (2.5, 0.8) circle (0.5cm);
+        \node[OpticRed, font=\bfseries\scriptsize, align=center, fill=white, inner sep=1pt] at (2.5, -0.5) {SATURAZIONE!\\(P$_{out} >$ P$_{1\text{dB}}$)};
+        \draw[->, OpticRed, thick] (2.5, -0.1) -- (2.5, 0.3);
+
+        % --- LEGENDA ---
+        \node[above right, font=\scriptsize] at (0.2, 4.2) {Grafico Analisi di Catena};
+        \filldraw[PoliBlue] (5.5, 4.3) circle (2pt) node[right, text=black] {P$_{\text{out}}$ prevista};
+        \filldraw[black!60] (7.5, 4.3) circle (2pt) node[right, text=black] {Limite P$_{1\text{dB}}$};
+
+    \end{tikzpicture}%
+    }
+    \caption*{Esempio pratico di verifica grafica di una catena. Nello stadio "AMP" (il terzo), la potenza prevista in uscita ha superato il limite fisico del componente, mandandolo in saturazione profonda e vanificando il progetto.}
+\end{figure}
+
+\subsection*{Riassunto delle caratteristiche di un amplificatore}
+
+Alla luce di quanto appreso finora, un amplificatore viene definito dalle seguenti caratteristiche chiave:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{risposta in frequenza}: larghezza di banda di frequenze in cui viene mantenuta la linearità e il guadagno nominale;
+    \item \textbf{guadagno} (Gain);
+    \item \textbf{dynamic range} (Intervallo dinamico);
+    \item \textbf{potenza di saturazione} ($P_{\text{SAT}}$);
+    \item \textbf{punto di compressione a 1 dB} ($P_{1\text{dB}}$);
+    \item altre distorsioni effetto della non-linearità (come armoniche e intermodulazione);
+    \item \textbf{alimentazione} in continua (DC) richiesta.
+\end{itemize}
+
+Oltre agli amplificatori di potenza classica, esiste una categoria speciale: gli amplificatori a basso rumore, o \textbf{LNA (Low Noise Amplifier)}. 
+Sono amplificatori capaci di elevare la potenza di un segnale tenendo al contempo \textbf{estremamente basso il livello di potenza del rumore termico interno aggiunto}. Per questo motivo sono il primissimo componente utilizzato all'ingresso dei ricevitori (dopo l'antenna), dove il segnale percepito è debolissimo e altamente vulnerabile alle cause di rumore. 
+Per gli LNA sarà dunque fondamentale conoscere una specifica aggiuntiva vitale:
+\begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
+    \item la \textbf{figura di rumore} (Noise Figure - NF), che deve essere la più bassa possibile.
+\end{itemize}
+
+\section{Rumore termico dei dispositivi}
+\subsection*{Rapporto Segnale/Rumore (SNR) negli Amplificatori}
+
+Il rapporto segnale/rumore \textbf{SNR o S/N} (in casi specifici portante/rumore CNR o C/N) è il rapporto tra la potenza del segnale desiderato ($P_S$) e la potenza del rumore indesiderato ($P_N$).
+\begin{equation}
+    \frac{S}{N} (dB) = 10 \log \left( \frac{P_S}{P_N} \right)
+\end{equation}
+
+Il concetto fondamentale nell'attraversamento dei vari stadi elettronici è il seguente:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Se il componente fosse ideale (privo di rumore):} il segnale desiderato e il rumore d'ingresso verrebbero attenuati o amplificati esattamente dello stesso fattore $G$. Essendo il SNR un rapporto, la moltiplicazione per $G$ al numeratore e al denominatore si annullerebbe, e \textbf{il SNR rimarrebbe invariato}.
+    \item \textbf{Tuttavia, i dispositivi reali sono rumorosi:} un amplificatore aumenta il livello di potenza sia del segnale in ingresso sia del rumore in ingresso, ma \textbf{aggiunge al tutto il proprio rumore termico generato internamente}.
+\end{itemize}
+
+Di conseguenza, la potenza totale del rumore in uscita aumenterà in proporzione più della potenza del segnale in uscita. Ne deduciamo:
+\begin{nota}
+    Il rapporto segnale/rumore all'uscita di qualsiasi dispositivo reale sarà \textbf{sempre più basso (peggiore)} rispetto a quello che c'era in ingresso. Ogni componente attraversato degrada la qualità dell'informazione.
+\end{nota}
+
+Inoltre, per il teorema di fluttuazione e dissipazione della termodinamica, ogni sorgente che ha una perdita (come i filtri o i cavi) genera a sua volta rumore termico.
+
+
+% ==================================================
+% NUOVA SEZIONE: POTENZA DEL RUMORE (NOISE POWER)
+% ==================================================
+\section*{Noise Power}
+
+Il \textbf{rumore termico} (noto anche come rumore di Johnson-Nyquist) è un processo casuale dovuto agli \textbf{elettroni del dispositivo che sono in moto casuale}, dotati di un'energia cinetica proporzionale alla temperatura.
+
+Trattandosi di moti puramente casuali:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item non possiamo dire precisamente quanto il rumore $n(t) \equiv v_n(t)$ valga in un dato istante;
+    \item ma la \textbf{potenza media} del rumore può essere calcolata misurando l'area al di sotto di $n^2(t)$ per un periodo di tempo $T$ sufficientemente lungo:
+    \begin{equation}
+        N \equiv P_n = \lim_{T \to \infty} \frac{1}{T} \int_0^T n^2(t) dt
+    \end{equation}
+\end{itemize}
+
+Siccome non è pratico calcolare tempi sufficientemente lunghi ($T \to \infty$), si passa al \textbf{dominio delle frequenze}.
+\begin{enumerate}
+    \item Sappiamo infatti (dal Teorema di Parseval) che la potenza in entrambi i domini (tempo e frequenze) deve essere uguale.
+    \item Perciò possiamo considerare che la \textit{root mean square} (radice della media dei quadrati) calcolata come $\frac{1}{T}\int_0^T n^2(t) dt \equiv \sigma_n^2$ nel dominio del tempo, \textbf{non è altro che l'area sottesa dal rumore nel dominio delle frequenze} (vale lo stesso discorso per i filtri passabanda).
+\end{enumerate}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        >=Stealth, 
+        font=\sffamily\small, 
+        thick,
+        % Stile per le frecce di blocco tra i grafici
+        block arrow/.style={
+            single arrow,
+            draw=black,
+            fill=white,
+            minimum height=9mm,
+            minimum width=6mm,
+            single arrow head extend=2pt,
+            inner sep=0pt
+        }
+    ]
+        % --------------------------------------------------
+        % 1. Segnale di rumore n(t)
+        % --------------------------------------------------
+        \begin{scope}[local bounding box=graph1]
+            \draw[->] (0,0) -- (3.2,0) node[right] {$t$};
+            \draw[->] (0.2,-1.1) -- (0.2,1.2) node[above] {$n(t)$};
+            
+            % Curva di rumore ad alta frequenza (somma di armoniche)
+            \draw[black, samples=200, domain=0.2:2.9, smooth] 
+                plot (\x, {0.35*sin(\x*1600) + 0.25*sin(\x*3800) + 0.2*cos(\x*5400)});
+        \end{scope}
+
+        % Freccia verso il quadrato con la dicitura ()^2
+        \node[block arrow, right=0.3cm of graph1.east, label=above:{\small $()^2$}] (arrow1) {};
+
+        % --------------------------------------------------
+        % 2. Segnale al quadrato n^2(t)
+        % --------------------------------------------------
+        \begin{scope}[shift={($(arrow1.east)+(0.4,0)$)}, local bounding box=graph2]
+            \draw[->] (0,0) -- (3.2,0) node[right] {$t$};
+            \draw[->] (0.2,-0.2) -- (0.2,1.2) node[above] {$n^2(t)$};
+            
+            % Area gialla sotto n^2(t)
+            \fill[myyellow] (0.2,0) -- 
+                plot[samples=200, domain=0.2:2.9, smooth] 
+                (\x, {pow(0.35*sin(\x*1600) + 0.25*sin(\x*3800) + 0.2*cos(\x*5400), 2)}) 
+                -- (2.9,0) -- cycle;
+            
+            % Contorno del segnale n^2(t)
+            \draw[black, samples=200, domain=0.2:2.9, smooth] 
+                plot (\x, {pow(0.35*sin(\x*1600) + 0.25*sin(\x*3800) + 0.2*cos(\x*5400), 2)});
+            
+            % Intervallo T
+            \draw[<->] (0.2, -0.4) -- (2.9, -0.4) node[midway, fill=white, inner sep=1pt] {$T$};
+        \end{scope}
+
+        % Freccia verso il dominio delle frequenze
+        \node[block arrow, right=0.3cm of graph2.east] (arrow2) {};
+
+        % --------------------------------------------------
+        % 3. Dominio delle Frequenze (Spettro di Potenza P)
+        % --------------------------------------------------
+        \begin{scope}[shift={($(arrow2.east)+(0.5,-0.1)$)}]
+            % Assi in rosso
+            \draw[->, myred, ultra thick] (0,0) -- (3.2,0) node[right] {$\nu$};
+            \draw[->, myred, ultra thick] (0,0) -- (0,1.8) node[above] {$P$};
+            
+            % Trapezio del filtro passabanda
+            \filldraw[fill=myyellow, draw=myred, ultra thick] 
+                (1.1, 0) -- (1.3, 1.1) -- (2.3, 1.1) -- (2.5, 0) -- cycle;
+            
+            % Marcatori di frequenza
+            \draw[myred, thick] (1.1, 0.08) -- (1.1, -0.08) node[below=2pt, font=\small] {$f_1$};
+            \draw[myred, thick] (1.8, 0.08) -- (1.8, -0.08) node[below=2pt, font=\small] {$f_0$};
+            \draw[myred, thick] (2.5, 0.08) -- (2.5, -0.08) node[below=2pt, font=\small] {$f_2$};
+            
+            % Indicatore della banda B
+            \draw[|<->|, myorange, thick] (1.1, -0.75) -- (2.5, -0.75) node[midway, below] {$B$};
+        \end{scope}
+    \end{tikzpicture}
+\end{figure}
+
+
+\subsection{Rumore Bianco e Modello del Resistore}
+
+Gli \textbf{effetti del rumore} si caratterizzano in termini di \textbf{temperatura di rumore} e \textbf{figura di rumore}. Queste caratteristiche si applicano a tutti i sistemi, indipendentemente dalla sorgente, purché lo spettro del rumore sia relativamente piatto sulla larghezza di banda del sistema. 
+Il rumore con uno spettro di frequenza piatto è chiamato \textbf{rumore bianco (white noise)}. Solitamente, nei sistemi a radiofrequenza e microonde, ci si trova sempre in queste condizioni.
+
+Per stabilire la potenza del rumore di un dispositivo, si può prendere in considerazione un modello fisico molto semplice: una \textbf{resistenza alla temperatura T (Kelvin)}. Gli elettroni nella resistenza sono in moto casuale; questi movimenti producono piccole fluttuazioni casuali di tensione ai terminali del resistore.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
+        \pgfmathsetseed{88}
+        % --- GRAFICO PSD RUMORE BIANCO ---
+        \begin{scope}[shift={(0,0)}]
+            \fill[gray!20] (0,0) rectangle (4, 3);
+            \draw[->] (0,0) -- (4.2, 0) node[below] {$f$};
+            \draw[->] (0,0) -- (0, 3.2) node[above] {$\overline{v_n^2}$ (log scale)};
+            % Curva 1/f e parte piatta
+            \draw[ultra thick, black] (0.2, 3) .. controls (0.5, 0.8) and (0.8, 0.6) .. (1.2, 0.6) -- (4, 0.6);
+            \draw[dashed] (1.2, 0) -- (1.2, 0.6);
+            \node[below] at (1.2, 0) {$f_c$};
+            \node[above right] at (1.2, 0.6) {Corner};
+            % Annotazioni
+            \node[align=left, font=\scriptsize] at (1.5, 2.5) {Note that this is the noise "Power Spectral\\Density" (PSD), unit [W/Hz] or [$V^2$/Hz]};
+            \draw[->, blue] (1.5, 2.2) -- (0.2, 1.8);
+            % Cerchio sul rumore bianco
+            \draw[blue, thick] (2.8, 0.6) ellipse (1cm and 0.4cm);
+            \node[align=left, font=\scriptsize] at (4.5, 1.5) {At radio frequencies,\\noise power density\\is independent of\\frequency and is\\"white" (it contains\\all frequencies)};
+            \node[draw, single arrow, fill=gray!30] at (-1.5, 1) {\scriptsize Frequency Domain};
+        \end{scope}
+        % --- MODELLO CIRCUITALE RESISTENZA ---
+        \begin{scope}[shift={(2,-3.5)}]
+            % Circuito Resistenza
+            \draw (0, 1.5) circle (1.5pt) node[above] {$T^\circ K$};
+            \draw (0, 1.5) -- (0, 1.0);
+            \draw (0, 1.0) -- (-0.2, 0.8) -- (0.2, 0.5) -- (-0.2, 0.2) -- (0, 0); % Zigzag R
+            \draw (0, 0) -- (0, -0.5) circle (1.5pt);
+            \node[left] at (-0.2, 0.5) {$R$};
+            \draw[->] (0.3, 1.2) -- (0.3, -0.2) node[midway, right] {$v(t)$};
+            % Grafico segnale
+            \draw[->] (1, 0.5) -- (9, 0.5) node[right] {$t$};
+            \draw[->] (1.2, -1) -- (1.2, 2.5) node[left] {$v(t)$};
+            \draw[black, samples=200, domain=1.2:8.8] plot (\x, {0.5 + 0.8*sin(\x*200) + 0.4*rand + 0.3*cos(\x*150)});
+        \end{scope}
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+
+\subsection{La Legge di Planck e l'Approssimazione di Rayleigh-Jeans}
+
+A margine della classica trattazione di Johnson-Nyquist, consideriamo che questa tensione casuale generata dal resistore ha un valore medio nullo, ma una \textit{root mean square} (valore efficace) $V_n \equiv \sigma_n$ non nullo. 
+Fisicamente, l'espressione esatta di questo valore deriva dalla \textbf{legge di Planck} sulla radiazione di corpo nero:
+\begin{equation}
+    V_n = \sqrt{\frac{4hf BR}{e^{hf/kT} - 1}}
+\end{equation}
+dove i termini sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item $h = \qty{6.626e-34}{\joule\second} =$ costante di Planck;
+    \item $k = \qty{1.380e-23}{\joule\per\kelvin} =$ costante di Boltzmann;
+    \item $T =$ temperatura assoluta in Kelvin;
+    \item $B =$ larghezza di banda in Hz;
+    \item $f =$ frequenza centrale della banda in Hz;
+    \item $R =$ resistenza in Ohm.
+\end{itemize}
+
+Possiamo enormemente semplificare questo risultato. Alle \textbf{frequenze radio e microonde}, l'energia del fotone è trascurabile rispetto all'energia termica, ovvero vale la relazione $hf \ll kT$.
+Perciò, utilizziamo i primi due termini di un'\textbf{espansione in serie di Taylor} per la funzione esponenziale al denominatore:
+\begin{equation}
+    e^{hf/kT} - 1 \simeq \left( 1 + \frac{hf}{kT} \right) - 1 = \frac{hf}{kT}
+\end{equation}
+Sostituendo questo denominatore semplificato nella radice, i termini $hf$ si elidono e otteniamo la nota \textbf{approssimazione di Rayleigh-Jeans} per la tensione di rumore:
+\begin{equation}
+    V_n = \sqrt{4kTBR}
+\end{equation}
+
+\subsection{Teorema del Massimo Trasferimento di Potenza}
+
+Se connettiamo questo "dispositivo-resistore rumoroso" (rappresentabile con l'equivalente di Thévenin: un generatore di tensione $V_n$ in serie a una resistenza $R$) a un carico resistivo esterno, ci chiediamo quanta potenza di rumore venga trasferita.
+
+Per il \textbf{teorema del massimo trasferimento di potenza} (o legge di Jacobi), la massima potenza trasferita si ha nelle condizioni di adattamento di impedenza, ovvero quando il carico ha \textbf{proprio la stessa resistenza R}.
+Cosicché la potenza di rumore $N$ trasferita dal dispositivo alla temperatura $T$ al carico è data, attraverso le leggi di Ohm e della potenza ($P = V_{carico}^2 / R$), da:
+\begin{equation}
+    N = P_n = \left( \frac{V_n}{2R} \right)^2 R = \frac{V_n^2}{4R} = \frac{(\sqrt{4kTBR})^2}{4R} = \frac{4kTBR}{4R} = \mathbf{kTB}
+\end{equation}
+
+Le seguenti immagini rappresentano in forma circuitale e spettrale la situazione appena descritta: occorre infatti differenziare tra potenza totale e densità spettrale.
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item il \textbf{rumore} $N = kTB = N_0 B$, è una potenza misurata per esempio in \textbf{Watt} o \textbf{dBm};
+    \item la \textbf{densità spettrale di rumore} $N_0 = N / B = kT$, misurata per esempio in \textbf{W/Hz} o \textbf{dBm/Hz}. Indica il livello di rumore puntuale in un banda infinitesima di frequenza $dHz$.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        % --- CIRCUITO 1: THEVENIN ED EQUIVALENTE ---
+        \begin{scope}[shift={(0,0)}]
+            % Generatore Rumore
+            \draw (0,0) circle (0.4cm);
+            \draw (-0.2,0) sin (-0.1,0.1) cos (0,0) sin (0.1,-0.1) cos (0.2,0);
+            \node[below] at (0,-0.4) {$V_n$};
+            % Resistenza Interna
+            \draw (0,0.4) -- (0,1) -- (0.2, 1.1) -- (-0.2, 1.3) -- (0.2, 1.5) -- (-0.2, 1.7) -- (0, 1.8) -- (0, 2) -- (1, 2);
+            \node[left] at (-0.2, 1.4) {$R$};
+            % Filtro Ideale Passabanda
+            \draw (1, 0.5) rectangle (3, 2.5);
+            \node[align=center] at (2, 2.0) {Ideal\\bandpass\\filter};
+            \draw[->] (1.3, 0.8) -- (2.7, 0.8) node[right] {$f$};
+            \fill[gray!50] (1.8, 0.8) rectangle (2.2, 1.3);
+            \draw[<->] (1.8, 0.6) -- (2.2, 0.6) node[midway, below] {$B$};
+            % Carico Adattato
+            \draw (3, 2) -- (4, 2) -- (4, 1.8) -- (3.8, 1.6) -- (4.2, 1.4) -- (3.8, 1.2) -- (4.2, 1.0) -- (4, 0.8) -- (4, 0);
+            \node[right] at (4.2, 1.4) {$R$};
+            % Collegamenti di ritorno
+            \draw (0,-0.4) -- (0,-1) -- (4,-1) -- (4,0);
+            \draw (1,-1) -- (1,0.5);
+            \draw (3,-1) -- (3,0.5);
+        \end{scope}
+        % --- CIRCUITO 2: BLOCCO RUMORE ARBITRARIO ---
+        \begin{scope}[shift={(5.5,0)}]
+            \draw (0, 0.5) rectangle (2, 2.5);
+            \node[align=center] at (1, 1.5) {Arbitrary\\white\\noise\\source};
+            \draw (2, 2) -- (3, 2) -- (3, 1.8) -- (2.8, 1.6) -- (3.2, 1.4) -- (2.8, 1.2) -- (3.2, 1.0) -- (3, 0.8) -- (3, -1) -- (2, -1);
+            \node[right] at (3.2, 1.4) {$R$};
+            % Freccia Potenza
+            \draw[->, ultra thick] (2.2, 2.3) -- (2.8, 2.3) node[above] {$N_o$};
+            \draw[<-, thick] (2.2, 1.4) -- (2.6, 1.4) node[right] {$R$};
+        \end{scope}
+        % --- CIRCUITO 3: EQUIVALENTE TEMPERATURA EQUIVALENTE ---
+        \begin{scope}[shift={(9.5,0)}]
+            \draw[dashed] (1, 1.4) circle (1.2cm);
+            \node[above left] at (0, 2.3) {$T_e$};
+            \draw (1, 2) -- (1, 1.8) -- (0.8, 1.6) -- (1.2, 1.4) -- (0.8, 1.2) -- (1.2, 1.0) -- (1, 0.8) -- (1, -1);
+            \node[left] at (0.8, 1.4) {$R$};
+            \draw (1,2) -- (3, 2) -- (3, 1.8) -- (2.8, 1.6) -- (3.2, 1.4) -- (2.8, 1.2) -- (3.2, 1.0) -- (3, 0.8) -- (3, -1) -- (1, -1);
+            \node[right] at (3.2, 1.4) {$R$};
+            \draw[->, ultra thick] (2.2, 2.3) -- (2.8, 2.3) node[above] {$N_o$};
+            \node at (4.5, 1.4) {$T_e = \dfrac{N_o}{kB}$};
+        \end{scope}
+        % --- GRAFICO DENSITÀ SPETTRALE (In basso a destra) ---
+        \begin{scope}[shift={(8,-4)}]
+            \draw[->, thick] (0,0) -- (6,0) node[below] {frequency (Hz)};
+            \draw[->, thick] (0,0) -- (0,2.5) node[above] {$N_0(f)$};
+            \node[right] at (0, 2.5) {(W/Hz)};
+            \node[left] at (0, 1.5) {$N_0$};
+            % Tratteggio banda generica
+            \draw[pattern=north east lines, pattern color=gray] (0,0) rectangle (5.5, 1.5);
+            \draw[thick] (0, 1.5) -- (5.5, 1.5);
+            % Banda evidenziata B
+            \draw[pattern=crosshatch, pattern color=black] (1.5,0) rectangle (2.5, 1.5);
+            \draw[thick, dashed] (1.5, 0) -- (1.5, 1.7);
+            \draw[thick, dashed] (2.5, 0) -- (2.5, 1.7);
+            \draw[<->, thick] (1.5, -0.4) -- (2.5, -0.4) node[midway, below] {$B$};
+        \end{scope}
+    \end{tikzpicture}%
+    }
+\end{figure}
 
 
 
