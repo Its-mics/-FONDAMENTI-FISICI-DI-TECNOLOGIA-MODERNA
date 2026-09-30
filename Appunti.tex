@@ -2993,20 +2993,6 @@ Nella figura seguente sono riportati i simboli circuitali standard (a sinistra) 
 \end{figure}
 
 
-\subsection*{Tecnologie dei Filtri}
-
-Ci sono molte \textbf{tecnologie} di filtri, che principalmente possiamo dividere in quattro grandi categorie storiche e applicative:
-
-\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Filtri passivi}: sviluppati a partire dagli anni 1940, sono costituiti esclusivamente da elementi passivi (resistenze, condensatori, induttori) che non hanno bisogno di essere alimentati (es. circuiti RC, RL, LC, RLC). Il loro principio si basa sulla reattanza:
-    \begin{itemize}[label=\textcolor{ForestGreen}{$\circ$}]
-        \item gli \textbf{induttori} bloccano i segnali ad alta frequenza e trasmettono con minore attenuazione quelli a bassa;
-        \item i \textbf{condensatori} bloccano i segnali a bassa frequenza e trasmettono con minore attenuazione quelli ad alta.
-    \end{itemize}
-    \item \textbf{Filtri attivi}: sviluppati a partire dagli anni 1950 (con l'avvento del transistore). Oltre ai componenti passivi, impiegano componenti attivi inseriti in circuiti di \textbf{amplificazione} delle bande di frequenza desiderate, compensando così le perdite di inserzione.
-    \item \textbf{Filtri in linea di trasmissione}: come i filtri risonatori, a microstriscia o in \textbf{guida d'onda}. Sono impiegati nel campo delle microonde. Hanno il grande vantaggio di poter sopportare \textbf{grandi potenze} (es. \qty{50}{\watt}) e possono essere integrati direttamente nel substrato del circuito (tecnologia \textit{SIW -- Substrate Integrated Waveguide}).
-    \item \textbf{Filtri digitali}: sfruttano il \textit{Digital Signal Processing} (DSP), conosciuto anche come elaborazione numerica dei segnali a tempo discreto (\textit{discrete-time signal processing}), modificando matematicamente e numericamente il segnale precedentemente campionato.
-\end{itemize}
 
 \subsection*{Filtri: In Teoria e in Pratica}
 
@@ -3214,17 +3200,23 @@ Quindi il roll-off si può rappresentare facilmente come una \textbf{percentuale
     \item all'aumentare di $\alpha$, per esempio per $\bm{\alpha = 1}$ (100\%), la curva diventa molto più dolce e i requisiti costruttivi del filtro vengono fortemente rilassati, a costo però di occupare il doppio dello spettro in frequenza ($B = 2f_0$).
 \end{itemize}
 
+\subsection*{Tecnologie dei Filtri}
 
-\subsection*{Specifiche dei Filtri}
+Ci sono molte \textbf{tecnologie} di filtri, che principalmente possiamo dividere in quattro grandi categorie storiche e applicative:
 
-Le specifiche fondamentali che caratterizzano un filtro reale da inserire in un circuito a radiofrequenza sono:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Frequenza centrale} ($f_0$): il centro della banda di interesse.
-    \item \textbf{Banda di frequenza} ($B$): ovvero gli estremi di frequenza (inferiore e superiore) che definiscono la zona di transito consentito.
-    \item \textbf{Attenuazione entro la banda} o \textbf{Insertion Loss}: rappresenta la perdita di potenza intrinseca del filtro. Poiché il segnale utile viene attenuato, si tratta a tutti gli effetti di un \textit{guadagno negativo}.
-    \item \textbf{Alimentazione}: necessaria se si tratta di filtri \textit{attivi}.
-    \item \textbf{Figura di rumore}: indica quanto rumore termico aggiuntivo viene introdotto dal filtro stesso.
+    \item \textbf{Filtri passivi}: sviluppati a partire dagli anni 1940, sono costituiti esclusivamente da elementi passivi (resistenze, condensatori, induttori) che non hanno bisogno di essere alimentati (es. circuiti RC, RL, LC, RLC). Il loro principio si basa sulla reattanza:
+    \begin{itemize}[label=\textcolor{ForestGreen}{$\circ$}]
+        \item gli \textbf{induttori} bloccano i segnali ad alta frequenza e trasmettono con minore attenuazione quelli a bassa;
+        \item i \textbf{condensatori} bloccano i segnali a bassa frequenza e trasmettono con minore attenuazione quelli ad alta.
+    \end{itemize}
+    \item \textbf{Filtri attivi}: sviluppati a partire dagli anni 1950 (con l'avvento del transistore). Oltre ai componenti passivi, impiegano componenti attivi inseriti in circuiti di \textbf{amplificazione} delle bande di frequenza desiderate, compensando così le perdite di inserzione.
+    \item \textbf{Filtri in linea di trasmissione}: come i filtri risonatori, a microstriscia o in \textbf{guida d'onda}. Sono impiegati nel campo delle microonde. Hanno il grande vantaggio di poter sopportare \textbf{grandi potenze} (es. \qty{50}{\watt}) e possono essere integrati direttamente nel substrato del circuito (tecnologia \textit{SIW -- Substrate Integrated Waveguide}).
+    \item \textbf{Filtri digitali}: sfruttano il \textit{Digital Signal Processing} (DSP), conosciuto anche come elaborazione numerica dei segnali a tempo discreto (\textit{discrete-time signal processing}), modificando matematicamente e numericamente il segnale precedentemente campionato.
 \end{itemize}
+
+
+
 
 \subsection*{Il Filtro di Reiezione d'Immagine (Preselettore)}
 
@@ -3397,6 +3389,17 @@ I filtri rivestono un ruolo vitale nello schema supereterodina, in particolare n
     }
     \caption*{Evoluzione dello spettro all'interno del ricevitore. Il filtro RF attenua fortemente la frequenza immagine (S2) prima del mixer. Il filtro IF seleziona in modo ``chirurgico'' il singolo canale desiderato (S1) rigettando le altre frequenze generate dal mixer.}
 \end{figure}
+
+\subsection*{Specifiche dei Filtri}
+
+Le specifiche fondamentali che caratterizzano un filtro reale da inserire in un circuito a radiofrequenza sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Frequenza centrale} ($f_0$): il centro della banda di interesse.
+    \item \textbf{Banda di frequenza} ($B$): ovvero gli estremi di frequenza (inferiore e superiore) che definiscono la zona di transito consentito.
+    \item \textbf{Attenuazione entro la banda} o \textbf{Insertion Loss}: rappresenta la perdita di potenza intrinseca del filtro. Poiché il segnale utile viene attenuato, si tratta a tutti gli effetti di un \textit{guadagno negativo}.
+    \item \textbf{Alimentazione}: necessaria se si tratta di filtri \textit{attivi}.
+    \item \textbf{Figura di rumore}: indica quanto rumore termico aggiuntivo viene introdotto dal filtro stesso.
+\end{itemize}
 
 \section{Oscillatori}
 
