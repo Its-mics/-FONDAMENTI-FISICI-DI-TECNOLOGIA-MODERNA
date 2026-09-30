@@ -9,4 +9,7 @@
 \contentsline {section}{\numberline {2.4}Architetture dei Ricevitori Radio}{19}{section.2.4}%
 \contentsline {subsection}{\numberline {2.4.1}Ricevitore Eterodina (Conversione Diretta)}{19}{subsection.2.4.1}%
 \contentsline {subsection}{\numberline {2.4.2}Ricevitore Supereterodina}{20}{subsection.2.4.2}%
-\contentsline {subsection}{\numberline {2.4.3}Schema a Blocchi di un Ricevitore Supereterodina}{21}{subsection.2.4.3}%
+\contentsline {subsection}{\numberline {2.4.3}Schema a Blocchi di un Trasmettitore Supereterodina}{23}{subsection.2.4.3}%
+\contentsline {section}{\numberline {2.5}Circuiti Integrati}{25}{section.2.5}%
+\contentsline {section}{\numberline {2.6}Il Mixer e la Conversione di Frequenza}{26}{section.2.6}%
+\contentsline {subsection}{\numberline {2.6.1}Frequenza Immagine}{29}{subsection.2.6.1}%

@@ -60,7 +60,7 @@
 \usepackage{subcaption} 
 \usepackage{tikz}
 \usepackage{tikz-3dplot}
-\usetikzlibrary{positioning, arrows.meta, angles, quotes, trees, patterns, calc, matrix}
+\usetikzlibrary{positioning, arrows.meta, angles, quotes, trees, patterns, calc, matrix, positioning, shapes.geometric, arrows.meta, fit, backgrounds, calc, arrows.meta, angles, quotes, trees, patterns, calc, matrix, shadows, fit, shapes.geometric}
 
 \pgfplotsset{
     standard/.style={
@@ -1827,7 +1827,7 @@ In pratica il funzionamento è il seguente:
 \end{itemize}
 
 
-\subsection{Schema a Blocchi di un Ricevitore Supereterodina}
+\subsection*{Schema a Blocchi di un Ricevitore Supereterodina}
 
 Per comprendere meglio il funzionamento di un ricevitore radio moderno, analizziamo il suo schema a blocchi completo. I concetti fondamentali alla base dell'architettura sono:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
@@ -1840,134 +1840,179 @@ Per comprendere meglio il funzionamento di un ricevitore radio moderno, analizzi
     \centering
     \resizebox{\textwidth}{!}{%
     \begin{tikzpicture}[font=\sffamily\scriptsize, >=Stealth]
-        
+
         % ==========================================
         % MACRO PER DISEGNARE I COMPONENTI
         % ==========================================
-        % Amplificatore (Triangolo orizzontale)
-        \newcommand{\drawamp}[3]{
-            \draw[fill=white, thick] (#1, #2-0.6) -- (#1+1.2, #2) -- (#1, #2+0.6) -- cycle;
-            \node at (#1+0.4, #2) {\textbf{#3}};
-        }
-        % Filtro (Rettangolo con onde)
-        \newcommand{\drawfilter}[3]{
-            \draw[fill=white, thick] (#1-0.6, #2-0.6) rectangle (#1+0.6, #2+0.6);
-            \node[above] at (#1, #2+0.6) {\textbf{#3}};
-            % Onde del filtro
-            \draw[thick] (#1-0.4, #2+0.2) sin (#1-0.2, #2+0.35) cos (#1, #2+0.2) sin (#1+0.2, #2+0.05) cos (#1+0.4, #2+0.2);
-            \draw[thick] (#1-0.4, #2-0.1) sin (#1-0.2, #2+0.05) cos (#1, #2-0.1) sin (#1+0.2, #2-0.25) cos (#1+0.4, #2-0.1);
-            \draw[thick] (#1-0.4, #2-0.4) sin (#1-0.2, #2-0.25) cos (#1, #2-0.4) sin (#1+0.2, #2-0.55) cos (#1+0.4, #2-0.4);
-            % Linea sbarrata (simbolo passa-banda)
-            \draw[thick] (#1-0.3, #2+0.5) -- (#1+0.3, #2-0.1);
-        }
         
+        % Amplificatore Orizzontale (LNA / AMP)
+        \newcommand{\drawamp}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1-0.4, #2-0.45) -- (#1+0.4, #2) -- (#1-0.4, #2+0.45) -- cycle;
+            \node[font=\sffamily\bfseries\scriptsize] at (#1-0.05, #2) {#3};
+        }
+
+        % Amplificatore Verticale (Buffer LO)
+        \newcommand{\drawampup}[2]{% #1=x, #2=y
+            \draw[fill=white, thick] (#1-0.35, #2-0.3) -- (#1+0.35, #2-0.3) -- (#1, #2+0.35) -- cycle;
+        }
+
+        % Filtro Passa-Banda (F1, F2) - Simbolo Standard IEEE
+        \newcommand{\drawfilter}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1-0.45, #2-0.45) rectangle (#1+0.45, #2+0.45);
+            \node[above=2pt, font=\sffamily\bfseries\small] at (#1, #2+0.45) {#3};
+            % Sinusoide Superiore (Alte Frequenze) + Sbarramento
+            \draw[thick] (#1-0.3, #2+0.2) sin (#1-0.15, #2+0.27) cos (#1, #2+0.2) sin (#1+0.15, #2+0.13) cos (#1+0.3, #2+0.2);
+            \draw[thick] (#1-0.1, #2+0.1) -- (#1+0.1, #2+0.3);
+            % Sinusoide Centrale (Banda Passante)
+            \draw[thick] (#1-0.3, #2) sin (#1-0.15, #2+0.07) cos (#1, #2) sin (#1+0.15, #2-0.07) cos (#1+0.3, #2);
+            % Sinusoide Inferiore (Basse Frequenze) + Sbarramento
+            \draw[thick] (#1-0.3, #2-0.2) sin (#1-0.15, #2-0.13) cos (#1, #2-0.2) sin (#1+0.15, #2-0.27) cos (#1+0.3, #2-0.2);
+            \draw[thick] (#1-0.1, #2-0.3) -- (#1+0.1, #2-0.1);
+        }
+
+        % Mixer (M1)
+        \newcommand{\drawmixer}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1, #2) circle (0.45cm);
+            \draw[thick] (#1-0.318, #2+0.318) -- (#1+0.318, #2-0.318);
+            \draw[thick] (#1-0.318, #2-0.318) -- (#1+0.318, #2+0.318);
+            \node[above=2pt, font=\sffamily\bfseries\small] at (#1, #2+0.45) {#3};
+        }
+
+        % Moltiplicatore (x2)
+        \newcommand{\drawmultiplier}[2]{% #1=x, #2=y
+            \draw[fill=white, thick] (#1-0.4, #2-0.25) rectangle (#1+0.4, #2+0.25);
+            \node[font=\sffamily\bfseries\scriptsize] at (#1, #2) {x2};
+        }
+
+        % VCO
+        \newcommand{\drawvco}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1, #2) circle (0.4cm);
+            \draw[thick] (#1-0.25, #2) sin (#1-0.125, #2+0.08) cos (#1, #2) sin (#1+0.125, #2-0.08) cos (#1+0.25, #2);
+            \node[above=1pt, font=\sffamily\bfseries\scriptsize] at (#1, #2+0.4) {#3};
+        }
+
+        % PLL
+        \newcommand{\drawpll}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1-0.5, #2-0.3) rectangle (#1+0.5, #2+0.3);
+            \node[font=\sffamily\bfseries\scriptsize] at (#1, #2) {#3};
+        }
+
+
         % ==========================================
-        % ZONE COLORATE (Evidenziazioni stile slide)
+        % 1. ZONE EVIDENZIATE DI SFONDO (EVIDENZIAZIONI)
         % ==========================================
+        
         % 1. Front-End (Verde)
-        \draw[ForestGreen, ultra thick, dashed, rounded corners] (0.8, -1.8) rectangle (6.5, 2.0);
-        \node[ForestGreen, font=\sffamily\bfseries\large, anchor=south west] at (0.8, 2.0) {1. RX Front-End};
+        \draw[ForestGreen, ultra thick, dashed, rounded corners=8pt, fill=ForestGreen!4] (1.1, -1.4) rectangle (6.7, 1.1);
+        \node[ForestGreen, font=\sffamily\bfseries\small, anchor=south west] at (1.1, 1.15) {1. RX Front-End};
 
         % 2. Down-Conversion (Rosso)
-        \draw[OpticRed, ultra thick, dashed, rounded corners] (6.8, -5.5) rectangle (8.8, 1.5);
-        \node[OpticRed, font=\sffamily\bfseries\large, anchor=south] at (7.8, 1.5) {2. Down-Conversion};
+        \draw[OpticRed, ultra thick, dashed, rounded corners=8pt, fill=OpticRed!4] (6.6, -5.0) rectangle (9.8, 1.1);
+        \node[OpticRed, font=\sffamily\bfseries\small, anchor=south] at (8.2, 1.15) {2. Down-Conversion};
 
-        % 3. IF Section (Blu)
-        \draw[PoliBlue, ultra thick, dashed, rounded corners] (9.2, -1.8) rectangle (13.5, 1.5);
-        \node[PoliBlue, font=\sffamily\bfseries\large, anchor=south west] at (9.2, 1.5) {3. RX IF};
+        % 3. RX IF (Blu)
+        \draw[PoliBlue, ultra thick, dashed, rounded corners=8pt, fill=PoliBlue!4] (10.0, -1.5) rectangle (13.6, 1.1);
+        \node[PoliBlue, font=\sffamily\bfseries\small, anchor=south west] at (10.0, 1.15) {3. RX IF};
 
 
         % ==========================================
-        % CATENA PRINCIPALE (Da sinistra a destra)
+        % 2. CATENA SEGNALE PRINCIPALE (RF -> IF)
         % ==========================================
-        % Input RF
-        \node[left, text=OpticRed, font=\sffamily\bfseries\large] at (0, 1.5) {RF input};
+
+        % Ingresso RF
         \filldraw[black] (0, 0) circle (2pt);
-        \draw[thick, ->] (0, 0) -- (1, 0);
-        
-        % Testi Input
-        \node[above, text=OpticRed, align=center] at (0, 0.2) {-115 dBm\\to\\-80 dBm};
-        \node[below, align=center] at (0, -0.2) {\textbf{RX}\\27.5 - 30 GHz\\[0.2cm] CH1 - 27.7 GHz\\CH12 - 29.9 GHz\\Ad. Ch - 100 MHz};
+        \node[anchor=south, text=OpticRed, font=\sffamily\bfseries\large] at (0, 1.35) {RF input};
+        \node[align=center, text=OpticRed, font=\sffamily\scriptsize] at (0, 0.7) {-115 dBm\\[-2pt]to\\[-2pt]-80 dBm};
+        \node[align=left, anchor=north, font=\sffamily\scriptsize] at (-0.1, -0.2) {
+            \textbf{RX}\\[1pt]
+            27.5 - 30 GHz\\[2pt]
+            CH1 - 27.7 GHz\\[1pt]
+            CH12 - 29.9 GHz\\[1pt]
+            Ad. Ch - 100 MHz
+        };
+        \draw[thick, ->] (0, 0) -- (1.8, 0);
 
         % LNA 1
-        \drawamp{1}{0}{LNA 1}
-        \draw[thick, ->] (2.2, 0) -- (3, 0);
-        \node[below, text=OpticRed] at (1.6, -0.8) {25 dB};
+        \drawamp{2.2}{0}{LNA1}
+        \node[below=0.3cm, text=OpticRed, font=\sffamily\bfseries] at (2.2, -0.45) {25 dB};
+        \draw[thick, ->] (2.6, 0) -- (3.6, 0);
 
         % LNA 2
-        \drawamp{3}{0}{LNA 2}
-        \draw[thick, ->] (4.2, 0) -- (5.2, 0);
-        \node[below, text=OpticRed] at (3.6, -0.8) {25 dB};
+        \drawamp{4.0}{0}{LNA2}
+        \node[below=0.3cm, text=OpticRed, font=\sffamily\bfseries] at (4.0, -0.45) {25 dB};
+        \draw[thick, ->] (4.4, 0) -- (5.35, 0);
 
         % Filtro F1
         \drawfilter{5.8}{0}{F1}
-        \draw[thick, ->] (6.4, 0) -- (7.3, 0);
-        \node[below, text=OpticRed, align=center] at (5.8, -0.8) {\textcolor{purple}{2500 MHz BW}\\-3 dB};
+        \node[below=0.25cm, align=center] at (5.8, -0.45) {\textcolor{magenta}{\textbf{2500 MHz BW}}\\[1pt]\textcolor{OpticRed}{\textbf{-3 dB}}};
+        \draw[thick, ->] (6.25, 0) -- (7.55, 0);
 
         % Mixer M1
-        \node[circle, draw, thick, fill=white, minimum size=1cm] (mixer) at (7.8, 0) {};
-        \draw[thick] (mixer.north west) -- (mixer.south east);
-        \draw[thick] (mixer.north east) -- (mixer.south west);
-        \node[above] at (7.8, 0.6) {\textbf{M1}};
-        \draw[thick, ->] (8.3, 0) -- (9.4, 0);
-        \node[above, font=\tiny\bfseries] at (8.85, 0) {IF1 - TBD};
+        \drawmixer{8.0}{0}{M1}
+        \draw[thick, ->] (8.45, 0) -- (10.35, 0);
+        \node[above=2pt, font=\sffamily\bfseries\tiny] at (9.4, 0) {IF1 - TBD};
 
         % Filtro F2
-        \drawfilter{10.0}{0}{F2}
-        \draw[thick, ->] (10.6, 0) -- (11.5, 0);
-        \node[below, text=OpticRed, align=center] at (10.0, -0.8) {\textcolor{black}{TBD}\\\textcolor{purple}{200 MHz BW}\\-2 dB};
+        \drawfilter{10.8}{0}{F2}
+        \node[below=0.25cm, align=center] at (10.8, -0.45) {\textbf{TBD}\\[1pt]\textcolor{magenta}{\textbf{200 MHz BW}}\\[1pt]\textcolor{OpticRed}{\textbf{-2 dB}}};
+        \draw[thick, ->] (11.25, 0) -- (12.4, 0);
 
-        % AMP 1
-        \drawamp{11.5}{0}{AMP 1}
-        \node[below, text=OpticRed] at (12.1, -0.8) {16 dB};
+        % Amplificatore AMP 1
+        \drawamp{12.8}{0}{AMP1}
+        \node[below=0.3cm, text=OpticRed, font=\sffamily\bfseries] at (12.8, -0.45) {16 dB};
 
-        % Output IF
-        \draw[thick] (12.7, 0) -- (13.2, 0) -- (13.2, -1.5);
-        \draw[thick, ->] (13.2, -1.5) -- (14.2, -1.5);
-        \node[above, text=OpticRed, align=center] at (13.7, -1.4) {-64 dBm\\to\\-29 dBm};
-        \node[right, text=OpticRed, font=\sffamily\bfseries\large] at (14.2, -2.5) {IF output};
+        % Uscita IF
+        \draw[thick] (13.2, 0) -- (13.9, 0) -- (13.9, -1.2);
+        \draw[thick, ->] (13.9, -1.2) -- (14.8, -1.2);
+        \node[above=2pt, align=center, text=OpticRed, font=\sffamily\scriptsize] at (14.35, -1.2) {-64 dBm\\[-2pt]to\\[-2pt]-29 dBm};
+        \node[right=2pt, text=OpticRed, font=\sffamily\bfseries\large] at (14.8, -1.2) {IF output};
 
 
         % ==========================================
-        % CATENA OSCILLATORE LOCALE (LO) - Dal basso
+        % 3. CATENA OSCILLATORE LOCALE (LO1)
         % ==========================================
-        % Collegamento al Mixer
-        \draw[thick, <-] (7.8, -0.5) -- (7.8, -1.0);
-        
-        % Moltiplicatore x2 (Triangolo verso l'alto)
-        \draw[fill=white, thick] (7.4, -1.8) -- (8.2, -1.8) -- (7.8, -1.0) -- cycle;
-        \node at (7.8, -1.5) {\textbf{x2}};
-        \draw[thick, <-] (7.8, -1.8) -- (7.8, -2.2);
-        
-        % Buffer / Amplificatore LO
-        \draw[fill=white, thick] (7.5, -2.8) -- (8.1, -2.8) -- (7.8, -2.2) -- cycle;
-        \draw[thick, <-] (7.8, -2.8) -- (7.8, -3.3);
-        \node[left, text=OpticRed] at (7.5, -2.5) {-10 dB};
-        \node[right, font=\tiny\bfseries] at (7.9, -2.9) {TBD - TBD GHz};
 
-        % Blocco LO (VCO + PLL)
-        \draw[dashed, thick, fill=gray!5] (6.9, -5.0) rectangle (8.9, -3.3);
-        \node[above left] at (7.5, -3.3) {\textbf{LO1}};
-        
+        % Box tratteggiato Gruppo Mixer/Buffer
+        \draw[dashed, thick, gray!60] (7.3, -2.1) rectangle (8.7, 0.5);
+
+        % Moltiplicatore x2
+        \drawmultiplier{8.0}{-0.9}
+        \draw[thick, ->] (8.0, -0.65) -- (8.0, -0.45);
+
+        % Buffer LO
+        \drawampup{8.0}{-1.7}
+        \draw[thick, ->] (8.0, -1.4) -- (8.0, -1.15);
+        \node[left=4pt, text=OpticRed, font=\sffamily\bfseries] at (7.65, -1.7) {-10 dB};
+        \node[right=4pt, font=\sffamily\bfseries\tiny] at (8.35, -1.7) {TBD - TBD GHz};
+
+        % Collegamento da LO1 al Buffer
+        \draw[thick, ->] (8.0, -2.5) -- (8.0, -2.0);
+
+        % Box tratteggiato LO1
+        \draw[dashed, thick, gray!60] (6.8, -4.5) rectangle (8.8, -2.4);
+        \node[above left, font=\sffamily\bfseries\tiny, gray!80] at (7.2, -2.4) {LO1};
+
         % VCO
-        \node[circle, draw, thick, fill=white, minimum size=0.8cm] (vco) at (7.8, -3.7) {};
-        \draw[thick] (7.5, -3.7) sin (7.65, -3.55) cos (7.8, -3.7) sin (7.95, -3.85) cos (8.1, -3.7);
-        \node[above] at (7.8, -3.3) {\textbf{VCO}};
-        \draw[thick, <-] (7.8, -4.1) -- (7.8, -4.4);
-        
-        % Loop VCO -> PLL
-        \draw[thick] (7.8, -3.1) -- (7.1, -3.1) -- (7.1, -4.6) -- (7.3, -4.6);
-        
-        % PLL
-        \draw[fill=white, thick] (7.3, -4.8) rectangle (8.3, -4.3);
-        \node at (7.8, -4.55) {\textbf{PLL}};
-        
-        % f_ref
-        \draw[thick, OpticRed, <-] (7.8, -5.0) -- (7.8, -5.4) node[right, text=black] {$f_{\text{ref}}$};
+        \drawvco{8.0}{-2.9}{VCO}
 
-    \end{tikzpicture}
+        % PLL
+        \drawpll{8.0}{-4.0}{PLL}
+
+        % Discesa dal VCO al PLL (al centro)
+        \draw[thick, ->] (8.0, -3.3) -- (8.0, -3.7);
+
+        % Anello di retroazione a sinistra: dal PLL verso il VCO (da sinistra)
+        \draw[thick, ->] (7.5, -4.0) -- (7.0, -4.0) -- (7.0, -2.9) -- (7.6, -2.9);
+
+        % Frequenza di Riferimento f_ref (dal basso verso il PLL)
+        \draw[thick, OpticRed, <-] (8.0, -4.3) -- (8.0, -4.8);
+        \node[below, OpticRed, font=\sffamily\small] at (8.0, -4.8) {$f_{\text{ref}}$};
+
+    \end{tikzpicture}%
     }
 \end{figure}
+
+
 
 Il diagramma soprastante può essere idealmente suddiviso in tre macro-sezioni funzionali, di cui andiamo ora ad analizzare il comportamento.
 
@@ -2001,13 +2046,778 @@ L'ultima fase del ricevitore opera su una frequenza più bassa e fissa (la IF). 
     Viene \textbf{selezionata finemente la banda} di frequenza isolando esclusivamente il canale di interesse, e viene \textbf{aumentata la potenza} di quanto necessario all'utilizzatore. Anche qui, \textbf{non c'è spostamento di frequenza}.
 \end{nota}
 
-appunti mercoledi:
-idealmente nel trasmettitore non c'è rumore a differenza del ricevitore soggetto a varie onde elettromagnetiche
 
-nella down conversion le frequenze vengono mappate facendo la differenza (tra 2 abbastanza vicine)
+\subsection{Schema a Blocchi di un Trasmettitore Supereterodina}
+
+Il diagramma di un trasmettitore (TX) esegue il percorso inverso rispetto al ricevitore appena visto. Il flusso del segnale procede tipicamente (anche a livello di rappresentazione schematica) \textbf{da destra verso sinistra} (idealmente nel trasmettitore non c'è rumore a differenza del ricevitore soggetto a varie onde elettromagnetiche)
+:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item il segnale in ingresso dalla banda base si trova a una frequenza \textbf{IF < RF};
+    \item al centro si converte la frequenza tramite l'oscillatore locale (LO) facendola passare in \textit{up-conversion} da IF a RF;
+    \item l'uscita RF deve essere ad \textbf{alta potenza} per essere inviata all'antenna e superare l'attenuazione dello spazio libero.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[font=\sffamily\scriptsize, >=Stealth]
+
+        % ==========================================
+        % DEFINIZIONE COLORI STANDARD
+        % ==========================================
+        \colorlet{ForestGreen}{green!50!black}
+        \colorlet{OpticRed}{red!80!black}
+        \colorlet{PoliBlue}{blue!70!black}
+
+        % ==========================================
+        % MACRO PER DISEGNARE I COMPONENTI
+        % ==========================================
+        
+        % Amplificatore Orizzontale rivolto a SINISTRA (A1, DRV, PA)
+        \newcommand{\drawampleft}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1+0.4, #2-0.45) -- (#1-0.4, #2) -- (#1+0.4, #2+0.45) -- cycle;
+            \node[font=\sffamily\bfseries\scriptsize] at (#1+0.08, #2) {#3};
+        }
+
+        % Filtro Passa-Banda (F3, F4) - Simbolo Standard IEEE
+        \newcommand{\drawfilter}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1-0.45, #2-0.45) rectangle (#1+0.45, #2+0.45);
+            \node[above=2pt, font=\sffamily\bfseries\small] at (#1, #2+0.45) {#3};
+            % Sinusoide Superiore + Sbarramento
+            \draw[thick] (#1-0.3, #2+0.2) sin (#1-0.15, #2+0.27) cos (#1, #2+0.2) sin (#1+0.15, #2+0.13) cos (#1+0.3, #2+0.2);
+            \draw[thick] (#1-0.1, #2+0.1) -- (#1+0.1, #2+0.3);
+            % Sinusoide Centrale
+            \draw[thick] (#1-0.3, #2) sin (#1-0.15, #2+0.07) cos (#1, #2) sin (#1+0.15, #2-0.07) cos (#1+0.3, #2);
+            % Sinusoide Inferiore + Sbarramento
+            \draw[thick] (#1-0.3, #2-0.2) sin (#1-0.15, #2-0.13) cos (#1, #2-0.2) sin (#1+0.15, #2-0.27) cos (#1+0.3, #2-0.2);
+            \draw[thick] (#1-0.1, #2-0.3) -- (#1+0.1, #2-0.1);
+        }
+
+        % Mixer (M2)
+        \newcommand{\drawmixer}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1, #2) circle (0.45cm);
+            \draw[thick] (#1-0.318, #2+0.318) -- (#1+0.318, #2-0.318);
+            \draw[thick] (#1-0.318, #2-0.318) -- (#1+0.318, #2+0.318);
+            \node[below=2pt, font=\sffamily\bfseries\small] at (#1, #2-0.45) {#3};
+        }
+
+        % VCO
+        \newcommand{\drawvco}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1, #2) circle (0.4cm);
+            \draw[thick] (#1-0.25, #2) sin (#1-0.125, #2+0.08) cos (#1, #2) sin (#1+0.125, #2-0.08) cos (#1+0.25, #2);
+            \node[above=1pt, font=\sffamily\bfseries\scriptsize] at (#1, #2+0.4) {#3};
+        }
+
+        % PLL
+        \newcommand{\drawpll}[3]{% #1=x, #2=y, #3=label
+            \draw[fill=white, thick] (#1-0.5, #2-0.3) rectangle (#1+0.5, #2+0.3);
+            \node[font=\sffamily\bfseries\scriptsize] at (#1, #2) {#3};
+        }
+
+        % Sensore / Accoppiatore di Potenza
+        \newcommand{\drawcoupler}[2]{% #1=x, #2=y
+            \draw[fill=gray!20, thick] (#1-0.2, #2-0.35) rectangle (#1+0.2, #2+0.35);
+            \draw[thick] (#1, #2) circle (1.5pt);
+        }
+
+
+        % ==========================================
+        % 1. ZONE EVIDENZIATE DI SFONDO (RIQUADRI)
+        % ==========================================
+        
+        % 3. TX Front-End (Verde - Sinistra)
+        \draw[ForestGreen, ultra thick, dashed, rounded corners=8pt, fill=ForestGreen!4] (0.4, -1.5) rectangle (6.4, 1.1);
+        \node[ForestGreen, font=\sffamily\bfseries\small, anchor=south west] at (0.4, 1.15) {3. TX Front-End};
+
+        % 2. Up-Conversion (Rosso - Centro)
+        \draw[OpticRed, ultra thick, dashed, rounded corners=8pt, fill=OpticRed!4] (6.5, -1.5) rectangle (9.7, 5.2);
+        \node[OpticRed, font=\sffamily\bfseries\small, anchor=south] at (8.1, 5.25) {2. Up-Conversion};
+
+        % 1. TX IF (Blu - Destra)
+        \draw[PoliBlue, ultra thick, dashed, rounded corners=8pt, fill=PoliBlue!4] (9.8, -1.5) rectangle (14.8, 1.1);
+        \node[PoliBlue, font=\sffamily\bfseries\small, anchor=south east] at (14.8, 1.15) {1. TX IF};
+
+
+        % ==========================================
+        % 2. CATENA SEGNALE PRINCIPALE (DA DESTRA A SINISTRA)
+        % ==========================================
+
+        % Ingresso IF (A Destra)
+        \filldraw[black] (14.5, 0) circle (2pt);
+        \node[anchor=south, text=OpticRed, font=\sffamily\bfseries\large] at (14.5, 1.35) {IF input};
+        
+        % Collegamento IF Input -> A1
+        \draw[thick, <-] (13.4, 0) -- (14.5, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (14.0, 0) {-7 dBm};
+
+        % Amplificatore A1
+        \drawampleft{13.0}{0}{A1}
+
+        % Collegamento A1 -> F3
+        \draw[thick, <-] (11.05, 0) -- (12.6, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (11.8, 0) {8 dBm};
+
+        % Filtro F3
+        \drawfilter{10.6}{0}{F3}
+        \node[below=0.25cm, align=center] at (10.6, -0.45) {\textbf{TBD}\\[1pt]\textcolor{magenta}{\textbf{200 MHz BW}}};
+
+        % Collegamento F3 -> M2
+        \draw[thick, <-] (8.45, 0) -- (10.15, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (9.3, 0) {6 dBm};
+        \node[below=2pt, font=\sffamily\bfseries\tiny] at (9.3, 0) {IF2 - TBD};
+
+        % Mixer M2
+        \drawmixer{8.0}{0}{M2}
+
+        % Collegamento M2 -> F4
+        \draw[thick, <-] (6.25, 0) -- (7.55, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (6.9, 0) {-4 dBm};
+
+        % Filtro F4
+        \drawfilter{5.8}{0}{F4}
+        \node[below=0.25cm, align=center] at (5.8, -0.45) {\textcolor{magenta}{\textbf{2400 MHz BW}}};
+
+        % Collegamento F4 -> DRV
+        \draw[thick, <-] (4.4, 0) -- (5.35, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (4.85, 0) {-7 dBm};
+
+        % Amplificatore DRV
+        \drawampleft{4.0}{0}{DRV}
+
+        % Collegamento DRV -> PA
+        \draw[thick, <-] (2.6, 0) -- (3.6, 0);
+        \node[above=2pt, font=\sffamily\scriptsize] at (3.1, 0) {9 dBm};
+
+        % Power Amplifier PA
+        \drawampleft{2.2}{0}{PA}
+
+        % Collegamento PA -> Sensore
+        \draw[thick, <-] (1.2, 0) -- (1.8, 0);
+
+        % Sensore/Accoppiatore
+        \drawcoupler{1.0}{0}
+
+        % Uscita RF (A Sinistra)
+        \draw[thick, <-] (0, 0) -- (0.8, 0);
+        \filldraw[black] (0, 0) circle (2pt);
+        \node[anchor=south, text=OpticRed, font=\sffamily\bfseries\large] at (0, 1.35) {RF output};
+        
+        \node[align=left, anchor=north, font=\sffamily\scriptsize] at (-0.1, -0.2) {
+            \textbf{TX}\\[1pt]
+            17.8 - 20.2 GHz\\[1pt]
+            1.5 W\\[1pt]
+            32 dBm max\\[2pt]
+            CH1 - 17.9 GHz\\[1pt]
+            CH12 - 20.1 GHz\\[1pt]
+            Ad. Ch - 100 MHz
+        };
+
+
+        % ==========================================
+        % 3. CATENA OSCILLATORE LOCALE (LO2) - ESATTO COME DA SLIDE
+        % ==========================================
+
+        % Box tratteggiato contenitore LO2
+        \draw[dashed, thick, gray!60] (6.8, 1.7) rectangle (9.2, 4.4);
+        \node[above right, font=\sffamily\bfseries\tiny, gray!80] at (6.8, 4.4) {LO2};
+
+        % VCO
+        \drawvco{8.0}{3.8}{VCO}
+
+        % PLL
+        \drawpll{8.0}{2.4}{PLL}
+
+        % 1. Discesa dal VCO al PLL (al centro)
+        \draw[thick, ->] (8.0, 3.4) -- (8.0, 2.7);
+
+        % 2. Retroazione a sinistra: parte dal PLL e PUNTA NEL VCO (da sinistra)
+        \draw[thick, ->] (7.5, 2.4) -- (7.0, 2.4) -- (7.0, 3.8) -- (7.6, 3.8);
+
+        % Frequenza di Riferimento f_ref (dall'alto verso il VCO)
+        \draw[thick, OpticRed, ->] (8.0, 4.8) -- (8.0, 4.2);
+        \node[above, OpticRed, font=\sffamily\small] at (8.0, 4.8) {$f_{\text{ref}}$};
+
+        % Controllo Frequenza LO2 (Da Destra verso il PLL)
+        \draw[thick, ->, PoliBlue] (10.5, 2.4) -- (8.5, 2.4);
+        \node[above=1pt, font=\sffamily\bfseries\tiny, PoliBlue] at (9.6, 2.4) {LO 2 Frequency control};
+
+        % Uscita dal PLL verso il Mixer M2
+        \draw[thick, ->] (8.0, 2.1) -- (8.0, 0.45);
+        \node[left=3pt, font=\sffamily\scriptsize] at (8.0, 1.1) {-1 dBm};
+        \node[right=3pt, font=\sffamily\bfseries\tiny] at (8.0, 1.1) {TBD - TBD GHz};
+
+    \end{tikzpicture}%
+    }
+\end{figure}
 
 
 
-per ridurre il ruomore per il filtro posso scegliere un range più piccolo andando a sottostimare cosi l'output della larghezza della banda?
-È ammissibile ridurre l'intervallo di frequenze del filtro, accettando una sottostima della larghezza di banda, al fine di migliorare il rapporto segnale-rumore?"
+
+
+Come per il ricevitore, andiamo a sviscerare le tre macro-sezioni funzionali del trasmettitore, ricordando che il flusso procede da destra verso sinistra.
+
+\subsubsection*{1. TX IF (Frequenza Intermedia in ingresso)}
+Il segnale proveniente dai modulatori entra nella catena radio. Questo stadio è composto da:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Amplificatore/i (A1)}: fornisce un primo stadio di guadagno per compensare le perdite dei filtri.
+    \item \textbf{Filtro d'ingresso (F3)}: seleziona in modo pulito la banda del segnale utile. \textit{Nota: nei ricevitori questo stesso stadio ha funzione di reiezione dell'immagine, ma nel TX serve a non iniettare rumore fuori banda nel mixer.}
+\end{itemize}
+\begin{nota}[colback=PoliBlue!5, colframe=PoliBlue, title={\textbf{Cosa succede nello stadio TX IF?}}]
+    Qui viene \textbf{aumentata la potenza} e viene \textbf{selezionata la banda} di frequenza iniziale, ma \textbf{non cambia la frequenza} portante.
+\end{nota}
+
+\subsubsection*{2. Up-Conversion}
+Il segnale a frequenza intermedia viene ora "portato in alto" verso le frequenze di trasmissione spaziale.
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item \textbf{Mixer (Mescolatore M2)}: circuito non lineare che opera la moltiplicazione tra segnali, creando le componenti somma e differenza.
+    \item \textbf{Oscillatore Locale (LO2)}: comandato da un PLL, fornisce la frequenza portante purissima al mixer per convertire il segnale IF nel segnale RF.
+\end{itemize}
+\begin{nota}[colback=OpticRed!5, colframe=OpticRed, title={\textbf{Cosa succede nell'Up-Conversion?}}]
+    Questo è lo stadio in cui \textbf{cambia la frequenza} (sale a RF). La potenza può cambiare leggermente in base alle perdite o ai guadagni interni del mixer.
+\end{nota}
+
+\subsubsection*{3. TX Front-End (Radiofrequenza in uscita)}
+L'ultimo stadio prima dell'antenna è dedicato all'incremento brutale della potenza.
+\begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
+    \item \textbf{Filtro in uscita (F4)}: elimina i prodotti spuri e le armoniche generate dal mixer, lasciando passare solo la radiofrequenza desiderata.
+    \item \textbf{Serie di Amplificatori (DRV e PA)}: il \textit{Driver} (DRV) prepara il segnale per l'ultimo imponente stadio, il \textbf{Power Amplifier (PA)}, che alza il segnale a livelli di Watt (es. \qty{1.5}{\watt} / \qty{32}{\deci\bel m}) per irradiare lo spazio.
+\end{itemize}
+\begin{nota}[colback=ForestGreen!5, colframe=ForestGreen, title={\textbf{Cosa succede nel TX Front-End?}}]
+    Qui \textbf{aumenta di molto la potenza} e viene selezionata/ripulita la banda di frequenza finale eliminando le spurie. \textbf{Non cambia la frequenza}.
+\end{nota}
+
+
+
+\section{Circuiti Integrati}
+
+Abbiamo analizzato gli schemi a blocchi e i principi logici di Tx e Rx. A livello fisico e ingegneristico, tutti i componenti descritti finora (amplificatori, mixer, oscillatori) vengono realizzati all'interno di dispositivi microscopici.
+
+\subsection*{Struttura Generale di un IC}
+
+Un \textbf{circuito integrato (IC - Integrated Circuit)} o \textit{microchip} è un dispositivo miniaturizzato in cui tutti i componenti (da poche unità fino a decine di milioni), sia attivi (transistori) che passivi (resistori, condensatori), e i loro collegamenti vengono realizzati su un unico supporto di semiconduttore. 
+
+Il chip funge quindi da supporto al circuito e ai suoi componenti. In questa forma essenziale, nuda, il circuito integrato è definito \textbf{"die"}. 
+La versione commerciale e usuale in cui incontriamo un IC è però composta da diverse parti fondamentali:
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{die}: la vera e propria piastrina di silicio su cui è inciso il circuito;
+    \item \textbf{wire bonding}: sottilissimi filamenti (solitamente d'oro) che interconnettono le microscopiche piazzole del \textit{die} con i conduttori metallici del mondo esterno;
+    \item \textbf{piedini/pin}: l'interfaccia metallica e robusta di contatto dell'IC con il mondo esterno;
+    \item \textbf{package}: l'involucro o contenitore (spesso in resina epossidica o ceramica) che racchiude, protegge e sigilla tutto l'IC.
+\end{itemize}
+
+Questi componenti, una volta assemblati nel package finale, vengono poi saldati e montati su un \textbf{printed circuit board (PCB)}, comunemente noto come circuito stampato (la classica scheda elettronica verde).
+
+\vspace{0.5cm}
+
+% Diagramma illustrativo del package in TikZ
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[font=\sffamily\small]
+        
+        % Sfondo PCB
+        \fill[ForestGreen!60!black, rounded corners=2mm] (-6, -1.5) rectangle (6, 4.5);
+        \draw[ForestGreen!30!black, step=0.5cm, very thin, opacity=0.3] (-6, -1.5) grid (6, 4.5);
+        \node[text=white, font=\bfseries\Large, opacity=0.3] at (0, 3.5) {PRINTED CIRCUIT BOARD (PCB)};
+        
+        % ======================================
+        % DISEGNO DEL CHIP (Top-Down spaccato)
+        % ======================================
+        \begin{scope}[shift={(0,1.2)}]
+            
+            % Corpo del Package (Resina nera)
+            \fill[black!85, rounded corners=1mm, drop shadow] (-3, -1.5) rectangle (3, 1.5);
+            % Spaccatura per vedere l'interno
+            \fill[gray!20, rounded corners=1mm] (-1.5, -0.8) rectangle (1.5, 0.8);
+            
+            % Leadframe (Conduttori interni argentati)
+            \foreach \x in {-2.6, -2.0, -1.4, -0.8, -0.2, 0.4, 1.0, 1.6, 2.2} {
+                \fill[gray!60] (\x+0.1, 0.8) rectangle (\x+0.3, 1.5);
+                \fill[gray!60] (\x+0.1, -1.5) rectangle (\x+0.3, -0.8);
+            }
+            
+            % Piedini / Pin (Esterni)
+            \foreach \x in {-2.6, -2.0, -1.4, -0.8, -0.2, 0.4, 1.0, 1.6, 2.2} {
+                \fill[gray!80, draw=gray!40] (\x+0.1, 1.5) rectangle (\x+0.3, 2.2);
+                \fill[gray!80, draw=gray!40] (\x+0.1, -2.2) rectangle (\x+0.3, -1.5);
+            }
+
+            % Il Die (Piastrina di silicio al centro)
+            \fill[inner color=cyan!30, outer color=blue!60!black, draw=blue!20, thick] (-0.8, -0.4) rectangle (0.8, 0.4);
+            % Dettagli microscopici sul Die
+            \draw[step=0.15cm, cyan!20, thin, opacity=0.5] (-0.8, -0.4) grid (0.8, 0.4);
+            
+            % Wire Bonding (Fili d'oro)
+            \foreach \x in {-0.6, -0.4, -0.2, 0, 0.2, 0.4, 0.6} {
+                % Fili verso l'alto
+                \draw[orange!90!yellow, thick] (\x, 0.3) to[out=90, in=270] (\x*2, 0.9);
+                \fill[orange!90!yellow] (\x, 0.3) circle (1.5pt); % Pad sul die
+                \fill[orange!90!yellow] (\x*2, 0.9) circle (1.5pt); % Pad sul leadframe
+                
+                % Fili verso il basso
+                \draw[orange!90!yellow, thick] (\x, -0.3) to[out=270, in=90] (\x*2, -0.9);
+                \fill[orange!90!yellow] (\x, -0.3) circle (1.5pt);
+                \fill[orange!90!yellow] (\x*2, -0.9) circle (1.5pt);
+            }
+        \end{scope}
+
+        % ======================================
+        % ETICHETTE E FRECCE
+        % ======================================
+        
+        % Die
+        \node[fill=white, draw=PoliBlue, thick, rounded corners, inner sep=4pt] (lbl_die) at (4.5, 1.2) {\textbf{Die} (Silicio)};
+        \draw[-{Stealth}, ultra thick, white] (lbl_die.west) -- (0.5, 1.2);
+        
+        % Wire Bonding
+        \node[fill=white, draw=PoliBlue, thick, rounded corners, inner sep=4pt] (lbl_wire) at (4.5, 0.2) {\textbf{Wire Bonding}};
+        \draw[-{Stealth}, ultra thick, white] (lbl_wire.west) -- (0.8, 0.6);
+        
+        % Package
+        \node[fill=white, draw=PoliBlue, thick, rounded corners, inner sep=4pt] (lbl_pack) at (-4.5, 1.2) {\textbf{Package} (Resina)};
+        \draw[-{Stealth}, ultra thick, white] (lbl_pack.east) -- (-2, 1.2);
+        
+        % Pins
+        \node[fill=white, draw=PoliBlue, thick, rounded corners, inner sep=4pt] (lbl_pin) at (-4.5, -0.2) {\textbf{Pin / Piedini}};
+        \draw[-{Stealth}, ultra thick, white] (lbl_pin.east) -- (-2.4, -0.5);
+
+    \end{tikzpicture}
+    \caption*{Spaccato logico di un circuito integrato (IC) montato su scheda (PCB).}
+\end{figure}
+
+% ==================================================
+% NUOVA SEZIONE: IL MIXER
+% ==================================================
+\section{Il Mixer e la Conversione di Frequenza}
+
+Un mixer (o mescolatore) è un \textbf{dispositivo a tre porte} che utilizza elementi \textbf{non lineari} o variabili nel tempo per ottenere una \textbf{conversione di frequenza}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        >=Stealth, font=\sffamily\small,
+        mixer/.style={circle, draw, thick, fill=white, minimum size=1.2cm, path picture={\draw[thick] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick] (path picture bounding box.north east) -- (path picture bounding box.south west);}}
+    ]
+        % Mixer
+        \node[mixer, label=above:{\scriptsize Mixer non lineare}] (m) at (0,0) {};
+        
+        % Ingressi
+        \coordinate (in1) at (-2, 0);
+        \coordinate (in2) at (0, -2);
+        
+        % Uscita
+        \coordinate (out) at (3, 0);
+        
+        % Frecce e Testi
+        \draw[->, thick] (in1) -- (m.west) node[pos=0, left] {$v_1(t)$};
+        \draw[->, thick] (in2) -- (m.south) node[pos=0, below] {$v_2(t)$};
+        \draw[->, thick] (m.east) -- (out) node[pos=1, right] {$v_1(t) \cdot v_2(t)$};
+    \end{tikzpicture}
+\end{figure}
+
+Due punti importanti riguardano il suo funzionamento:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Il simbolo del mixer indica che l'\textbf{uscita è proporzionale al prodotto dei due segnali di ingresso}. Quindi il mixer, nel dominio del tempo, esegue un prodotto matematico di segnali, anche se poi noi lo utilizziamo per \textit{sommare} le frequenze dei segnali nel dominio della frequenza.
+    \item Un mixer \textit{ideale} produce un'uscita costituita esclusivamente dalla somma e dalla differenza delle frequenze dei due segnali di ingresso. Tuttavia, il funzionamento dei mixer reali a radiofrequenza e microonde si basa solitamente sulla \textbf{non linearità} fornita da diodi o da transistori.
+    \begin{itemize}[label=$\circ$]
+        \item Siccome un componente non lineare può generare un'ampia varietà di armoniche, allora \textbf{in realtà il mixer produce una grande varietà di armoniche e altri prodotti indesiderati} e non solo i segnali somma e differenza. Perciò è necessario ricorrere al \textbf{filtraggio} per selezionare le componenti desiderate.
+    \end{itemize}
+\end{itemize}
+
+\subsection*{Up-conversion}
+
+La figura seguente illustra il funzionamento della \textit{up-conversion} di frequenza, come avviene in un \textbf{trasmettitore}. Un segnale dell'\textbf{oscillatore locale (LO)} alla frequenza relativamente alta $f_{LO}$ è collegato a una delle porte di ingresso del mixer.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        >=Stealth, font=\sffamily\small,
+        mixer/.style={circle, draw, thick, fill=white, minimum size=1cm, path picture={\draw[thick] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick] (path picture bounding box.north east) -- (path picture bounding box.south west);}},
+        osc/.style={circle, draw, thick, fill=white, minimum size=0.9cm, path picture={\draw[thick] (-0.25, 0) sin (-0.125, 0.15) cos (0, 0) sin (0.125, -0.15) cos (0.25, 0);}}
+    ]
+        % Componenti
+        \node[osc, label=below:{\shortstack{Local\\oscillator}}] (lo) at (0, 0) {};
+        \node[mixer, label=above:{Mixer}] (m) at (2.5, 0) {};
+        \node[osc, label=right:{\shortstack{IF\\oscillator}}] (if) at (2.5, -2) {};
+        
+        % Frecce e Testi
+        \draw[->, thick] (lo.east) -- (m.west) node[midway, above] {$f_{LO}$};
+        \draw[->, thick] (if.north) -- (m.south) node[midway, right] {$f_{IF}$};
+        \draw[->, thick] (m.east) -- (6, 0) node[midway, above] {$f_{RF} = f_{LO} \pm f_{IF}$};
+        
+    \end{tikzpicture}
+\end{figure}
+
+Il segnale LO può essere rappresentato matematicamente come un'onda cosinusoidale pura:
+\begin{equation}
+    v_{LO}(t) = \cos(2\pi f_{LO}t)
+\end{equation}
+
+All'altro ingresso del mixer viene applicato un segnale in banda base a frequenza inferiore o a \textbf{frequenza intermedia (IF)}. Questo segnale contiene tipicamente le informazioni o i dati da trasmettere, e può essere espresso come:
+\begin{equation}
+    v_{IF}(t) = \cos(2\pi f_{IF}t)
+\end{equation}
+
+L'output del mixer idealizzato è dato dal \textbf{prodotto} di LO e IF. Applicando le formule di prostaferesi (o formule di Werner) per il prodotto di coseni, otteniamo:
+\begin{equation}
+    \begin{aligned}
+        v_{RF}(t) &= K \, v_{LO}(t) \, v_{IF}(t) = K \cos(2\pi f_{LO}t) \cos(2\pi f_{IF}t) \\[1ex]
+        &= \frac{K}{2} \Big[ \cos\big(2\pi (f_{LO} - f_{IF})t\big) + \cos\big(2\pi (f_{LO} + f_{IF})t\big) \Big]
+    \end{aligned}
+\end{equation}
+
+dove $K$ è una costante che tiene conto della \textbf{perdita di conversione} di tensione del mixer.
+
+\subsection*{Bande Laterali (Sidebands)}
+
+Come dimostrato matematicamente, l'uscita RF è costituita dalla somma e dalla differenza delle frequenze dei segnali di ingresso:
+\begin{equation}
+    f_{RF} = f_{LO} \pm f_{IF}
+\end{equation}
+
+Si nota chiaramente che il mixer ha l'effetto di \textit{modulare} il segnale LO con il segnale IF. La somma e la differenza $f_{LO} \pm f_{IF}$ sono chiamate \textbf{bande laterali} della frequenza portante $f_{LO}$:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item $f_{LO} + f_{IF}$ è la \textbf{banda laterale superiore (USB} - \textit{Upper Sideband});
+    \item $f_{LO} - f_{IF}$ è la \textbf{banda laterale inferiore (LSB} - \textit{Lower Sideband}).
+\end{itemize}
+
+Con appositi filtri potremo selezionare il segnale che ci interessa (ad esempio solo la USB per trasmissioni SSB) ed escludere quelli che non servono.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[>=Stealth, thick, font=\sffamily\small]
+        
+        % Asse delle Frequenze (X)
+        \draw[->] (-0.5, 0) -- (9, 0) node[right] {$f$};
+        
+        % Asse verticale in 0 (origine)
+        \draw (0, 0) -- (0, 3);
+        \node[below] at (0, -0.1) {0};
+        
+        % ==========================
+        % COMPONENTI DELLO SPETTRO
+        % ==========================
+        
+        % 1. Segnale IF (Banda base / Frequenza intermedia)
+        \draw[->] (1.5, 0) -- (1.5, 2.4);
+        \node[below] at (1.5, -0.1) {$f_{IF}$};
+        
+        % 2. Banda Laterale Inferiore (LSB)
+        \draw[->] (4.5, 0) -- (4.5, 1.7);
+        \node[below, align=center] at (4.5, -0.5) {$f_{LO} - f_{IF}$}; 
+        % (Spostato leggermente più in basso per non sovrapporsi)
+        
+        % 3. Oscillatore Locale (Portante)
+        \draw[->] (6.0, 0) -- (6.0, 2.6);
+        \node[below] at (6.0, -0.1) {$f_{LO}$};
+        
+        % 4. Banda Laterale Superiore (USB)
+        \draw[->] (7.5, 0) -- (7.5, 1.7);
+        \node[below, align=center] at (7.5, -0.5) {$f_{LO} + f_{IF}$};
+        
+    \end{tikzpicture}
+    \caption*{Spettro idealizzato dell'uscita di un mixer. I picchi rappresentano le componenti in frequenza generate dal prodotto matematico dei segnali d'ingresso.}
+\end{figure}
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        % ==========================================
+        % ASSI E SETUP
+        % ==========================================
+        % Asse Superiore (Ingressi)
+        \draw[->, ultra thick] (0, 3) -- (12, 3) node[below] {$f$};
+        % Asse Inferiore (Uscita)
+        \draw[->, ultra thick] (0, 0) -- (12, 0) node[below] {$f$};
+        %
+        % ==========================================
+        % SPETTRO SUPERIORE (INPUT: BLU E VERDE)
+        % ==========================================
+        % Segnale d'ingresso (Blu) - f_IN = 1.0 MHz
+        \def\fin{3.5} % Posizione x di f_IN
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[blue, line width=1.5pt] (\fin+\x, 3) -- (\fin+\x, 3+\h);
+        }
+        \node[blue, below=0.1cm] at (\fin, 3) {$f_{IN} = \qty{1.0}{\mega\hertz}$};
+        % Etichetta blu
+        \node[blue, align=center] (lbl_in) at (\fin-1.5, 4.2) {spettro del segnale\\d'ingresso};
+        \draw[->, blue, thin] (lbl_in.east) -- (\fin-0.2, 4);
+        %
+        % Oscillatore Locale (Verde) - f_LO = 1.5 MHz
+        \def\flo{6} % Posizione x di f_LO
+        \draw[ForestGreen, line width=2pt] (\flo, 3) -- (\flo, 5);
+        \node[ForestGreen, below=0.1cm] at (\flo, 3) {$f_{LO} = \qty{1.5}{\mega\hertz}$};
+        % Etichetta verde
+        \node[ForestGreen, align=left] (lbl_lo) at (\flo+1.5, 4.2) {segnale\\dell'oscillatore\\locale};
+        \draw[->, ForestGreen, thin] (lbl_lo.west) -- (\flo+0.1, 4);
+        %
+        % ==========================================
+        % MIXER AL CENTRO
+        % ==========================================
+        \node[circle, draw=blue, thick, fill=white, minimum size=1cm, path picture={\draw[thick, blue] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick, blue] (path picture bounding box.north east) -- (path picture bounding box.south west);}] (mixer) at (4.5, 1.5) {};
+        % Frecce verso il mixer
+        \draw[->, blue, ultra thick] (\fin, 2.5) -- (mixer.north);
+        \draw[->, ForestGreen, ultra thick] (\flo, 2.8) -- (\flo, 1.5) -- (mixer.east);
+        \draw[->, red, ultra thick] (mixer.south) -- (4.5, 0.6);
+        \node[red, align=center] at (4.5, 0.3) {dopo la\\conversione};
+        %
+        % ==========================================
+        % SPETTRO INFERIORE (OUTPUT: ROSSO)
+        % ==========================================
+        % Lower Sideband (Rosso) - LSB = f_LO - f_IN = 0.5 MHz
+        \def\flsb{2} % Posizione x di LSB
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[red, line width=1.5pt] (\flsb+\x, 0) -- (\flsb+\x, \h);
+        }
+        \node[red, below=0.1cm] at (\flsb, 0) {$f_{OUT} = f_{LO} - f_{IN} = \qty{0.5}{\mega\hertz}$};
+        \node[red, align=center, font=\bfseries] at (\flsb, 1.6) {Lower\\Sideband};
+        \draw[->, black, thick] (3.8, 0.6) -- (\flsb+0.5, 0.9);
+        %
+        % Upper Sideband (Rosso) - USB = f_IN + f_LO = 2.5 MHz
+        \def\fusb{9.5} % Posizione x di USB
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[red, line width=1.5pt] (\fusb+\x, 0) -- (\fusb+\x, \h);
+        }
+        \node[red, below=0.1cm] at (\fusb, 0) {$f_{OUT} = f_{IN} + f_{LO} = \qty{2.5}{\mega\hertz}$};
+        \node[red, align=center, font=\bfseries] at (\fusb, 1.6) {Upper\\Sideband};
+        \draw[->, black, thick] (5.2, 0.6) -- (\fusb-0.5, 0.9);
+        %
+        % Tacche asse inferiore
+        \foreach \x in {1, 3.5, 6, 8} {
+            \draw[thick] (\x, 0.1) -- (\x, -0.1);
+        }
+        % Tacche asse superiore
+        \foreach \x in {1, 3.5, 6, 8, 9.5} {
+            \draw[thick] (\x, 3.1) -- (\x, 2.9);
+        }
+    \end{tikzpicture}%
+    }
+    \caption*{Rappresentazione nel dominio della frequenza di una \textit{up-conversion}. Notare la generazione delle due bande laterali (USB e LSB).}
+\end{figure}
+
+\textit{Nota sulla nomenclatura:} nel grafico sovrastante, la frequenza intermedia (IF) viene indicata per generalità come frequenza di ingresso ($f_{IN}$).
+
+\subsection*{Matematica della Down-conversion}
+
+Al contrario rispetto al Tx, la figura seguente mostra il processo di \textit{down-conversion} della frequenza, utilizzato in un \textbf{ricevitore}. 
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[
+        >=Stealth, font=\sffamily\small,
+        mixer/.style={circle, draw, thick, fill=white, minimum size=1cm, path picture={\draw[thick] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick] (path picture bounding box.north east) -- (path picture bounding box.south west);}},
+        osc/.style={circle, draw, thick, fill=white, minimum size=0.9cm, path picture={\draw[thick] (-0.25, 0) sin (-0.125, 0.15) cos (0, 0) sin (0.125, -0.15) cos (0.25, 0);}}
+    ]
+        % Componenti
+        \node[osc, label=below:{\shortstack{RF\\oscillator}}] (rf) at (0, 0) {};
+        \node[mixer, label=above:{Mixer}] (m) at (2.5, 0) {};
+        \node[osc, label=right:{\shortstack{Local\\oscillator}}] (lo) at (2.5, -2) {};
+        % Frecce e Testi
+        \draw[->, thick] (rf.east) -- (m.west) node[midway, above] {$f_{RF}$};
+        \draw[->, thick] (lo.north) -- (m.south) node[midway, right] {$f_{LO}$};
+        \draw[->, thick] (m.east) -- (6, 0) node[midway, above] {$f_{IF} = f_{RF} \pm f_{LO}$};
+    \end{tikzpicture}
+\end{figure}
+
+In questo caso un segnale RF in ingresso captato dall'antenna, della forma
+\begin{equation}
+    v_{RF}(t) = \cos(2\pi f_{RF}t)
+\end{equation}
+è applicato all'ingresso del mixer, congiuntamente al segnale LO
+\begin{equation}
+    v_{LO}(t) = \cos(2\pi f_{LO}t)
+\end{equation}
+
+L'output del mixer, applicando nuovamente le formule trigonometriche del prodotto, è allora:
+\begin{equation}
+    \begin{aligned}
+        v_{IF}(t) &= K \, v_{RF}(t) \, v_{LO}(t) = K \cos(2\pi f_{RF}t) \cos(2\pi f_{LO}t) \\[1ex]
+        &= \frac{K}{2} \Big[ \cos\big(2\pi (f_{RF} - f_{LO})t\big) + \cos\big(2\pi (f_{RF} + f_{LO})t\big) \Big]
+    \end{aligned}
+\end{equation}
+
+L'uscita del mixer è quindi costituita matematicamente dalla \textbf{somma} e dalla \textbf{differenza} delle frequenze dei segnali di ingresso.
+
+Lo spettro di questi segnali è mostrato nella figura sottostante. In pratica, le \textbf{frequenze RF e LO sono relativamente vicine} (perché l'oscillatore locale viene sintonizzato proprio per "agganciare" il segnale RF), quindi:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item la \textbf{frequenza di somma} è circa il \textbf{doppio della frequenza RF} (cioè $f_{RF} + f_{LO} \approx 2f_{RF}$);
+    \item mentre la \textbf{differenza} $f_{RF} - f_{LO}$ (che è la nostra IF desiderata) è \textbf{molto più piccola} di $f_{RF}$.
+\end{itemize}
+
+Con un \textbf{filtro adeguato} (il filtro IF visto nello schema a blocchi), selezioneremo l'una o l'altra frequenza in uscita (tipicamente la frequenza differenza bassa).
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[>=Stealth, thick, font=\sffamily\small]
+        % Asse Frequenze
+        \draw[->] (-0.5, 0) -- (9, 0) node[right] {$f$};
+        % Frequenza Differenza (IF)
+        \draw[->] (1.5, 0) -- (1.5, 2.2);
+        \node[below] at (1.5, -0.1) {$f_{RF} - f_{LO}$};
+        % Frequenza LO
+        \draw[->] (5.5, 0) -- (5.5, 2.2);
+        \node[below] at (5.5, -0.1) {$f_{LO}$};
+        % Frequenza RF
+        \draw[->] (6.5, 0) -- (6.5, 2.2);
+        \node[below] at (6.5, -0.1) {$f_{RF}$};
+        % Frequenza Somma
+        \draw[->] (8.0, 0) -- (8.0, 2.2);
+        \node[below] at (8.0, -0.1) {$f_{RF} + f_{LO}$};
+    \end{tikzpicture}
+    \caption*{Spettro idealizzato della \textit{down-conversion}. Essendo $f_{RF}$ e $f_{LO}$ molto vicine, la loro differenza si trova a bassa frequenza, mentre la loro somma schizza ad alta frequenza.}
+\end{figure}
+
+Si noti che questa discussione considera solo le uscite di somma e differenza generate dalla moltiplicazione ideale; come già accennato, un mixer reale genera \textbf{molti più prodotti} (armoniche e spurie) a causa del comportamento \textbf{non lineare} del diodo o del transistor, che andranno eliminati mediante filtraggio.
+
+
+\subsection{Frequenza Immagine}
+
+In un ricevitore, il segnale di ingresso RF alla frequenza $f_{RF}$ viene tipicamente portato dall'antenna, che per sua natura fisica può ricevere segnali RF su una banda relativamente ampia.
+
+Se giunge una frequenza RF desiderata, questa verrà mixata con una frequenza LO e ci restituirà una frequenza IF. Infatti:
+\begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
+    \item se abbiamo una specifica $f_{RF} = f_{LO} + f_{IF}$,
+    \item e se la inseriamo nell'equazione della IF in uscita: $f_{IF_{out}} = f_{RF} - f_{LO}$ (in questo caso in uscita abbiamo selezionato col filtro la combinazione di \textbf{sottrazione} tra RF e LO);
+    \item allora otteniamo esattamente $f_{IF}$.
+\end{itemize}
+
+Tuttavia, dall'antenna può provenire anche un segnale interferente a una frequenza detta \textbf{immagine}, data da:
+\begin{equation}
+    f_{IM} = f_{LO} - f_{IF}
+\end{equation}
+
+Se inseriamo questa $f_{IM}$ nell'equazione del mixer, che matematicamente restituisce sempre la differenza assoluta tra i due ingressi ($|f_{IN} - f_{LO}|$), otteniamo:
+\begin{equation}
+    f_{IF_{IM}} = f_{LO} - f_{IM} = f_{LO} - (f_{LO} - f_{IF}) = f_{IF}
+\end{equation}
+Questa componente in uscita viene detta \textbf{risposta dell'immagine}. 
+Il problema critico è che \textbf{questa $f_{IF_{IM}}$ cade esattamente alla stessa frequenza IF ed è indistinguibile dal segnale utile $f_{IF_{RF}}$}.
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}[>=Stealth, thick, font=\sffamily\scriptsize]
+        % Asse
+        \draw[->] (-0.5, 0) -- (6, 0) node[below] {Frequency};
+        \draw[->] (0, 0) -- (0, 2.5) node[above, rotate=90, anchor=south, yshift=0.3cm] {Power};
+        \node[below] at (0,0) {DC};
+        % IF (Cyan)
+        \fill[cyan!40, draw=black] (0.8,0) parabola bend (1, 1.2) (1.2,0);
+        \draw[->] (1,0) -- (1, 1.8) node[above] {IF};
+        % LO (Black)
+        \draw[->] (3.5, 0) -- (3.5, 2.2) node[above] {LO};
+        % RF1 (Cyan)
+        \fill[cyan!40, draw=black] (2.8,0) parabola bend (3, 0.8) (3.2,0);
+        \draw[->] (3,0) -- (3, 1.2) node[above] {RF1};
+        % RF2 (Orange/Red)
+        \fill[orange!40, draw=black] (3.8,0) parabola bend (4, 0.8) (4.2,0);
+        \draw[->] (4,0) -- (4, 1.2) node[above] {RF2};
+        % Legenda
+        \node[text=ForestGreen, font=\bfseries, align=left] at (5, -0.6) {IF = LO - RF1 \quad (Desired)};
+        \node[text=OpticRed, font=\bfseries, align=left] at (5, -1.0) {IF = RF2 - LO \quad (Image)};
+        \node[text=OpticRed, align=right] at (6.5, 1.5) {RF1 -- Desired\\RF2 -- Image};
+    \end{tikzpicture}
+    \caption*{Esempio in cui il segnale desiderato (RF1) si trova sotto l'oscillatore locale (LO), mentre il segnale immagine (RF2) si trova simmetricamente sopra LO. Entrambi finiscono per collassare nella stessa banda IF.}
+\end{figure}
+
+La risposta dell'immagine è un problema cruciale nella progettazione dei ricevitori perché, una volta che il segnale immagine e quello desiderato sono stati miscelati e sono finiti allo stadio IF, \textbf{non c'è più alcun modo per separarli}.
+
+Quindi occorre prendere provvedimenti con un \textbf{filtro di reiezione di immagine da porre davanti al mixer} (nello stadio Front-End RF), in modo tale da impedire fisicamente l'ingresso della frequenza $f_{IM}$ al mescolatore.
+
+La scelta di quale frequenza RF sia la risposta desiderata e quale quella dell'immagine (cioè se iniettare il segnale LO sopra o sotto il segnale RF) dipende dalle intenzioni del progettista.
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        % ==========================================
+        % ASSI E SETUP
+        % ==========================================
+        % Asse Superiore (Ingressi)
+        \draw[->, ultra thick] (0, 3) -- (12, 3) node[below] {$f$};
+        % Asse Inferiore (Uscita)
+        \draw[->, ultra thick] (0, 0) -- (12, 0) node[below] {$f$};
+        %
+        % ==========================================
+        % SPETTRO SUPERIORE
+        % ==========================================
+        % Segnale d'ingresso Desiderato (Blu) - f_IN = 1.0 MHz
+        \def\fin{3.5}
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[blue, line width=1.5pt] (\fin+\x, 3) -- (\fin+\x, 3+\h);
+        }
+        \node[blue, below=0.1cm] at (\fin, 3) {$f_{IN} = \qty{1.0}{\mega\hertz}$};
+        \node[blue, align=center] (lbl_in) at (\fin-1.0, 4.2) {spettro del segnale\\d'ingresso};
+        \draw[->, blue, thin] (lbl_in.east) -- (\fin-0.2, 4);
+        %
+        % Oscillatore Locale (Verde) - f_LO = 1.5 MHz
+        \def\flo{6}
+        \draw[ForestGreen, line width=2pt] (\flo, 3) -- (\flo, 5.5);
+        \node[ForestGreen, below=0.1cm] at (\flo, 3) {$f_{LO} = \qty{1.5}{\mega\hertz}$};
+        %
+        % Segnale Immagine (Rosso) - f_IM = 2.0 MHz
+        \def\fim{8.5}
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[red, line width=1.5pt] (\fim+\x, 3) -- (\fim+\x, 3+\h);
+        }
+        \node[red, below=0.1cm] at (\fim, 3) {$f_{IM} = \qty{2.0}{\mega\hertz}$};
+        \node[red, align=center] (lbl_im) at (\fim+1.0, 4.2) {spettro del segnale\\immagine};
+        \draw[->, red, thin] (lbl_im.west) -- (\fim+0.2, 4);
+        %
+        % ==========================================
+        % MIXER AL CENTRO
+        % ==========================================
+        \node[circle, draw=blue, thick, fill=white, minimum size=1cm, path picture={\draw[thick, blue] (path picture bounding box.north west) -- (path picture bounding box.south east); \draw[thick, blue] (path picture bounding box.north east) -- (path picture bounding box.south west);}] (mixer) at (4.5, 1.2) {};
+        %
+        % Percorso Blu (Desiderato)
+        \draw[->, blue, ultra thick] (\fin, 2.5) -- (\fin, 1.7) -- (4.5, 1.7) -- (mixer.north);
+        % Percorso Rosso (Immagine)
+        \draw[->, red, ultra thick] (\fim, 2.5) -- (\fim, 1.7) -- (4.5, 1.7); % Si unisce prima del mixer
+        % Percorso Verde (LO)
+        \draw[->, ForestGreen, ultra thick] (\flo, 2.8) -- (\flo, 1.2) -- (mixer.east);
+        % Freccia uscita Mixer
+        \draw[->, blue!50!red, ultra thick] (mixer.south) -- (4.5, 0.5);
+        %
+        % ==========================================
+        % SPETTRO INFERIORE (SOVRAPPOSIZIONE)
+        % ==========================================
+        \def\fout{2.5} % Posizione x in uscita
+        % Disegno interleaving/sovrapposizione (Rosso e Blu sfalsati di 0.05 per renderli visibili)
+        \foreach \x/\h in {-0.6/0.4, -0.4/0.7, -0.2/1.0, 0/1.3, 0.2/1.0, 0.4/0.7, 0.6/0.4} {
+            \draw[red, line width=1.5pt] (\fout+\x+0.05, 0) -- (\fout+\x+0.05, \h);
+            \draw[blue, line width=1.5pt] (\fout+\x-0.05, 0) -- (\fout+\x-0.05, \h);
+        }
+        % Testi sotto l'uscita
+        \node[blue, right] at (\fout+0.5, 0.8) {$f_{OUT} = f_{LO} - f_{IN} = \qty{0.5}{\mega\hertz}$};
+        \node[black, right] at (\fout+1.0, 0.4) {ma anche...};
+        \node[red, right] at (\fout+0.5, 0.0) {$f_{OUT} = f_{IM} - f_{LO} = \qty{0.5}{\mega\hertz}$};
+        % Etichetta sovrapposizione
+        \node[black, align=center] (lbl_overlap) at (\fout-1.5, 1.3) {I segnali convertiti\\si sovrappongono!};
+        \draw[->, black, thick] (lbl_overlap.south east) -- (\fout-0.2, 0.8);
+        %
+        % Tacche asse inferiore
+        \foreach \x in {1, 2.5, 6, 8} {
+            \draw[thick] (\x, 0.1) -- (\x, -0.1);
+        }
+        % Tacche asse superiore
+        \foreach \x in {1, 3.5, 6, 8.5} {
+            \draw[thick] (\x, 3.1) -- (\x, 2.9);
+        }
+    \end{tikzpicture}%
+    }
+    \caption*{Drammatica dimostrazione grafica del problema dell'immagine: sia il segnale a \qty{1.0}{\mega\hertz} che l'interferenza a \qty{2.0}{\mega\hertz}, se miscelati con un LO a \qty{1.5}{\mega\hertz}, generano una componente IF identica a \qty{0.5}{\mega\hertz}.}
+\end{figure}
+
+
+
+
+
+
+
+
+
+
 \end{document}
