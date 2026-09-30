@@ -1751,7 +1751,6 @@ Altrettanto fa la radio: infatti, siccome la distanza e il rumore lungo il tragi
 \subsection{Ricevitore Eterodina (Conversione Diretta)}
 
 La denominazione \textbf{eterodina} fu inventata all'inizio del 1900 dal canadese Reginald Fessenden, con derivazione dal greco: \textit{heteros} = differente e \textit{dynamis} = potenza.
-
 Questo termine si riferisce a un ricevitore per segnali emessi da trasmettitori ad arco sintonizzati:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
     \item il ricevitore era composto da un \textbf{mixer non lineare} e da un \textbf{oscillatore locale} costituito da un alternatore in alta frequenza (massimo \qty{100}{\kilo\hertz});
@@ -2019,7 +2018,7 @@ Il diagramma soprastante può essere idealmente suddiviso in tre macro-sezioni f
 \subsubsection*{1. RX Front-End}
 La primissima parte del circuito, posta subito a valle dell'antenna, prende il nome di \textit{Front-End}. È composto tipicamente da:
 \begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
-    \item \textbf{Amplificatori a basso rumore (LNA - Low Noise Amplifier)}: sono amplificatori speciali capaci di elevare il livello di potenza di un segnale estremamente debole (fino a \qty{-115}{\deci\bel m}) introdotto dall'antenna, cercando di \textbf{non alzare il rumore} termico di fondo.
+    \item \textbf{Amplificatori a basso rumore (LNA - Low Noise Amplifier)}: sono amplificatori speciali capaci di elevare il livello di potenza di un segnale estremamente debole introdotto dall'antenna, cercando di \textbf{non alzare il rumore} termico di fondo.
     \item \textbf{Filtro reiezione di immagine (F1)}: un filtro passa-banda che ripulisce il segnale in ingresso da interferenze fuori banda prima della conversione.
 \end{itemize}
 \begin{nota}[colback=ForestGreen!5, colframe=ForestGreen, title={\textbf{Cosa succede nel Front-End?}}]
@@ -2029,7 +2028,7 @@ La primissima parte del circuito, posta subito a valle dell'antenna, prende il n
 \subsubsection*{2. Down-Conversion}
 Il cuore del sistema supereterodina è la conversione di frequenza. I componenti chiave sono:
 \begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
-    \item \textbf{Mixer (Mescolatore M1)}: è un circuito intrinsecamente non lineare che opera matematicamente una \textbf{moltiplicazione} tra segnali. Nel dominio delle frequenze, questo si traduce in somme o sottrazioni di frequenze.
+    \item \textbf{Mixer (M1)}: è un circuito intrinsecamente non lineare che opera matematicamente una \textbf{moltiplicazione} tra segnali. Nel dominio delle frequenze, questo si traduce in somme o sottrazioni di frequenze.
     \item \textbf{Oscillatore Locale (LO)}: deve generare e fornire un segnale stabile e pulito al mixer per convertire il segnale ricevuto (a frequenza RF) nel nuovo segnale a frequenza IF. Solitamente, per garantire assoluta precisione, questo segnale è comandato e stabilizzato da un \textbf{PLL} (\textit{Phase-Locked Loop}) accoppiato a un \textbf{VCO} (\textit{Voltage-Controlled Oscillator}).
 \end{itemize}
 \begin{nota}[colback=OpticRed!5, colframe=OpticRed, title={\textbf{Cosa succede nella Down-Conversion?}}]
@@ -2039,7 +2038,7 @@ Il cuore del sistema supereterodina è la conversione di frequenza. I componenti
 \subsubsection*{3. RX IF (Frequenza Intermedia)}
 L'ultima fase del ricevitore opera su una frequenza più bassa e fissa (la IF). È composto da:
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Filtro selettore (F2)}: un filtro passa-banda molto stretto e preciso (essendo la IF fissa, questo filtro può essere ottimizzato per prestazioni eccellenti).
+    \item \textbf{Filtro selettore (F2)}: un filtro passa-banda molto stretto e preciso (essendo la IF fissa, questo filtro può essere ottimizzato).
     \item \textbf{Amplificatore/i (AMP 1)}: stadi di amplificazione convenzionali che portano il segnale al livello necessario per il detector o il convertitore analogico-digitale (ADC).
 \end{itemize}
 \begin{nota}[colback=PoliBlue!5, colframe=PoliBlue, title={\textbf{Cosa succede nello stadio IF?}}]
@@ -2054,7 +2053,7 @@ Il diagramma di un trasmettitore (TX) esegue il percorso inverso rispetto al ric
 \begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
     \item il segnale in ingresso dalla banda base si trova a una frequenza \textbf{IF < RF};
     \item al centro si converte la frequenza tramite l'oscillatore locale (LO) facendola passare in \textit{up-conversion} da IF a RF;
-    \item l'uscita RF deve essere ad \textbf{alta potenza} per essere inviata all'antenna e superare l'attenuazione dello spazio libero.
+    \item l'uscita RF deve essere ad \textbf{alta potenza} per essere inviata all'antenna.
 \end{itemize}
 
 \begin{figure}[H]
@@ -2263,13 +2262,12 @@ Il segnale proveniente dai modulatori entra nella catena radio. Questo stadio è
     \item \textbf{Filtro d'ingresso (F3)}: seleziona in modo pulito la banda del segnale utile. \textit{Nota: nei ricevitori questo stesso stadio ha funzione di reiezione dell'immagine, ma nel TX serve a non iniettare rumore fuori banda nel mixer.}
 \end{itemize}
 \begin{nota}[colback=PoliBlue!5, colframe=PoliBlue, title={\textbf{Cosa succede nello stadio TX IF?}}]
-    Qui viene \textbf{aumentata la potenza} e viene \textbf{selezionata la banda} di frequenza iniziale, ma \textbf{non cambia la frequenza} portante.
+    Qui viene \textbf{aumentata la potenza} e viene \textbf{selezionata la banda} di frequenza iniziale, ma \textbf{non cambia la frequenza}.
 \end{nota}
 
 \subsubsection*{2. Up-Conversion}
-Il segnale a frequenza intermedia viene ora "portato in alto" verso le frequenze di trasmissione spaziale.
 \begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
-    \item \textbf{Mixer (Mescolatore M2)}: circuito non lineare che opera la moltiplicazione tra segnali, creando le componenti somma e differenza.
+    \item \textbf{Mixer (M2)}: circuito non lineare che opera la moltiplicazione tra segnali, creando le componenti somma e differenza.
     \item \textbf{Oscillatore Locale (LO2)}: comandato da un PLL, fornisce la frequenza portante purissima al mixer per convertire il segnale IF nel segnale RF.
 \end{itemize}
 \begin{nota}[colback=OpticRed!5, colframe=OpticRed, title={\textbf{Cosa succede nell'Up-Conversion?}}]
@@ -2277,10 +2275,10 @@ Il segnale a frequenza intermedia viene ora "portato in alto" verso le frequenze
 \end{nota}
 
 \subsubsection*{3. TX Front-End (Radiofrequenza in uscita)}
-L'ultimo stadio prima dell'antenna è dedicato all'incremento brutale della potenza.
+L'ultimo stadio prima dell'antenna è dedicato all'incremento della potenza.
 \begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
     \item \textbf{Filtro in uscita (F4)}: elimina i prodotti spuri e le armoniche generate dal mixer, lasciando passare solo la radiofrequenza desiderata.
-    \item \textbf{Serie di Amplificatori (DRV e PA)}: il \textit{Driver} (DRV) prepara il segnale per l'ultimo imponente stadio, il \textbf{Power Amplifier (PA)}, che alza il segnale a livelli di Watt (es. \qty{1.5}{\watt} / \qty{32}{\deci\bel m}) per irradiare lo spazio.
+    \item \textbf{Serie di Amplificatori (DRV e PA)}
 \end{itemize}
 \begin{nota}[colback=ForestGreen!5, colframe=ForestGreen, title={\textbf{Cosa succede nel TX Front-End?}}]
     Qui \textbf{aumenta di molto la potenza} e viene selezionata/ripulita la banda di frequenza finale eliminando le spurie. \textbf{Non cambia la frequenza}.
@@ -2303,10 +2301,10 @@ La versione commerciale e usuale in cui incontriamo un IC è però composta da d
     \item \textbf{die}: la vera e propria piastrina di silicio su cui è inciso il circuito;
     \item \textbf{wire bonding}: sottilissimi filamenti (solitamente d'oro) che interconnettono le microscopiche piazzole del \textit{die} con i conduttori metallici del mondo esterno;
     \item \textbf{piedini/pin}: l'interfaccia metallica e robusta di contatto dell'IC con il mondo esterno;
-    \item \textbf{package}: l'involucro o contenitore (spesso in resina epossidica o ceramica) che racchiude, protegge e sigilla tutto l'IC.
+    \item \textbf{package}: l'involucro o contenitore che racchiude, protegge e sigilla tutto l'IC.
 \end{itemize}
 
-Questi componenti, una volta assemblati nel package finale, vengono poi saldati e montati su un \textbf{printed circuit board (PCB)}, comunemente noto come circuito stampato (la classica scheda elettronica verde).
+Questi componenti, una volta assemblati nel package finale, vengono poi saldati e montati su un \textbf{printed circuit board (PCB)}, o circuito stampato.
 
 \vspace{0.5cm}
 
@@ -2519,6 +2517,15 @@ Con appositi filtri potremo selezionare il segnale che ci interessa (ad esempio 
     \caption*{Spettro idealizzato dell'uscita di un mixer. I picchi rappresentano le componenti in frequenza generate dal prodotto matematico dei segnali d'ingresso.}
 \end{figure}
 \vspace{0.5cm}
+Si noti che questa discussione considera solo le uscite di somma e differenza generate dalla moltiplicazione dei segnali di ingresso; mentre, come si diceva in introduzione a queste pagine sul mixer, in un mixer realistico si generano \textbf{molti più prodotti} a causa del comportamento \textbf{non lineare} del diodo o del transistor. Questi prodotti sono solitamente indesiderati e vengono eliminati mediante filtraggio.
+
+Quindi in uscita avremo
+da cui
+\[
+v_{\text{out}\_1}(t) = \frac{V_1 V_2}{2}\cos(2\pi f_1 - 2\pi f_2)t 
+\qquad 
+v_{\text{out}\_2}(t) = \frac{V_1 V_2}{2}\cos(2\pi f_1 + 2\pi f_2)t
+\]
 
 \begin{figure}[H]
     \centering
@@ -3391,10 +3398,6 @@ I filtri rivestono un ruolo vitale nello schema supereterodina, in particolare n
     \caption*{Evoluzione dello spettro all'interno del ricevitore. Il filtro RF attenua fortemente la frequenza immagine (S2) prima del mixer. Il filtro IF seleziona in modo ``chirurgico'' il singolo canale desiderato (S1) rigettando le altre frequenze generate dal mixer.}
 \end{figure}
 
-
-% ==================================================
-% NUOVA SEZIONE: OSCILLATORI E PLL
-% ==================================================
 \section{Oscillatori}
 
 Gli oscillatori emettono un segnale sinusoidale che può essere \textbf{fisso} o \textbf{variabile}. Costituiscono il cuore pulsante dei sistemi radio, generando le frequenze portanti necessarie per il mixaggio (LO - \textit{Local Oscillator}).
@@ -3415,7 +3418,7 @@ Esempi classici sono i circuiti risonanti LC o, meglio ancora, gli \textbf{oscil
 
 \textbf{Gli oscillatori variabili} hanno invece una frequenza che può variare o essere impostata nel tempo grazie a complessi \textbf{sintetizzatori di frequenza}. Si tratta di blocchi funzionali in grado di generare frequenze in una gamma desiderata mantenendo la stessa precisione e stabilità di un riferimento a quarzo. Il sistema più usato per questo scopo è il \textbf{PLL}.
 
-\subsection{Phase-Locked Loop (PLL)}
+\subsection*{Phase-Locked Loop (PLL)}
 
 Il PLL (Circuito ad Aggancio di Fase) è un sistema di controllo retroazionato. Il suo diagramma a blocchi mostra un segnale molto stabile in input a frequenza $f_{ref}$ (generalmente generato da un quarzo), che viene usato per "programmare" e stabilizzare un segnale in output di frequenza $f_o$. Inizialmente questi due segnali saranno \textit{unlocked}, cioè avranno diversa fase e frequenza.
 
