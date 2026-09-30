@@ -3485,6 +3485,286 @@ Il funzionamento logico è il seguente:
 
 Quando il sistema va a regime (\textit{locked}), l'errore di fase si annulla, e l'uscita $f_o$ è perfettamente stabile e agganciata al riferimento del quarzo. Modificando il valore del divisore $N$, il microcontrollore della radio può "cambiare canale", costringendo il VCO a generare una nuova frequenza ultra-stabile.
 
+\subsection*{Specifiche degli Oscillatori (PLL) e Rumore di Fase}
+
+Le specifiche fondamentali che definiscono le prestazioni di un oscillatore (e di conseguenza di un sintetizzatore PLL) sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item la \textbf{(banda di) frequenza} in uscita;
+    \item la \textbf{potenza} del segnale in uscita;
+    \item il \textbf{phase noise} (rumore di fase) o \textbf{jitter} nel dominio del tempo.
+\end{itemize}
+
+Il \textbf{rumore di fase} è un parametro critico. Nessun oscillatore reale è perfetto: ci sono sempre fluttuazioni casuali nella fase (e nell'ampiezza) del segnale generato. 
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item Nel dominio del tempo, queste fluttuazioni di fase si traducono in un'incertezza sull'istante esatto in cui l'onda attraversa lo zero (\textbf{jitter}).
+    \item Nel dominio della frequenza, l'energia non è concentrata in una singola linea retta infinita (una Delta di Dirac), ma si "spalma" attorno alla frequenza portante creando delle \textit{"gonnelle"} (\textbf{skirt}) di rumore.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize]
+        \pgfmathsetseed{123}
+
+        % Definizione colori
+        \colorlet{PoliBlue}{blue!80!black}
+        \colorlet{OpticRed}{red!80!black}
+        \colorlet{ForestGreen}{green!50!black}
+
+        % =========================================================
+        % TITOLI DELLE COLONNE
+        % =========================================================
+        \node[font=\bfseries\normalsize] at (2.1, 14.0) {Oscillatore Ideale};
+        \node[font=\bfseries\normalsize] at (9.3, 14.0) {Oscillatore Non Ideale};
+
+        % =========================================================
+        % RIGA 1: ONDA SINUSOIDALE
+        % =========================================================
+        % A) Oscillatore Ideale
+        \begin{scope}[shift={(0, 11.2)}]
+            \node[font=\bfseries] at (-0.6, 1.2) {A)};
+            \draw[->, thick] (0,-1.2) -- (0,1.5) node[above] {$v(t)$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$t$};
+            \draw[thick, PoliBlue, samples=100, domain=0:4] plot (\x, {sin(\x*360/0.8)});
+            \draw[|<->|, thin] (0.0, 1.2) -- (0.8, 1.2) node[midway, fill=white, inner sep=1pt, font=\tiny] {$1/f_0$};
+            \node[above right, font=\scriptsize] at (1.2, 1.1) {$v(t) = V\cos(\omega_0 t)$};
+            \node[right, font=\scriptsize] at (4.3, 0) {$S/N = \infty$};
+        \end{scope}
+
+        % B) Oscillatore Non Ideale
+        \begin{scope}[shift={(7.2, 11.2)}]
+            \node[font=\bfseries] at (-0.6, 1.2) {B)};
+            \draw[->, thick] (0,-1.2) -- (0,1.5) node[above] {$v(t)$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$t$};
+            \draw[thick, black, samples=200, domain=0:4] plot (\x, {sin(\x*360/0.8) + 0.15*rand});
+            \node[above right, font=\scriptsize] at (0.8, 1.1) {$v(t) = V(t)\cos[\omega_0 t + \phi(t)]$};
+            \node[right, font=\scriptsize] at (4.3, 0) {$S/N < \infty$};
+        \end{scope}
+
+        % =========================================================
+        % RIGA 2: ONDA QUADRA / CLOCK
+        % =========================================================
+        % C) Oscillatore Ideale
+        \begin{scope}[shift={(0, 7.5)}]
+            \node[font=\bfseries] at (-0.6, 1.2) {C)};
+            \draw[->, thick] (0,-1.0) -- (0,1.5) node[above] {$v(t)$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$t$};
+            \draw[thick, OpticRed] (0,1) -- (0.4,1) -- (0.4,-1) -- (1.2,-1) -- (1.2,1) -- (2.0,1) -- (2.0,-1) -- (2.8,-1) -- (2.8,1) -- (3.6,1) -- (3.6,-1) -- (4.0,-1);
+            \draw[<-, >=Stealth] (2.0, 0) -- (2.6, 0.7) node[right, align=left, font=\tiny] {Il passaggio per lo\\zero è deterministico};
+        \end{scope}
+
+        % D) Oscillatore Non Ideale
+        \begin{scope}[shift={(7.2, 7.5)}]
+            \node[font=\bfseries] at (-0.6, 1.2) {D)};
+            \draw[->, thick] (0,-1.0) -- (0,1.5) node[above] {$v(t)$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$t$};
+            \draw[thick, OpticRed, opacity=0.3] (0,1) -- (0.35,1) -- (0.35,-1) -- (1.15,-1) -- (1.15,1) -- (1.95,1) -- (1.95,-1) -- (2.75,-1) -- (2.75,1) -- (3.55,1) -- (3.55,-1) -- (4.0,-1);
+            \draw[thick, OpticRed, opacity=0.3] (0,1) -- (0.45,1) -- (0.45,-1) -- (1.25,-1) -- (1.25,1) -- (2.05,1) -- (2.05,-1) -- (2.85,-1) -- (2.85,1) -- (3.65,1) -- (3.65,-1) -- (4.0,-1);
+            \draw[thick, OpticRed] (0,1) -- (0.4,1) -- (0.4,-1) -- (1.2,-1) -- (1.2,1) -- (2.0,1) -- (2.0,-1) -- (2.8,-1) -- (2.8,1) -- (3.6,1) -- (3.6,-1) -- (4.0,-1);
+            \draw[<-, >=Stealth] (2.0, 0) -- (2.6, 0.7) node[right, align=left, font=\tiny] {Il passaggio per lo\\zero è incerto};
+        \end{scope}
+
+        % =========================================================
+        % RIGA 3: DOMINIO FREQUENZA
+        % =========================================================
+        % E) Spettro Ideale
+        \begin{scope}[shift={(0, 3.6)}]
+            \node[font=\bfseries] at (-0.6, 1.8) {E)};
+            \draw[->, thick] (0,0) -- (0,2.0) node[above] {$|V(f)|^2$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$f$};
+            \draw[ultra thick, OpticRed, ->] (2,0) -- (2,1.7);
+            \node[below, font=\scriptsize] at (2,0) {$f_0$};
+        \end{scope}
+
+        % F) Rumore di Fase
+        \begin{scope}[shift={(7.2, 3.6)}]
+            \node[font=\bfseries] at (-0.6, 1.8) {F)};
+            \draw[->, thick] (0,0) -- (0,2.0) node[above] {$|V(f)|^2$};
+            \draw[->, thick] (0,0) -- (4.2,0) node[right] {$f$};
+            \fill[black] (2, 1.7) .. controls (2.05, 0.7) and (2.2, 0.25) .. (3.3, 0) -- (0.7, 0) .. controls (1.8, 0.25) and (1.95, 0.7) .. cycle;
+            \draw[thick, white] (2,0) -- (2,1.7);
+            \draw[dashed, thin] (2, 0) -- (2, 1.9);
+            \node[below, font=\scriptsize] at (2,0) {$f_0$};
+            \draw[<-, >=Stealth] (2.4, 0.4) -- (2.9, 0.9) node[right, align=left, font=\tiny] {Rumore di fase e\\di ampiezza};
+        \end{scope}
+
+        % =========================================================
+        % RIGA 4: DOMINIO FASORIALE
+        % =========================================================
+        % H) Fasore Ideale
+        \begin{scope}[shift={(0, 0.0)}]
+            \node[font=\bfseries] at (-0.6, 1.8) {H)};
+            \draw[->, thick] (0,-0.3) -- (0,2.2) node[above] {I};
+            \draw[->, thick] (-0.4,0) -- (3.8,0) node[right] {R};
+            \draw[->, ultra thick, PoliBlue] (0,0) -- (1.80, 1.26);
+            \draw[->, thick] (1.1, 0.77) arc (35:60:1.35) node[above right=-1pt, font=\scriptsize] {$\omega_0$};
+            \node[right, align=left, font=\tiny] at (2.2, 1.2) {Il fasore ruota con\\velocità angolare\\ $\omega_0$};
+        \end{scope}
+
+        % G) Fasore Non Ideale (Riprogettato)
+        \begin{scope}[shift={(7.2, 0.0)}]
+            \node[font=\bfseries] at (-0.6, 1.8) {G)};
+            \draw[->, thick] (0,-0.3) -- (0,2.2) node[above] {I};
+            \draw[->, thick] (-0.4,0) -- (3.8,0) node[right] {R};
+
+            % Vettore portante (Carrier)
+            \draw[->, ultra thick, black] (0,0) -- (1.80, 1.26);
+
+            % Vettore Rumore AM (lungo il fasore)
+            \draw[->, ultra thick, purple] (1.80, 1.26) -- (2.30, 1.61) node[midway, below right, font=\tiny, inner sep=1pt] {Rumore AM};
+
+            % Vettore Rumore di FASE (ortogonale al fasore)
+            \draw[->, ultra thick, ForestGreen] (1.80, 1.26) -- (1.52, 1.66);
+            \node[ForestGreen, font=\tiny, align=center] (phase_text) at (0.6, 1.4) {Rumore di\\FASE};
+            \draw[->, >=Stealth, ForestGreen, thin] (phase_text) -- (1.58, 1.48);
+
+            % Linee di costruzione (parallelogramma)
+            \draw[gray, dashed, thin] (2.30, 1.61) -- (2.02, 2.01);
+            \draw[gray, dashed, thin] (1.52, 1.66) -- (2.02, 2.01);
+
+            % Vettore risultante rumoroso
+            \draw[->, thick, OpticRed, dashed] (0,0) -- (2.02, 2.01);
+
+            % Arco velocità angolare
+            \draw[->, thick] (1.1, 0.77) arc (35:60:1.35) node[above right=-1pt, font=\scriptsize] {$\omega_0$};
+
+            % Testo esplicativo
+            \node[right, align=left, font=\tiny] at (2.4, 1.7) {Il fasore ruota con\\velocità angolare\\ $\approx \omega_0$};
+        \end{scope}
+
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+
+
+\section{Amplificatori}
+
+\subsection*{L'Amplificatore Ideale}
+
+L'amplificazione analogica nasce dalla necessità di trattare segnali ritenuti troppo deboli per le elaborazioni successive o per la trasmissione. 
+
+Un amplificatore ideale si caratterizza per essere un \textbf{sistema lineare} che aumenta l'ampiezza del segnale di ingresso di un fattore costante detto \textbf{guadagno} ($A$ o \textit{Gain}). 
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Un ingresso sinusoidale viene amplificato idealmente se all'uscita il segnale ha la \textbf{stessa identica frequenza}, ma con un'ampiezza maggiore. 
+    \item Il guadagno di un amplificatore ideale è \textbf{costante per tutte le frequenze} all'interno della larghezza di banda spettrale dell'amplificatore.
+    \item L'amplificatore può imprimere al segnale di ingresso uno \textbf{sfasamento}, corrispondente a un ritardo temporale in uscita rispetto all'ingresso.
+\end{itemize}
+In sintesi, gli amplificatori lineari modificano l'ampiezza (e in caso la fase) del segnale \textbf{senza però variarne la frequenza}.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
+        % 1. Input Signal
+        \begin{scope}[shift={(0,0)}]
+            \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+            \draw[OpticRed, ultra thick, samples=100, domain=0:2.2] plot (\x, {0.4*sin(\x*360/0.5)});
+            \node[above] at (1.2, 0.6) {Input};
+        \end{scope}
+        % 2. Amplifier Symbol
+        \begin{scope}[shift={(3, -0.7)}]
+            \draw[fill=gray!30, thick] (0,0) -- (0, 1.4) -- (1.5, 0.7) -- cycle;
+            \node[above] at (0.75, 1.5) {Ideal amplifier};
+            \draw[->, very thick] (-0.5, 0.7) -- (0, 0.7);
+            \draw[->, very thick] (1.5, 0.7) -- (2.0, 0.7);
+        \end{scope}
+        % 3. Output Signal
+        \begin{scope}[shift={(5.5,0)}]
+            \draw[->] (0,0) -- (2.5,0) node[right] {$t$};
+            \draw[OpticRed, ultra thick, samples=100, domain=0:2.2] plot (\x, {1.0*sin(\x*360/0.5)});
+            \node[above] at (1.2, 1.2) {Output};
+        \end{scope}
+        % 4. Gain and Phase vs Freq
+        \begin{scope}[shift={(9.5, -0.2)}]
+            \draw[->] (-1,0) -- (1.5,0) node[below] {$\nu$};
+            \draw[PoliBlue, ultra thick] (-0.5, 0) -- (-0.5, 1.0) -- (0.5, 1.0) -- (0.5, 0);
+            \node[above] at (0, 1.0) {Gain};
+            \draw[dashed, blue, thick] (-0.8, -0.6) -- (0.8, 0.6);
+            \node[right] at (0.8, 0.5) {Phase};
+            \draw (-0.1, 0.1) -- (-0.1, -0.1) node[below] {$\nu_0$};
+        \end{scope}
+        % 5. Linear Output vs Input
+        \begin{scope}[shift={(12, 0)}]
+            \draw[->] (0,0) -- (2,0) node[below] {Input amplitude};
+            \draw[->] (0,0) -- (0,1.5) node[above, rotate=90, anchor=south, yshift=0.2cm] {Output amplitude};
+            \draw[ultra thick, PoliBlue] (0,0) -- (1.5, 1.5);
+        \end{scope}
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+Consideriamo un caso semplice: un segnale sinusoidale di tensione $v_S$ e ampiezza $V_S$, frequenza angolare $\omega$, e fase $\phi$
+\begin{equation}
+    v_S = V_S \sin(\omega_s t + \phi)
+\end{equation}
+viene amplificato da un amplificatore ideale con un \textbf{guadagno di tensione} $A$. In output otteniamo un segnale proporzionale:
+\begin{equation}
+    v_O = V_O \sin(\omega_s t + \phi) \quad \text{dove} \quad A = \frac{V_O}{V_S}
+\end{equation}
+
+In figura si vede l'effetto di un \textbf{guadagno negativo} sulle forme d'onda, che equivale a uno sfasamento di $180^\circ$ (amplificatore invertente).
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Ci può essere anche un guadagno compreso tra 0 e 1: in questo caso non si tratta di amplificazione ma di attenuazione, e anziché impiegare un amplificatore attivo si può ricorrere a una \textbf{rete passiva} (composta solo da resistori).
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.75\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small]
+        % Griglia
+        \draw[step=1cm, gray, very thin] (0,-3) grid (5,3);
+        % Assi
+        \draw[->, thick] (0,-3) -- (0,3.5) node[above, rotate=90, anchor=south, yshift=0.2cm] {$v_O$ (volt)};
+        \draw[->, thick] (0,-3) -- (5.5,-3) node[below] {Tempo (ms)};
+        
+        % Tacche asse Y
+        \foreach \y in {-6, -4, -2, 0, 2, 4, 6} {
+            \node[left] at (0, \y/2) {\y};
+        }
+        % Tacche asse X
+        \foreach \x/\lx in {0/0, 1/0.5, 2/1, 3/1.5, 4/2, 5/2.5} {
+            \node[below] at (\x, -3.1) {\lx};
+        }
+        
+        % Segnale di ingresso (V_s = 1V, quindi mezza unità nel grafico)
+        \draw[dashed, thick, gray, samples=100, domain=0:5] plot (\x, {0.5*sin(\x*360/2)});
+        
+        % Segnale di uscita (V_o = -5V, guadagno invertente A=-5)
+        \draw[ultra thick, black!60, samples=100, domain=0:5] plot (\x, {-2.5*sin(\x*360/2)});
+        
+        % Legenda
+        \node[font=\bfseries\Large, text=OpticRed] at (1, 3.5) {A = -5};
+        \node[right] at (2, 3.5) {Amplificatore invertente};
+        
+        \begin{scope}[shift={(3.2, -2.8)}]
+            \draw[fill=white, draw=black] (0,0) rectangle (2.1, 0.7);
+            \draw[dashed, thick, gray] (0.1, 0.5) -- (0.5, 0.5) node[right, text=black, font=\tiny] {Tensione di ingresso};
+            \draw[ultra thick, black!60] (0.1, 0.2) -- (0.5, 0.2) node[right, text=black, font=\tiny] {Tensione di uscita};
+        \end{scope}
+    \end{tikzpicture}%
+    }
+\end{figure}
+
+\subsection*{Concetto di Amplificazione e Amplificatori di Potenza}
+
+Il concetto di amplificazione finora visto ha riguardato prevalentemente gli \textbf{amplificatori di tensione}. Alcuni ritengono che un amplificatore di sola tensione non sia altro che un trasformatore; e che un amplificatore vero e proprio si distingua da un trasformatore in quanto sia un \textbf{amplificatore di potenza}, e non solo di tensione.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item In un \textbf{trasformatore}, la tensione fornita in uscita può essere maggiore di quella in ingresso, ma la potenza in uscita è sempre \textbf{inferiore o al massimo uguale} alla potenza in input (per la conservazione dell'energia).
+    \item Invece, un \textbf{amplificatore di potenza} consegna in uscita una potenza \textbf{superiore} a quella ottenuta dalla sorgente del segnale (l'energia extra necessaria viene fornita dall'alimentazione DC dell'amplificatore).
+\end{itemize}
+
+Di volta in volta occorre prestare attenzione a quale amplificazione ci stiamo riferendo:
+\begin{align}
+    \textbf{L'amplificazione di tensione}\; A_v \quad &\text{con guadagno di tensione} \quad A_v = \frac{V_o}{V_i} \\[1ex]
+    \textbf{L'amplificazione di corrente}\; A_i \quad &\text{con guadagno di corrente} \quad A_i = \frac{I_o}{I_i} \\[1ex]
+    \textbf{L'amplificazione di potenza}\; A_p \quad &\text{con guadagno di potenza} \quad A_p = \frac{P_o}{P_i}
+\end{align}
+
+\begin{nota}
+    In certi casi, può essere che l'amplificazione/guadagno di potenza $A_p$ sia maggiore di 1 \textbf{indipendentemente} dai singoli valori di amplificazione di tensione o corrente. Ovvero, si può avere $A_p > 1$ anche con $|A_v| < 1$ oppure con $|A_i| < 1$ (ma ovviamente non entrambi contemporaneamente). Un amplificatore di potenza può quindi fornire anche solo un modesto guadagno di tensione, ma allora deve produrre un \textbf{sostanziale guadagno di corrente}.
+\end{nota}
 
 
 

@@ -15,3 +15,4 @@
 \contentsline {subsection}{\numberline {2.6.1}Frequenza Immagine}{29}{subsection.2.6.1}%
 \contentsline {section}{\numberline {2.7}I Filtri}{32}{section.2.7}%
 \contentsline {section}{\numberline {2.8}Oscillatori}{38}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Amplificatori}{41}{section.2.9}%
