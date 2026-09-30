@@ -2844,10 +2844,640 @@ La scelta di quale frequenza RF sia la risposta desiderata e quale quella dell'i
 \end{figure}
 
 
+\subsection*{Specifiche del Mixer e Conversion Loss}
+
+Le principali specifiche tecniche che caratterizzano un mixer sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item l'\textbf{intervallo di frequenza} di funzionamento: frequenza di ingresso, frequenza di uscita, frequenza dell'oscillatore locale (LO);
+    \item il \textbf{guadagno}, che in un mixer passivo è tipicamente negativo: in tal caso si parla di \textbf{perdita di conversione} (\textit{conversion loss});
+    \item gli \textbf{intervalli dei livelli di potenza} in ingresso e in uscita, suddivisi in:
+    \begin{itemize}[label=\textcolor{ForestGreen}{$\circ$}]
+        \item livelli della porta RF;
+        \item livello della porta dell'oscillatore locale LO;
+        \item livello della porta IF;
+    \end{itemize}
+    \item i requisiti di \textbf{alimentazione} (per mixer attivi);
+    \item la \textbf{figura di rumore} (che, come per gli amplificatori LNA, deve essere la più bassa possibile per non degradare il segnale).
+\end{itemize}
+
+\textbf{Il concetto di Conversion Loss (Perdita di Conversione)}\\
+Il processo di conversione di frequenza presenta delle \textbf{perdite (o guadagni negativi) intrinseche}. Abbiamo detto che un mixer reale produce segnali a varie altre frequenze, seppur più deboli (di minore potenza). A causa della generazione di queste \textbf{frequenze indesiderate}, la \textbf{potenza in output viene suddivisa tra più segnali uscenti}. 
+
+Perciò una importante figura di merito per un mixer è proprio la perdita di conversione (\textit{conversion loss}), definita come il rapporto tra la potenza di ingresso disponibile e la potenza di uscita utile disponibile, espressa in dB.
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item La perdita di conversione si applica sia alla \textit{up-conversion} sia alla \textit{down-conversion}.
+\end{itemize}
+
+\begin{nota}
+    Talvolta i mixer, dotati di componenti attivi (transistori) e con opportuni accorgimenti (come il \textit{match di impedenza}), \textbf{non presentano perdite, bensì un guadagno}, seppur limitato.
+\end{nota}
 
 
+% ==================================================
+% NUOVA SEZIONE: I FILTRI
+% ==================================================
+\section{I Filtri}
+
+Abbiamo visto negli schemi a blocchi di Tx e Rx che c'è la costante necessità di \textbf{selezionare delle bande di frequenze} per escludere segnali indesiderati, armoniche o frequenze immagine: questo è l'esclusivo compito dei filtri.
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Un filtro dunque agisce su un segnale in ingresso restituendo in output \textbf{solo una parte in frequenza} di quel segnale.
+\end{itemize}
+
+A seconda della banda di frequenza desiderata (che si sceglie di far "passare") si distinguono quattro tipologie principali di filtri:
+\begin{enumerate}
+    \item \textbf{Passa-basso} (LPF - \textit{Low Pass Filter})
+    \item \textbf{Passa-alto} (HPF - \textit{High Pass Filter})
+    \item \textbf{Passa-banda} (BPF - \textit{Band Pass Filter})
+    \item \textbf{Reiezione di banda} (Notch / \textit{Band Stop Filter})
+\end{enumerate}
+
+Nella figura seguente sono riportati i simboli circuitali standard (a sinistra) e la rispettiva risposta in frequenza ideale (a destra). Nel simbolo circuitale, le tre ondine rappresentano le frequenze alte (sopra), medie (centro) e basse (sotto); la barra rossa indica quale banda viene bloccata dal filtro.
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small]
+        % --- MACRO PER SIMBOLI FILTRI ---
+        % #1: nome nodo, #2: x, #3: y, #4: etichetta, #5: quale barra rossa disegnare (1=top, 2=bot, 3=top&bot, 4=mid)
+        \newcommand{\drawfilterblock}[5]{
+            \node[rectangle, draw, thick, fill=white, minimum width=1.4cm, minimum height=1.4cm] (#1) at (#2, #3) {};
+            \node[below=0.1cm of #1] {\textbf{#4}};
+            % Onda Alta
+            \draw[thick] (#2-0.4, #3+0.3) sin (#2-0.2, #3+0.45) cos (#2, #3+0.3) sin (#2+0.2, #3+0.15) cos (#2+0.4, #3+0.3);
+            % Onda Media
+            \draw[thick] (#2-0.4, #3) sin (#2-0.2, #3+0.15) cos (#2, #3) sin (#2+0.2, #3-0.15) cos (#2+0.4, #3);
+            % Onda Bassa
+            \draw[thick] (#2-0.4, #3-0.3) sin (#2-0.2, #3-0.15) cos (#2, #3-0.3) sin (#2+0.2, #3-0.45) cos (#2+0.4, #3-0.3);
+            % Sbarramenti Rossi
+            \ifnum#5=1 % Passa-basso (sbarra in alto)
+                \draw[thick, OpticRed] (#2-0.4, #3+0.5) -- (#2+0.4, #3+0.1);
+            \fi
+            \ifnum#5=2 % Passa-alto (sbarra in basso)
+                \draw[thick, OpticRed] (#2-0.4, #3-0.1) -- (#2+0.4, #3-0.5);
+            \fi
+            \ifnum#5=3 % Passa-banda (sbarra alto e basso)
+                \draw[thick, OpticRed] (#2-0.4, #3+0.5) -- (#2+0.4, #3+0.1);
+                \draw[thick, OpticRed] (#2-0.4, #3-0.1) -- (#2+0.4, #3-0.5);
+            \fi
+            \ifnum#5=4 % Notch (sbarra in mezzo)
+                \draw[thick, OpticRed] (#2-0.4, #3+0.2) -- (#2+0.4, #3-0.2);
+            \fi
+        }
+        % --- MACRO PER GRAFICI IDEALI ---
+        % #1: x, #2: y, #3: tipo (1=LP, 2=HP, 3=BP, 4=Notch, 5=AllPass), #4: lettera
+        \newcommand{\drawgraph}[4]{
+            \begin{scope}[shift={(#1, #2)}]
+                \draw[->, thick] (0,0) -- (3,0) node[right] {$f$};
+                \draw[->, thick] (0,0) -- (0,1.8) node[left] {A};
+                \node[left] at (-0.2, 1.4) {A}; % Ampiezza massima
+                \node[left] at (-0.5, 0) {(#4)};
+                %
+                \ifnum#3=1 % LPF
+                    \draw[ultra thick, PoliBlue] (0, 1.4) -- (1.5, 1.4) -- (1.5, 0) -- (2.8, 0);
+                    \node[below] at (1.5, 0) {$f_H$};
+                \fi
+                \ifnum#3=2 % HPF
+                    \draw[ultra thick, PoliBlue] (0, 0) -- (1.2, 0) -- (1.2, 1.4) -- (2.8, 1.4);
+                    \node[below] at (1.2, 0) {$f_L$};
+                \fi
+                \ifnum#3=3 % BPF
+                    \draw[ultra thick, PoliBlue] (0, 0) -- (0.8, 0) -- (0.8, 1.4) -- (2.0, 1.4) -- (2.0, 0) -- (2.8, 0);
+                    \node[below] at (0.8, 0) {$f_L$};
+                    \node[below] at (2.0, 0) {$f_H$};
+                \fi
+                \ifnum#3=4 % Notch
+                    \draw[ultra thick, PoliBlue] (0, 1.4) -- (0.8, 1.4) -- (0.8, 0) -- (2.0, 0) -- (2.0, 1.4) -- (2.8, 1.4);
+                    \node[below] at (0.8, 0) {$f_L$};
+                    \node[below] at (2.0, 0) {$f_H$};
+                \fi
+                \ifnum#3=5 % All-pass
+                    \draw[ultra thick, PoliBlue] (0, 1.4) -- (2.8, 1.4);
+                \fi
+            \end{scope}
+        }
+        % ====================================================
+        % DISEGNO SIMBOLI CIRCUITALI (Sinistra)
+        % ====================================================
+        \drawfilterblock{lpf}{0}{6}{LPF}{1}
+        \drawfilterblock{hpf}{2.5}{6}{HPF}{2}
+        \drawfilterblock{bpf}{5}{6}{BPF}{3}
+        \drawfilterblock{notch}{7.5}{6}{Notch}{4}
+        % Frecce tra i blocchi
+        \draw[->, thick] (-1, 6) -- (lpf.west);
+        \draw[->, thick] (lpf.east) -- (hpf.west);
+        \draw[->, thick] (hpf.east) -- (bpf.west);
+        \draw[->, thick] (bpf.east) -- (notch.west);
+        \draw[->, thick] (notch.east) -- (8.5, 6);
+        % ====================================================
+        % DISEGNO GRAFICI RISPOSTA IDEALE (Destra)
+        % ====================================================
+        \drawgraph{11}{8}{1}{a} % LPF
+        \drawgraph{11}{5.5}{2}{b} % HPF
+        \drawgraph{11}{3}{3}{c} % BPF
+        \drawgraph{11}{0.5}{4}{d} % Notch
+        \drawgraph{11}{-2}{5}{e} % All-pass
+        % Didascalia Grafici
+        \node[align=left, font=\sffamily\scriptsize, text width=3cm] at (12.5, -3.5) {\textbf{Risposte in frequenza di amplificatori ideali:}\\ (a) passa-basso,\\ (b) passa-alto,\\ (c) passa-banda,\\ (d) a reiezione di banda\\ (e) passa-tutto.};
+    \end{tikzpicture}%
+    }
+\end{figure}
 
 
+\subsection*{Tecnologie dei Filtri}
+
+Ci sono molte \textbf{tecnologie} di filtri, che principalmente possiamo dividere in quattro grandi categorie storiche e applicative:
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Filtri passivi}: sviluppati a partire dagli anni 1940, sono costituiti esclusivamente da elementi passivi (resistenze, condensatori, induttori) che non hanno bisogno di essere alimentati (es. circuiti RC, RL, LC, RLC). Il loro principio si basa sulla reattanza:
+    \begin{itemize}[label=\textcolor{ForestGreen}{$\circ$}]
+        \item gli \textbf{induttori} bloccano i segnali ad alta frequenza e trasmettono con minore attenuazione quelli a bassa;
+        \item i \textbf{condensatori} bloccano i segnali a bassa frequenza e trasmettono con minore attenuazione quelli ad alta.
+    \end{itemize}
+    \item \textbf{Filtri attivi}: sviluppati a partire dagli anni 1950 (con l'avvento del transistore). Oltre ai componenti passivi, impiegano componenti attivi inseriti in circuiti di \textbf{amplificazione} delle bande di frequenza desiderate, compensando così le perdite di inserzione.
+    \item \textbf{Filtri in linea di trasmissione}: come i filtri risonatori, a microstriscia o in \textbf{guida d'onda}. Sono impiegati nel campo delle microonde. Hanno il grande vantaggio di poter sopportare \textbf{grandi potenze} (es. \qty{50}{\watt}) e possono essere integrati direttamente nel substrato del circuito (tecnologia \textit{SIW -- Substrate Integrated Waveguide}).
+    \item \textbf{Filtri digitali}: sfruttano il \textit{Digital Signal Processing} (DSP), conosciuto anche come elaborazione numerica dei segnali a tempo discreto (\textit{discrete-time signal processing}), modificando matematicamente e numericamente il segnale precedentemente campionato.
+\end{itemize}
+
+\subsection*{Filtri: In Teoria e in Pratica}
+
+I grafici ideali visti in precedenza (i "rettangoli" perfetti) sono astrazioni matematiche irrealizzabili fisicamente. Nella realtà, il comportamento di un filtro presenta delle deviazioni significative:
+
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item In teoria, auspicabilmente, la \textbf{parte trasmessa} (banda passante) rimane preservata tale e quale alla parte incidente. Invece, in realtà il segnale trasmesso è leggermente \textbf{attenuato}, quindi porta con sé un guadagno negativo intrinseco (di solito poche unità in dB).
+    \item Le frequenze \textbf{non trasmesse / da bloccare} (banda oscura o di \textit{stop}) si vorrebbe avessero trasmissione zero, ovvero attenuazione infinita. Poiché ciò non è possibile fisicamente, solitamente ci si accontenta di puntare ad avere un'\textbf{attenuazione di alcune decine di dB} (es. \qty{-40}{\deci\bel} o \qty{-60}{\deci\bel}).
+    \item Inoltre, un filtro si vuole in teoria \textit{"sharp"} (ripido, a gradino) nel passaggio tra banda trasmessa e banda bloccata. Di nuovo, in realtà ciò non si verifica, ma si forma piuttosto una \textbf{banda di transizione}, che viene identificata dal fattore di selettività (il rapporto tra la frequenza di taglio della banda passante $\omega_p$ e quella della banda di stop $\omega_s$).
+\end{itemize}
+
+% Preambolo: \usepackage{tikz} \usepackage{float}
+%            \usetikzlibrary{arrows.meta, shapes.geometric}
+\providecolor{ForestGreen}{RGB}{34,139,34}
+\providecolor{OpticRed}{RGB}{200,20,40}
+\providecolor{PoliBlue}{RGB}{30,110,210}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{0.95\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, line width=0.6pt]
+
+        % ---------- Parametri (unità ~ 100 px dell'immagine di riferimento) ----------
+        \def\Amax{0.67}   % profondità A_max
+        \def\Amin{3.7}    % profondità A_min
+        \def\bot{-5.6}    % fondo del grafico
+        \def\wla{2.46}    % omega_l1
+        \def\wsa{2.83}    % omega_s1
+        \def\wpa{3.71}    % omega_p1
+        \def\wc{4.79}     % centro della banda
+        \def\wpb{5.86}    % omega_p2
+        \def\wsb{6.75}    % omega_s2
+        \def\wlb{7.13}    % omega_l2
+        \def\xend{10.5}   % fine asse omega
+        \def\yq{-1.57}    % quota delle frecce delle bande
+
+        % ---------- Fasce grigie (zone proibite) ----------
+        \fill[gray!35] (\wla,0) rectangle (\wsa,-\Amin);
+        \fill[gray!35] (\wsb,0) rectangle (\wlb,-\Amin);
+        \fill[gray!35] (0,-\Amin+0.3) rectangle (\wsa,-\Amin);
+        \fill[gray!35] (\wsb,-\Amin+0.3) rectangle (\xend,-\Amin);
+        \draw[gray!70!black, thin] (0,-\Amin) -- (\wsa,-\Amin);
+        \draw[gray!70!black, thin] (\wsb,-\Amin) -- (\xend,-\Amin);
+
+        % ---------- Maschera della banda passante (forma a "Π") ----------
+        \fill[cyan!18] (\wpa,-\Amax) rectangle (\wpb,-1.0);
+        \fill[cyan!18] (\wpa,-\Amax) rectangle (\wpa+0.37,-2.18);
+        \fill[cyan!18] (\wpb-0.33,-\Amax) rectangle (\wpb,-2.18);
+        \draw (\wpa,-\Amax) -- (\wpb,-\Amax);
+        \draw (\wpa,-\Amax) -- (\wpa,-2.18);
+        \draw (\wpb,-\Amax) -- (\wpb,-2.18);
+        \draw[dashed, thin] (\wpa,0) -- (\wpa,-\Amax);
+        \draw[dashed, thin] (\wpb,0) -- (\wpb,-\Amax);
+        \draw[dashed, thin] (3.15,-\Amax) -- (\wpa,-\Amax);
+
+        % ---------- Linee tratteggiate omega_l ----------
+        \draw[dashed, thin] (\wla,0) -- (\wla,\bot);
+        \draw[dashed, thin] (\wlb,0) -- (\wlb,\bot);
+
+        % ---------- Assi ----------
+        \draw[->, thick] (0,\bot) -- (0,1.2) node[left] {$|T|$, dB};
+        \draw[->, thick] (0,0) -- (\xend+0.3,0) node[below] {$\omega$};
+        \node[left] at (0,0) {0};
+
+        % ---------- Quote A_min ----------
+        \draw[<->] (8.83,0) -- (8.83,-\Amin)
+            node[pos=0.62, fill=white, inner sep=1pt] {$A_{\min}$};
+
+        % ---------- Etichette delle bande ----------
+        \draw[<->] (0.03,\yq) -- (\wsa,\yq)
+            node[midway, fill=white, align=center, inner sep=2pt] {Lower\\stopband};
+        \draw[<->] (\wsb,\yq) -- (\xend-0.1,\yq)
+            node[midway, fill=white, inner sep=2pt] {Upper stopband};
+        \draw[<->] (\wpa+0.03,\yq) -- (\wpb-0.03,\yq)
+            node[midway, fill=white, inner sep=2pt] {Passband};
+
+        % ---------- Quota A_max ----------
+        \draw[->] (3.33,0.45) -- (3.33,0);
+        \draw[->] (3.33,-1.2) -- (3.33,-\Amax);
+        \node[fill=white, inner sep=1pt] at (3.33,-0.33) {$A_{\max}$};
+
+        % ---------- Etichette delle frequenze ----------
+        \node[above, inner sep=1pt] at (2.33,0.02) {$\omega_{\ell 1}$};
+        \node[above, inner sep=1pt] at (2.98,0.02) {$\omega_{s1}$};
+        \node[above, inner sep=1pt] at (3.75,0.02) {$\omega_{p1}$};
+        \node[above, draw=ForestGreen, ellipse, inner sep=1.5pt] at (5.73,0.02) {$\omega_{p2}$};
+        \node[above, draw=OpticRed, ellipse, inner sep=1.5pt] at (6.58,0.02) {$\omega_{s2}$};
+        \node[above, inner sep=1pt] at (7.32,0.02) {$\omega_{\ell 2}$};
+
+        % ---------- Risposta in magnitudo ----------
+        \begin{scope}[very thick, PoliBlue, samples=120, smooth, variable=\x]
+            % lobo principale
+            \draw[domain=2.52:7.06]
+                plot ({\x},{-0.545*abs(\x-\wc)^2.85});
+            % lobo laterale inferiore (tangente a A_min)
+            \draw[domain=0.13:2.27]
+                plot ({\x},{-\Amin-1.9*(abs(\x-1.2)/1.07)^2.6});
+            % lobo laterale superiore (tangente a A_min)
+            \draw[domain=7.18:10.48]
+                plot ({\x},{-\Amin-1.9*(abs(\x-8.83)/1.65)^2.6});
+        \end{scope}
+    \end{tikzpicture}%
+    }
+    \caption*{Risposta di magnitudo di un filtro reale passa-banda. Si notino i lobi secondari (che non raggiungono mai lo zero assoluto) e l'ondulazione (\textit{ripple}) tipica nella banda passante.}
+\end{figure}
+\subsection*{Comunicazioni reali: Il fattore di Roll-off}
+
+Il \textbf{roll-off} è formalmente definito come la \textbf{pendenza} di una funzione di trasferimento (nel nostro caso di un filtro) nel campo delle frequenze, nella fase di transizione tra banda passata e banda bloccata.
+
+Come si vede in laboratorio, la \textbf{larghezza di banda} di un segnale non è una precisa funzione a gradino (rettangolare): questo perché i filtri declinano agli estremi con una certa inclinazione.
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item Il fattore di \textbf{roll-off} (o di decadimento, o di transizione) indica proprio questa inclinazione di passaggio, e si può esprimere in decibel/decade di frequenza (o in dB/ottava, ove per ottava si intende un raddoppio della frequenza).
+\end{itemize}
+
+Si definisce il fattore di roll-off $\alpha$ tramite la seguente equazione:
+\begin{equation}
+    \alpha = \frac{f_\Delta}{f_0}
+\end{equation}
+considerando che $f_\Delta$ è l'eccesso di banda rispetto al taglio ideale:
+\begin{equation}
+    f_\Delta = B - f_0 = f_0 - f_1
+\end{equation}
+Da cui possiamo ricavare la larghezza di banda unilatera $B$:
+\begin{equation}
+    B = f_0 + \alpha f_0 = (1 + \alpha)f_0
+\end{equation}
+E per l'intera larghezza di banda bilatera $B^*$:
+\begin{equation}
+    B^* = 2B = 2(1 + \alpha)f_0
+\end{equation}
+
+In termini matematici, la banda passante impiegata nelle telecomunicazioni digitali può essere definita come un \textbf{filtro di Nyquist a coseno rialzato} (\textit{Raised-cosine filter}), caratterizzato da una specifica funzione di trasferimento $H(f)$.
+
+\vspace{0.5cm}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, thick]
+        % --- GRAFICO 1: Definizione Geometrica Roll-off ---
+        \begin{scope}[shift={(0,0)}]
+            \draw[->] (-4, 0) -- (4, 0) node[right] {$f$};
+            \draw[->] (0, 0) -- (0, 3) node[above] {$|H_e(f)|$};
+            %
+            % Griglia e quote asse Y
+            \draw[dashed, gray] (-3, 2.5) -- (3, 2.5);
+            \node[above left] at (0, 2.5) {1.0};
+            \draw[dashed, gray] (-3, 1.25) -- (3, 1.25);
+            \node[above left] at (0, 1.25) {0.5};
+            %
+            % Curva del filtro
+            \draw[ultra thick, black] (-3.5, 0) -- (-3,0) .. controls (-2.2, 0) and (-2, 2.5) .. (-1.5, 2.5) -- (1.5, 2.5) .. controls (2, 2.5) and (2.2, 0) .. (3,0) -- (3.5, 0);
+            %
+            % Tacche asse X destra
+            \draw (1.5, 0.1) -- (1.5, -0.1) node[below] {$f_1$};
+            \draw (2.25, 0.1) -- (2.25, -0.1) node[below] {$f_0$};
+            \draw (3, 0.1) -- (3, -0.1) node[below] {$B$};
+            % Tacche asse X sinistra
+            \draw (-1.5, 0.1) -- (-1.5, -0.1) node[below] {$-f_1$};
+            \draw (-2.25, 0.1) -- (-2.25, -0.1) node[below] {$-f_0$};
+            \draw (-3, 0.1) -- (-3, -0.1) node[below] {$-B$};
+            %
+            % Quote f_delta
+            \draw[<->, dashed] (1.5, 3) -- (2.25, 3) node[midway, above] {$f_\Delta$};
+            \draw[dashed] (1.5, 2.5) -- (1.5, 3.2);
+            \draw[dashed] (2.25, 1.25) -- (2.25, 3.2);
+            \draw[<->, dashed] (2.25, 3) -- (3, 3) node[midway, above] {$f_\Delta$};
+            \draw[dashed] (3, 0) -- (3, 3.2);
+        \end{scope}
+        
+        % --- GRAFICO 2: Comparazione dei Fattori Alpha ---
+        \begin{scope}[shift={(9,0)}]
+            \draw[->] (-4, 0) -- (4, 0) node[right] {$f$};
+            \draw[->] (0, 0) -- (0, 3) node[above] {$H(f)$};
+            %
+            % Tacche asse X (usando notazione T)
+            \draw (2, 0.1) -- (2, -0.1) node[below] {$\frac{1}{2T}$};
+            \draw (4, 0.1) -- (4, -0.1) node[below] {$\frac{1}{T}$};
+            \draw (-2, 0.1) -- (-2, -0.1) node[below] {$-\frac{1}{2T}$};
+            \draw (-4, 0.1) -- (-4, -0.1) node[below] {$-\frac{1}{T}$};
+            %
+            % Curva Alpha = 0 (Rettangolo Perfetto - Blu)
+            \draw[ultra thick, PoliBlue] (-4, 0) -- (-2, 0) -- (-2, 2.5) -- (2, 2.5) -- (2, 0) -- (4, 0);
+            \node[right, PoliBlue] at (2.1, 2.5) {$\alpha = 0$};
+            %
+            % Curva Alpha = 0.5 (Transizione Morbida - Magenta)
+            \draw[ultra thick, magenta] (-4, 0) -- (-3, 0) .. controls (-2.5, 0) and (-2, 1.25) .. (-2, 1.25) .. controls (-2, 2.5) and (-1.5, 2.5) .. (-1, 2.5) -- (1, 2.5) .. controls (1.5, 2.5) and (2, 2.5) .. (2, 1.25) .. controls (2, 1.25) and (2.5, 0) .. (3, 0) -- (4, 0);
+            \node[right, magenta] at (3.1, 1.6) {$\alpha = 0.5$};
+            %
+            % Curva Alpha = 1 (Transizione Massima - Verde)
+            \draw[ultra thick, ForestGreen] (-4, 0) .. controls (-3, 0) and (-2.5, 1.25) .. (-2, 1.25) .. controls (-1.5, 2.5) and (-0.5, 2.5) .. (0, 2.5) .. controls (0.5, 2.5) and (1.5, 2.5) .. (2, 1.25) .. controls (2.5, 1.25) and (3, 0) .. (4, 0);
+            \node[right, ForestGreen] at (4.1, 0.5) {$\alpha = 1$};
+            %
+            % Linea orizzontale a 0.5 (Punto di cerniera)
+            \draw[dashed, gray] (-3, 1.25) -- (3, 1.25);
+        \end{scope}
+    \end{tikzpicture}%
+    }
+    \caption*{A sinistra: definizione dei parametri $f_1, f_0, f_\Delta$ per un filtro reale. A destra: confronto della risposta all'impulso in frequenza di un filtro a coseno rialzato al variare del fattore di roll-off $\alpha$ (indicato in letteratura anche con $\beta$ o $r$). Tutte le curve si incrociano a metà ampiezza in $f = \frac{1}{2T}$.}
+\end{figure}
+
+Quindi il roll-off si può rappresentare facilmente come una \textbf{percentuale}, descrivendo quanta "banda in eccesso" viene occupata dal filtro rispetto all'ideale. Solitamente si utilizza un valore compreso nell'intervallo \textbf{20-35\%} (tipicamente il 25\%):
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item per $\bm{\alpha = 0}$ (0\%), abbiamo il caso teorico di larghezza di \textbf{banda minima} rettangolare, in cui $f_0 = B$;
+    \item all'aumentare di $\alpha$, per esempio per $\bm{\alpha = 1}$ (100\%), la curva diventa molto più dolce e i requisiti costruttivi del filtro vengono fortemente rilassati, a costo però di occupare il doppio dello spettro in frequenza ($B = 2f_0$).
+\end{itemize}
+
+
+\subsection*{Specifiche dei Filtri}
+
+Le specifiche fondamentali che caratterizzano un filtro reale da inserire in un circuito a radiofrequenza sono:
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item \textbf{Frequenza centrale} ($f_0$): il centro della banda di interesse.
+    \item \textbf{Banda di frequenza} ($B$): ovvero gli estremi di frequenza (inferiore e superiore) che definiscono la zona di transito consentito.
+    \item \textbf{Attenuazione entro la banda} o \textbf{Insertion Loss}: rappresenta la perdita di potenza intrinseca del filtro. Poiché il segnale utile viene attenuato, si tratta a tutti gli effetti di un \textit{guadagno negativo}.
+    \item \textbf{Alimentazione}: necessaria se si tratta di filtri \textit{attivi}.
+    \item \textbf{Figura di rumore}: indica quanto rumore termico aggiuntivo viene introdotto dal filtro stesso.
+\end{itemize}
+
+\subsection*{Il Filtro di Reiezione d'Immagine (Preselettore)}
+
+I filtri rivestono un ruolo vitale nello schema supereterodina, in particolare nel \textbf{ricevitore} (perché il trasmettitore ha meno criticità da questo punto di vista operando in un ambiente più "pulito" e controllato). Due filtri sono fondamentali:
+
+1. Il \textbf{filtro di ingresso} (noto come \textbf{Filtro di reiezione di immagine} o \textbf{Preselettore}), posto subito dopo l'antenna, serve a:
+\begin{itemize}[label=\textcolor{OpticRed}{\textbullet}]
+    \item \textbf{limitare la banda} generale in ingresso;
+    \item \textbf{escludere la frequenza immagine} (che altrimenti verrebbe traslata in IF dal mixer e rovinerebbe la comunicazione);
+    \item \textbf{escludere altri segnali} non desiderati e forti interferenti.
+\end{itemize}
+
+2. Il \textbf{filtro di frequenza intermedia (IF filter)}, posto dopo il mixer, definisce la \textbf{selettività} del ricevitore, ovvero serve a selezionare in modo millimetrico il singolo canale di comunicazione isolandolo dagli adiacenti.
+
+% Preambolo: \usepackage{tikz} \usepackage{float}
+%            \usetikzlibrary{arrows.meta}
+\providecolor{OpticRed}{RGB}{200,20,40}
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, line width=0.6pt]
+
+        % ---------- Parametri ----------
+        \def\Ya{9.5}   % Antenna
+        \def\Yb{7.0}   % RF filter
+        \def\Yc{4.4}   % Mixer input
+        \def\Yd{1.2}   % Mixer output
+        \def\Ye{-1.3}  % IF filter
+        \def\Yf{-3.6}  % IF filter output
+        \def\fim{7.5}  % frequenza immagine (S2)
+        \def\flo{10.5} % oscillatore locale
+        \def\frf{13.5} % canale desiderato (S1)
+        \def\fif{8.5}  % frequenza intermedia (posizione in uscita)
+        \def\xa{5.5}   % inizio assi
+        \def\xb{15.4}  % fine assi
+
+        % ---------- Macro ----------
+        % \bump{x}{y}{altezza}{colore}: campana riempita + riga centrale
+        \def\bump#1#2#3#4{%
+            \fill[#4!45] (#1-0.42,#2) --
+                plot[domain=-0.42:0.42, samples=21, variable=\t]
+                    ({#1+\t},{#2+#3*exp(-(\t)^2/0.02)}) -- (#1+0.42,#2) -- cycle;
+            \draw[#4!75!black, line width=0.9pt] (#1,#2) -- (#1,#2+#3*1.15);}
+        % \grp{x}{y}{scala}{colore}: gruppo di 4 componenti (canale + adiacenti)
+        \def\grp#1#2#3#4{%
+            \bump{#1-1.2}{#2}{0.35*#3}{#4}
+            \bump{#1-0.6}{#2}{0.7*#3}{#4}
+            \bump{#1}{#2}{1.1*#3}{#4}
+            \bump{#1+0.6}{#2}{0.5*#3}{#4}}
+        % \axis{y}{altezza asse verticale}
+        \def\axis#1#2{%
+            \draw[->] (\xa,#1) -- (\xb,#1) node[below, inner sep=1pt] {$f$};
+            \draw (\xa,#1) -- (\xa,#1+#2);}
+        % \brk{x}{y}: interruzione dell'asse
+        \def\brk#1#2{%
+            \fill[white] (#1-0.08,#2-0.12) rectangle (#1+0.08,#2+0.12);
+            \draw[thin] (#1-0.13,#2-0.14) -- (#1-0.03,#2+0.14);
+            \draw[thin] (#1+0.03,#2-0.14) -- (#1+0.13,#2+0.14);}
+
+        % ---------- Linee guida tratteggiate ----------
+        \draw[densely dashed, gray] (\fim,\Ya) -- (\fim,\Yc-0.75);
+        \draw[densely dashed, gray] (\frf,\Ya) -- (\frf,\Yc-0.75);
+        \draw[densely dashed, gray] (\fif,\Yd) -- (\fif,\Yf);
+
+        % ---------- Assi ----------
+        \axis{\Ya}{1.9}
+        \axis{\Yb}{1.7}
+        \axis{\Yc}{1.9}
+        \axis{\Yd}{1.6}
+        \axis{\Ye}{1.5}
+        \axis{\Yf}{1.5}
+        \brk{6.15}{\Ya}
+        \brk{6.15}{\Yc}
+        \brk{11.4}{\Yd}
+
+        % ---------- Titoli dei pannelli ----------
+        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Ya+1.6) {Antenna};
+        \node[anchor=west, font=\bfseries\small, text=OpticRed] at (\xa+0.1,\Yb+1.5) {RF filter};
+        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yc+1.6) {Mixer input};
+        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yd+1.4) {Mixer output};
+        \node[anchor=west, font=\bfseries\small, text=OpticRed] at (\xa+0.1,\Ye+1.3) {IF filter};
+        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yf+1.3) {IF filter output};
+
+        % ---------- 1. Antenna ----------
+        \bump{\fim-0.6}{\Ya}{0.25}{violet}
+        \bump{\fim}{\Ya}{0.9}{violet}
+        \bump{\fim+0.6}{\Ya}{0.2}{violet}
+        \grp{\frf}{\Ya}{1}{violet}
+        \node[above] at (\fim,\Ya+1.05) {S2};
+        \node[above] at (\frf,\Ya+1.3) {S1};
+
+        % ---------- 2. Risposta del filtro RF (preselettore) ----------
+        \draw[OpticRed, line width=1.4pt] (\xa,\Yb) -- (\xb-0.1,\Yb);
+        \fill[OpticRed!65, opacity=0.8] (9.0,\Yb) --
+            plot[domain=9.0:\xb, samples=70, variable=\t]
+                ({\t},{\Yb+1.4*exp(-(\t-13.6)^2/4.5)}) -- (\xb,\Yb) -- cycle;
+        \draw[OpticRed, thick]
+            plot[domain=9.0:\xb, samples=70, variable=\t]
+                ({\t},{\Yb+1.4*exp(-(\t-13.6)^2/4.5)});
+
+        % ---------- 3. Ingresso del mixer ----------
+        \bump{\fim-0.6}{\Yc}{0.06}{violet}
+        \bump{\fim}{\Yc}{0.2}{blue}
+        \bump{\fim+0.6}{\Yc}{0.05}{violet}
+        \draw[blue, line width=1.6pt] (\flo,\Yc) -- (\flo,\Yc+1.7);
+        \grp{\frf}{\Yc}{1}{violet}
+        \node[below] at (\fim,\Yc-0.02) {Immagine};
+        \node[below] at (\flo,\Yc-0.02) {LO};
+        \node[below] at (\frf,\Yc-0.02) {RF};
+        \draw[|<->|, densely dashed] (\fim,\Yc-0.75) -- (\flo,\Yc-0.75)
+            node[midway, below] {IF};
+        \draw[|<->|, densely dashed] (\flo,\Yc-0.75) -- (\frf,\Yc-0.75)
+            node[midway, below] {IF};
+
+        % ---------- 4. Uscita del mixer ----------
+        \grp{\fif}{\Yd}{1}{violet}
+        \bump{\fif}{\Yd}{0.2}{blue}   % immagine traslata in IF (attenuata)
+        \grp{13.3}{\Yd}{0.6}{gray}    % prodotti di somma
+        \node[above, gray!60!black] at (13.3,\Yd+0.85) {$f_{RF}+f_{LO}$};
+        \node[above, font=\bfseries\sffamily\scriptsize] at (\fif,\Yd+1.3) {IF};
+
+        % ---------- 5. Filtro IF ----------
+        \draw[OpticRed, line width=1.4pt] (\xa,\Ye) -- (\xb-0.1,\Ye);
+        \fill[OpticRed!65, opacity=0.8, rounded corners=2pt]
+            (\fif-0.9,\Ye) -- (\fif-0.5,\Ye+1.1) -- (\fif+0.5,\Ye+1.1) -- (\fif+0.9,\Ye) -- cycle;
+        \draw[OpticRed, thick, rounded corners=2pt]
+            (\fif-0.9,\Ye) -- (\fif-0.5,\Ye+1.1) -- (\fif+0.5,\Ye+1.1) -- (\fif+0.9,\Ye);
+
+        % ---------- 6. Uscita del filtro IF ----------
+        \bump{\fif-0.6}{\Yf}{0.06}{violet}
+        \bump{\fif}{\Yf}{1.1}{violet}
+        \bump{\fif+0.6}{\Yf}{0.05}{violet}
+        \node[above] at (\fif,\Yf+1.35) {S1};
+
+        % ---------- Schema a blocchi (sinistra) ----------
+        % antenna
+        \draw (1.3,9.2) -- (1.3,9.9);
+        \draw (1.3,9.9) -- ++(-0.3,0.35);
+        \draw (1.3,9.9) -- ++(0.3,0.35);
+        \node[left] at (1.0,9.55) {Antenna};
+
+        \node[draw, rectangle, minimum width=2.2cm, minimum height=0.9cm, align=center, fill=white]
+            (rf) at (1.3,7.4) {Filtro passa-banda\\preselettore RF};
+        \node[draw, circle, minimum size=1cm, fill=white,
+              path picture={\draw (path picture bounding box.north west) -- (path picture bounding box.south east);
+                            \draw (path picture bounding box.north east) -- (path picture bounding box.south west);}]
+            (mix) at (1.3,3.0) {};
+        \node[draw, circle, minimum size=1cm, fill=white,
+              path picture={\draw (-0.3,0) sin (-0.15,0.2) cos (0,0) sin (0.15,-0.2) cos (0.3,0);}]
+            (osc) at (3.6,3.0) {};
+        \node[below, align=center] at (osc.south) {Oscillatore\\locale};
+        \node[draw, rectangle, minimum width=2.2cm, minimum height=0.9cm, align=center, fill=white]
+            (iff) at (1.3,-0.9) {Filtro passa-banda\\di IF};
+
+        \draw[->] (1.3,9.2) -- (rf.north);
+        \draw[->] (rf.south) -- (mix.north);
+        \draw[->] (osc.west) -- (mix.east);
+        \draw[->] (mix.south) -- (iff.north);
+        \draw[->] (iff.south) -- (1.3,-3.2);
+
+        % ---------- Frecce tratteggiate blocchi -> spettri ----------
+        \draw[->, densely dashed, gray] (1.8,9.7) -- (5.2,\Ya+0.5);
+        \draw[->, densely dashed, gray] (rf.east) -- (5.2,\Yb+0.4);
+        \draw[->, densely dashed, gray] (rf.east) to[out=0, in=180] (5.2,\Yc+0.6);
+        \draw[->, densely dashed, gray] (1.3,1.9) to[out=0, in=180] (5.2,\Yd+0.4);
+        \draw[->, densely dashed, gray] (iff.east) -- (5.2,\Ye+0.4);
+        \draw[->, densely dashed, gray] (1.3,-2.5) to[out=0, in=180] (5.2,\Yf+0.4);
+    \end{tikzpicture}%
+    }
+    \caption*{Evoluzione dello spettro all'interno del ricevitore. Il filtro RF attenua fortemente la frequenza immagine (S2) prima del mixer. Il filtro IF seleziona in modo ``chirurgico'' il singolo canale desiderato (S1) rigettando le altre frequenze generate dal mixer.}
+\end{figure}
+
+
+% ==================================================
+% NUOVA SEZIONE: OSCILLATORI E PLL
+% ==================================================
+\section{Oscillatori}
+
+Gli oscillatori emettono un segnale sinusoidale che può essere \textbf{fisso} o \textbf{variabile}. Costituiscono il cuore pulsante dei sistemi radio, generando le frequenze portanti necessarie per il mixaggio (LO - \textit{Local Oscillator}).
+
+\textbf{Gli oscillatori fissi} forniscono una frequenza stabile nel tempo con alto fattore di merito/qualità ($Q$):
+\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
+    \item i sistemi con basso fattore di qualità o sottosmorzati (es. $Q = 1/2$) possono oscillare solo una o poche volte prima di spegnersi;
+    \item all'aumentare del fattore di qualità, la quantità relativa di smorzamento diminuisce;
+    \item per analogia, una campana di altissima qualità suona con un unico tono puro per un tempo lunghissimo. Un sistema puramente oscillatorio, che suona per sempre, avrebbe idealmente un $Q$ infinito.
+\end{itemize}
+
+Esempi classici sono i circuiti risonanti LC o, meglio ancora, gli \textbf{oscillatori controllati a cristallo}:
+\begin{itemize}[label=\textcolor{ForestGreen}{\textbullet}]
+    \item Tra questi, i \textbf{cristalli al quarzo (SiO$_2$)} sono composti da una sottilissima piastrina (\textit{slice}) di questo materiale posta tra due elettrodi metallici.
+    \item Il quarzo è un materiale \textbf{piezoelettrico}: alimentato da una tensione si deforma meccanicamente e comincia a vibrare a una specifica \textit{frequenza di risonanza}, rilasciando un segnale elettrico oscillante estremamente stabile.
+    \item In pratica, si mettono in \textit{loop} (retroazione) un quarzo e un amplificatore: il quarzo agisce da filtro meccanico ultra-selettivo imponendo una sola frequenza esatta di oscillazione.
+\end{itemize}
+
+\textbf{Gli oscillatori variabili} hanno invece una frequenza che può variare o essere impostata nel tempo grazie a complessi \textbf{sintetizzatori di frequenza}. Si tratta di blocchi funzionali in grado di generare frequenze in una gamma desiderata mantenendo la stessa precisione e stabilità di un riferimento a quarzo. Il sistema più usato per questo scopo è il \textbf{PLL}.
+
+\subsection{Phase-Locked Loop (PLL)}
+
+Il PLL (Circuito ad Aggancio di Fase) è un sistema di controllo retroazionato. Il suo diagramma a blocchi mostra un segnale molto stabile in input a frequenza $f_{ref}$ (generalmente generato da un quarzo), che viene usato per "programmare" e stabilizzare un segnale in output di frequenza $f_o$. Inizialmente questi due segnali saranno \textit{unlocked}, cioè avranno diversa fase e frequenza.
+
+\begin{figure}[H]
+    \centering
+    \resizebox{\textwidth}{!}{%
+    \begin{tikzpicture}[>=Stealth, font=\sffamily\small, thick]
+        % Nodi
+        \node[circle, draw, fill=cyan!10, minimum size=1cm, path picture={\draw (-0.3,0) sin (-0.15,0.2) cos (0,0) sin (0.15,-0.2) cos (0.3,0);}] (osc) at (0, 0) {};
+        \node[above] at (0, 0.6) {$f_{osc}$};
+        
+        \node[rectangle, draw, fill=cyan!20, minimum width=1.2cm, minimum height=0.8cm] (divQ) at (2.5, 0) {$\div Q$};
+        
+        \node[circle, draw, fill=cyan!30, minimum size=1cm, label=above:{\shortstack{Phase\\Detector}}] (pd) at (5, 0) {$\phi$};
+        
+        \node[rectangle, draw, fill=cyan!20, minimum width=1.2cm, minimum height=0.8cm, label=above:{\shortstack{Loop\\Filter}}] (lpf) at (7.5, 0) {};
+        % Simbolo passa basso nel loop filter
+        \draw (7.2, 0.1) -- (7.4, 0.1) -- (7.6, -0.1) -- (7.8, -0.1);
+        \draw[red] (7.2, -0.2) -- (7.8, 0.2);
+        
+        \node[circle, draw, fill=cyan!10, minimum size=1cm, label=above:{VCO}, path picture={\draw (-0.3,0) sin (-0.15,0.2) cos (0,0) sin (0.15,-0.2) cos (0.3,0);}] (vco) at (10, 0) {};
+        
+        \node[rectangle, draw, fill=cyan!20, minimum width=1.2cm, minimum height=0.8cm, label=below:{\shortstack{Programmable\\Divider}}] (divN) at (7.5, -2) {$\div N$};
+        
+        \coordinate (out) at (12, 0);
+        
+        % Frecce e percorsi
+        \draw[->] (osc.east) -- (divQ.west);
+        \draw[->] (divQ.east) -- (pd.west) node[midway, above] {$f_{ref}$};
+        \draw[->] (pd.east) -- (lpf.west);
+        \draw[->] (lpf.east) -- (vco.west);
+        
+        \draw[->] (vco.east) -- (out) node[right] {$f_o$};
+        \filldraw (11, 0) circle (1.5pt); % Nodo di diramazione
+        
+        \draw[->] (11, 0) -- (11, -2) -- (divN.east);
+        \draw[->] (divN.west) -- (5, -2) -- (pd.south);
+        
+        % Cristallo (Simbolo a sinistra dell'oscillatore)
+        \draw (-1.5, -1) -- (-1.5, 0) -- (osc.west);
+        \draw (-1.7, -1) -- (-1.3, -1);
+        \filldraw[fill=white] (-1.6, -1) rectangle (-1.4, -1.3);
+        \draw (-1.7, -1.3) -- (-1.3, -1.3);
+        \draw (-1.5, -1.3) -- (-1.5, -1.8);
+        \draw (-1.8, -1.8) -- (-1.2, -1.8);
+        \draw (-1.6, -1.95) -- (-1.4, -1.95);
+        \draw (-1.55, -2.1) -- (-1.45, -2.1);
+    \end{tikzpicture}%
+    }
+    \caption*{Schema a blocchi di un Phase-Locked Loop (PLL).}
+\end{figure}
+
+Il funzionamento logico è il seguente:
+\begin{enumerate}
+    \item Il segnale esterno di riferimento (dal quarzo, abbassato tramite un divisore fisso $Q$) viene \textbf{confrontato} con il segnale in uscita attraverso un \textbf{rilevatore di fase (Phase Detector)}.
+    \item Il rilevatore produce un \textbf{segnale di errore} in tensione proporzionale alla loro differenza di fase.
+    \item Questo segnale di errore viene ripulito e stabilizzato da un \textbf{filtro passa-basso (Loop Filter)} e utilizzato per pilotare un \textbf{Voltage-Controlled Oscillator (VCO)}.
+    \item Il VCO genera un nuovo segnale RF la cui frequenza dipende dalla tensione ricevuta.
+    \item L'uscita dal VCO viene \textbf{riportata all'ingresso} del sistema (attraverso un divisore $N$ programmabile), chiudendo un \textbf{anello di retroazione negativa} (\textit{feedback loop}).
+\end{enumerate}
+
+Quando il sistema va a regime (\textit{locked}), l'errore di fase si annulla, e l'uscita $f_o$ è perfettamente stabile e agganciata al riferimento del quarzo. Modificando il valore del divisore $N$, il microcontrollore della radio può "cambiare canale", costringendo il VCO a generare una nuova frequenza ultra-stabile.
 
 
 
