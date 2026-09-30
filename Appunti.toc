@@ -14,6 +14,6 @@
 \contentsline {section}{\numberline {2.6}Il Mixer e la Conversione di Frequenza}{26}{section.2.6}%
 \contentsline {subsection}{\numberline {2.6.1}Frequenza Immagine}{29}{subsection.2.6.1}%
 \contentsline {section}{\numberline {2.7}I Filtri}{32}{section.2.7}%
-\contentsline {section}{\numberline {2.8}Oscillatori}{38}{section.2.8}%
-\contentsline {section}{\numberline {2.9}Amplificatori}{41}{section.2.9}%
+\contentsline {section}{\numberline {2.8}Oscillatori}{37}{section.2.8}%
+\contentsline {section}{\numberline {2.9}Amplificatori}{40}{section.2.9}%
 \contentsline {subsection}{\numberline {2.9.1}I Decibel}{44}{subsection.2.9.1}%

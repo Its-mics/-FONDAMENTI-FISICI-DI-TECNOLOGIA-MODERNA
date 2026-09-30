@@ -605,6 +605,7 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmssbx10.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmssbx10.tfm
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmsso8.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmbx8.tfm
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/tfm/public/lm/ec-lmbx6.tfm
 INPUT Appunti.aux
@@ -628,6 +629,7 @@ INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss10.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss12.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss8.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb
+INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsso8.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy10.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy6.pfb
 INPUT /usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy8.pfb

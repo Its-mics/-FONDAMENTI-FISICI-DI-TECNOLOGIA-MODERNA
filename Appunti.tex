@@ -3235,171 +3235,191 @@ I filtri rivestono un ruolo vitale nello schema supereterodina, in particolare n
 %            \usetikzlibrary{arrows.meta}
 \providecolor{OpticRed}{RGB}{200,20,40}
 
+% Preambolo: \usepackage{tikz} \usepackage{float} \usetikzlibrary{arrows.meta}
+% NOTA: tutte le coordinate sono in "pixel" dell'immagine di riferimento
+%       (x=0.01cm, y=-0.01cm: l'asse y punta verso il basso come nell'immagine).
+\providecolor{FiltRed}{RGB}{225,25,35}
+\providecolor{bumpc}{RGB}{165,135,235}
+\providecolor{spikec}{RGB}{75,25,225}
+
 \begin{figure}[H]
     \centering
     \resizebox{\textwidth}{!}{%
-    \begin{tikzpicture}[>=Stealth, font=\sffamily\scriptsize, line width=0.6pt]
+    \begin{tikzpicture}[x=0.01cm, y=-0.01cm, >=Stealth, font=\sffamily\scriptsize, line width=0.8pt]
 
-        % ---------- Parametri ----------
-        \def\Ya{9.5}   % Antenna
-        \def\Yb{7.0}   % RF filter
-        \def\Yc{4.4}   % Mixer input
-        \def\Yd{1.2}   % Mixer output
-        \def\Ye{-1.3}  % IF filter
-        \def\Yf{-3.6}  % IF filter output
-        \def\fim{7.5}  % frequenza immagine (S2)
-        \def\flo{10.5} % oscillatore locale
-        \def\frf{13.5} % canale desiderato (S1)
-        \def\fif{8.5}  % frequenza intermedia (posizione in uscita)
-        \def\xa{5.5}   % inizio assi
-        \def\xb{15.4}  % fine assi
-
-        % ---------- Macro ----------
-        % \bump{x}{y}{altezza}{colore}: campana riempita + riga centrale
-        \def\bump#1#2#3#4{%
-            \fill[#4!45] (#1-0.42,#2) --
-                plot[domain=-0.42:0.42, samples=21, variable=\t]
-                    ({#1+\t},{#2+#3*exp(-(\t)^2/0.02)}) -- (#1+0.42,#2) -- cycle;
-            \draw[#4!75!black, line width=0.9pt] (#1,#2) -- (#1,#2+#3*1.15);}
-        % \grp{x}{y}{scala}{colore}: gruppo di 4 componenti (canale + adiacenti)
-        \def\grp#1#2#3#4{%
-            \bump{#1-1.2}{#2}{0.35*#3}{#4}
-            \bump{#1-0.6}{#2}{0.7*#3}{#4}
-            \bump{#1}{#2}{1.1*#3}{#4}
-            \bump{#1+0.6}{#2}{0.5*#3}{#4}}
-        % \axis{y}{altezza asse verticale}
-        \def\axis#1#2{%
-            \draw[->] (\xa,#1) -- (\xb,#1) node[below, inner sep=1pt] {$f$};
-            \draw (\xa,#1) -- (\xa,#1+#2);}
+        % =====================================================================
+        % MACRO
+        % =====================================================================
+        % \bump{x}{y_base}{altezza_riga}: campana viola + riga blu centrale
+        \def\bump#1#2#3{%
+            \fill[bumpc, opacity=0.9] (#1-30,#2) --
+                plot[domain=-30:30, samples=25, variable=\t]
+                    ({#1+\t},{#2-0.72*(#3)*exp(0-(\t*\t)/220)}) -- (#1+30,#2) -- cycle;
+            \draw[spikec, line width=1.2pt] (#1,#2) -- (#1,#2-#3);}
+        % \grp{x_S1}{y_base}: gruppo di 4 componenti attorno al canale S1
+        \def\grp#1#2{%
+            \bump{#1-57}{#2}{33}
+            \bump{#1}{#2}{47}
+            \bump{#1+48}{#2}{95}
+            \bump{#1+86}{#2}{50}}
         % \brk{x}{y}: interruzione dell'asse
         \def\brk#1#2{%
-            \fill[white] (#1-0.08,#2-0.12) rectangle (#1+0.08,#2+0.12);
-            \draw[thin] (#1-0.13,#2-0.14) -- (#1-0.03,#2+0.14);
-            \draw[thin] (#1+0.03,#2-0.14) -- (#1+0.13,#2+0.14);}
+            \fill[white] (#1-9,#2-2) rectangle (#1+21,#2+2);
+            \draw[line width=0.8pt] (#1-6,#2-22) .. controls (#1+8,#2-8) and (#1-8,#2+8) .. (#1+6,#2+22);
+            \draw[line width=0.8pt] (#1+6,#2-22) .. controls (#1+20,#2-8) and (#1+4,#2+8) .. (#1+18,#2+22);}
+        % \filt{x}{y}: simbolo del filtro passa-banda (tre onde)
+        \def\filt#1#2{%
+            \foreach \dy/\ph in {-20/0, 0/60, 20/120}
+                \draw[line width=0.7pt, domain=-26:26, samples=30, smooth, variable=\t]
+                    plot ({#1+\t},{#2+\dy+7*sin(\t*7+\ph)});}
+        % \fftlabel{x}{y}: etichetta "f ->"
+        \def\flabel#1#2{\node at (#1,#2) {\textit{f}\,$\rightarrow$};}
 
-        % ---------- Linee guida tratteggiate ----------
-        \draw[densely dashed, gray] (\fim,\Ya) -- (\fim,\Yc-0.75);
-        \draw[densely dashed, gray] (\frf,\Ya) -- (\frf,\Yc-0.75);
-        \draw[densely dashed, gray] (\fif,\Yd) -- (\fif,\Yf);
-
-        % ---------- Assi ----------
-        \axis{\Ya}{1.9}
-        \axis{\Yb}{1.7}
-        \axis{\Yc}{1.9}
-        \axis{\Yd}{1.6}
-        \axis{\Ye}{1.5}
-        \axis{\Yf}{1.5}
-        \brk{6.15}{\Ya}
-        \brk{6.15}{\Yc}
-        \brk{11.4}{\Yd}
-
-        % ---------- Titoli dei pannelli ----------
-        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Ya+1.6) {Antenna};
-        \node[anchor=west, font=\bfseries\small, text=OpticRed] at (\xa+0.1,\Yb+1.5) {RF filter};
-        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yc+1.6) {Mixer input};
-        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yd+1.4) {Mixer output};
-        \node[anchor=west, font=\bfseries\small, text=OpticRed] at (\xa+0.1,\Ye+1.3) {IF filter};
-        \node[anchor=west, font=\bfseries\small] at (\xa+0.1,\Yf+1.3) {IF filter output};
-
-        % ---------- 1. Antenna ----------
-        \bump{\fim-0.6}{\Ya}{0.25}{violet}
-        \bump{\fim}{\Ya}{0.9}{violet}
-        \bump{\fim+0.6}{\Ya}{0.2}{violet}
-        \grp{\frf}{\Ya}{1}{violet}
-        \node[above] at (\fim,\Ya+1.05) {S2};
-        \node[above] at (\frf,\Ya+1.3) {S1};
-
-        % ---------- 2. Risposta del filtro RF (preselettore) ----------
-        \draw[OpticRed, line width=1.4pt] (\xa,\Yb) -- (\xb-0.1,\Yb);
-        \fill[OpticRed!65, opacity=0.8] (9.0,\Yb) --
-            plot[domain=9.0:\xb, samples=70, variable=\t]
-                ({\t},{\Yb+1.4*exp(-(\t-13.6)^2/4.5)}) -- (\xb,\Yb) -- cycle;
-        \draw[OpticRed, thick]
-            plot[domain=9.0:\xb, samples=70, variable=\t]
-                ({\t},{\Yb+1.4*exp(-(\t-13.6)^2/4.5)});
-
-        % ---------- 3. Ingresso del mixer ----------
-        \bump{\fim-0.6}{\Yc}{0.06}{violet}
-        \bump{\fim}{\Yc}{0.2}{blue}
-        \bump{\fim+0.6}{\Yc}{0.05}{violet}
-        \draw[blue, line width=1.6pt] (\flo,\Yc) -- (\flo,\Yc+1.7);
-        \grp{\frf}{\Yc}{1}{violet}
-        \node[below] at (\fim,\Yc-0.02) {Immagine};
-        \node[below] at (\flo,\Yc-0.02) {LO};
-        \node[below] at (\frf,\Yc-0.02) {RF};
-        \draw[|<->|, densely dashed] (\fim,\Yc-0.75) -- (\flo,\Yc-0.75)
-            node[midway, below] {IF};
-        \draw[|<->|, densely dashed] (\flo,\Yc-0.75) -- (\frf,\Yc-0.75)
-            node[midway, below] {IF};
-
-        % ---------- 4. Uscita del mixer ----------
-        \grp{\fif}{\Yd}{1}{violet}
-        \bump{\fif}{\Yd}{0.2}{blue}   % immagine traslata in IF (attenuata)
-        \grp{13.3}{\Yd}{0.6}{gray}    % prodotti di somma
-        \node[above, gray!60!black] at (13.3,\Yd+0.85) {$f_{RF}+f_{LO}$};
-        \node[above, font=\bfseries\sffamily\scriptsize] at (\fif,\Yd+1.3) {IF};
-
-        % ---------- 5. Filtro IF ----------
-        \draw[OpticRed, line width=1.4pt] (\xa,\Ye) -- (\xb-0.1,\Ye);
-        \fill[OpticRed!65, opacity=0.8, rounded corners=2pt]
-            (\fif-0.9,\Ye) -- (\fif-0.5,\Ye+1.1) -- (\fif+0.5,\Ye+1.1) -- (\fif+0.9,\Ye) -- cycle;
-        \draw[OpticRed, thick, rounded corners=2pt]
-            (\fif-0.9,\Ye) -- (\fif-0.5,\Ye+1.1) -- (\fif+0.5,\Ye+1.1) -- (\fif+0.9,\Ye);
-
-        % ---------- 6. Uscita del filtro IF ----------
-        \bump{\fif-0.6}{\Yf}{0.06}{violet}
-        \bump{\fif}{\Yf}{1.1}{violet}
-        \bump{\fif+0.6}{\Yf}{0.05}{violet}
-        \node[above] at (\fif,\Yf+1.35) {S1};
-
-        % ---------- Schema a blocchi (sinistra) ----------
+        % =====================================================================
+        % COLONNA SINISTRA: schema a blocchi
+        % =====================================================================
         % antenna
-        \draw (1.3,9.2) -- (1.3,9.9);
-        \draw (1.3,9.9) -- ++(-0.3,0.35);
-        \draw (1.3,9.9) -- ++(0.3,0.35);
-        \node[left] at (1.0,9.55) {Antenna};
+        \draw (305,268) -- (305,200) -- (290,173);
+        \draw (305,200) -- (320,173);
+        % filtro preselettore RF
+        \draw (268,268) rectangle (345,345);
+        \filt{306}{306}
+        \node[anchor=east, align=right, font=\sffamily\scriptsize\bfseries] at (255,307)
+            {Filtro Passa Banda\\preselettore a RF};
+        % mixer
+        \draw[->, line width=1.4pt] (305,345) -- (305,428);
+        \draw (305,497) circle (70);
+        \draw (270,462) -- (340,532);
+        \draw (340,462) -- (270,532);
+        % filtro IF
+        \draw[->, line width=1.4pt] (305,567) -- (305,652);
+        \draw (268,655) rectangle (345,728);
+        \filt{306}{691}
+        \node[align=center, font=\sffamily\scriptsize\bfseries] at (210,765)
+            {Filtro Passa Banda\\di IF};
+        \draw[->, line width=1.4pt] (305,728) -- (305,810);
+        % oscillatore locale
+        \draw (540,499) circle (52);
+        \draw[line width=0.8pt, domain=-33:33, samples=40, smooth, variable=\t]
+            plot ({540+\t},{499-14*sin(\t*5.45)});
+        \draw[->, line width=2pt] (488,497) -- (378,497);
+        \node[anchor=west, font=\sffamily\scriptsize\bfseries] at (610,497) {Oscillatore Locale};
 
-        \node[draw, rectangle, minimum width=2.2cm, minimum height=0.9cm, align=center, fill=white]
-            (rf) at (1.3,7.4) {Filtro passa-banda\\preselettore RF};
-        \node[draw, circle, minimum size=1cm, fill=white,
-              path picture={\draw (path picture bounding box.north west) -- (path picture bounding box.south east);
-                            \draw (path picture bounding box.north east) -- (path picture bounding box.south west);}]
-            (mix) at (1.3,3.0) {};
-        \node[draw, circle, minimum size=1cm, fill=white,
-              path picture={\draw (-0.3,0) sin (-0.15,0.2) cos (0,0) sin (0.15,-0.2) cos (0.3,0);}]
-            (osc) at (3.6,3.0) {};
-        \node[below, align=center] at (osc.south) {Oscillatore\\locale};
-        \node[draw, rectangle, minimum width=2.2cm, minimum height=0.9cm, align=center, fill=white]
-            (iff) at (1.3,-0.9) {Filtro passa-banda\\di IF};
+        % =====================================================================
+        % COLONNA CENTRALE: spettri schematici
+        % =====================================================================
+        % --- (a) uscita antenna ---
+        \draw[->] (507,215) -- (333,235);
+        \draw[->, line width=0.8pt] (530,230) -- (872,230);
+        \node[font=\sffamily\scriptsize\bfseries] at (866,258) {Frequenza};
+        \draw[fill=white] (578,230) -- (578,200) -- (598,183) -- (598,230) -- cycle;
+        \draw[fill=white] (605,230) -- (605,175) -- (628,152) -- (628,230) -- cycle;
+        \draw[fill=white] (645,230) rectangle (665,195);
+        \draw[fill=FiltRed] (673,230) rectangle (693,163);
+        \draw[fill=white] (703,230) rectangle (723,183);
+        \draw[fill=white] (738,230) -- (738,213) -- (755,230) -- cycle;
+        \draw[fill=white] (768,230) -- (768,185) -- (790,230) -- cycle;
+        \draw[dashed, line width=0.7pt] (633,230) .. controls (640,160) and (660,145) .. (690,145)
+            .. controls (720,145) and (735,170) .. (742,230);
+        \node[align=center] at (735,88) {Canale\\desiderato};
+        \draw[->, line width=1.2pt] (718,118) -- (692,158);
 
-        \draw[->] (1.3,9.2) -- (rf.north);
-        \draw[->] (rf.south) -- (mix.north);
-        \draw[->] (osc.west) -- (mix.east);
-        \draw[->] (mix.south) -- (iff.north);
-        \draw[->] (iff.south) -- (1.3,-3.2);
+        % --- (b) uscita filtro RF ---
+        \draw[->] (497,380) -- (333,380);
+        \draw[->, line width=0.8pt] (530,383) -- (872,383);
+        \node[font=\sffamily\scriptsize\bfseries] at (877,408) {Frequenza};
+        \draw[fill=white] (645,383) rectangle (665,345);
+        \draw[fill=FiltRed] (673,383) rectangle (693,317);
+        \draw[fill=white] (703,383) rectangle (723,335);
+        \draw[dashed, line width=0.7pt] (633,383) .. controls (640,313) and (660,298) .. (690,298)
+            .. controls (720,298) and (735,323) .. (742,383);
 
-        % ---------- Frecce tratteggiate blocchi -> spettri ----------
-        \draw[->, densely dashed, gray] (1.8,9.7) -- (5.2,\Ya+0.5);
-        \draw[->, densely dashed, gray] (rf.east) -- (5.2,\Yb+0.4);
-        \draw[->, densely dashed, gray] (rf.east) to[out=0, in=180] (5.2,\Yc+0.6);
-        \draw[->, densely dashed, gray] (1.3,1.9) to[out=0, in=180] (5.2,\Yd+0.4);
-        \draw[->, densely dashed, gray] (iff.east) -- (5.2,\Ye+0.4);
-        \draw[->, densely dashed, gray] (1.3,-2.5) to[out=0, in=180] (5.2,\Yf+0.4);
+        % --- (c) uscita mixer ---
+        \draw[->] (472,633) -- (343,597);
+        \draw[->, line width=0.8pt] (430,667) -- (972,667);
+        \draw[fill=white] (545,667) rectangle (565,628);
+        \draw[fill=FiltRed] (573,667) rectangle (593,600);
+        \draw[fill=white] (602,667) rectangle (622,618);
+        \draw[fill=white] (810,667) rectangle (830,629);
+        \draw[fill=FiltRed] (838,667) rectangle (858,600);
+        \draw[fill=white] (868,667) rectangle (888,619);
+        \node[align=center, font=\sffamily\scriptsize\bfseries] at (583,703) {Frequenza IF\\differenza};
+        \node[align=center, font=\sffamily\scriptsize\bfseries] at (851,705) {Frequenza IF\\somma};
+
+        % --- (d) uscita filtro IF ---
+        \draw[->] (497,810) -- (343,767);
+        \draw[->, line width=0.8pt] (425,858) -- (758,858);
+        \draw[dashed, line width=0.7pt] (566,858) -- (574,800) .. controls (578,782) and (592,782) .. (596,800) -- (600,858);
+        \draw[fill=FiltRed] (573,858) rectangle (593,790);
+
+        % =====================================================================
+        % COLONNA DESTRA: sei pannelli
+        % =====================================================================
+        % --- assi ---
+        \draw[line width=1pt] (995,170) -- (995,265) -- (1640,265);    % Antenna
+        \draw[line width=1pt] (995,395) -- (995,490) -- (1640,490);    % Mixer input
+        \draw[line width=1pt] (995,545) -- (995,640) -- (1218,640);    % Mixer output
+        \draw[line width=1pt] (995,748) -- (995,820) -- (1218,820);    % IF filter output
+
+        % --- linee tratteggiate guida ---
+        \draw[dashed, line width=1pt] (1268,235) -- (1268,500);
+        \draw[dashed, line width=1pt] (1497,278) -- (1497,500);
+        \draw[dashed, line width=1pt] (1110,678) -- (1110,808);
+        \draw[dashed, gray, line width=1.5pt] (1478,497) -- (1170,607);
+
+        % --- RF filter (curva rossa + linea di base rossa) ---
+        \draw[FiltRed, line width=1.6pt] (995,358) -- (1640,358);
+        \fill[FiltRed] (1330,358) --
+            plot[domain=1330:1640, samples=60, variable=\t]
+                ({\t},{358-58*exp(0-((\t-1497)/99)*((\t-1497)/99))}) -- (1640,358) -- cycle;
+
+        % --- IF filter (trapezio rosso) ---
+        \draw[FiltRed, line width=1.6pt] (995,725) -- (1218,725);
+        \fill[FiltRed, rounded corners=3pt] (1075,725) -- (1087,683) -- (1130,683) -- (1142,725) -- cycle;
+
+        % --- segnali ---
+        % Antenna
+        \bump{1268}{265}{47}
+        \grp{1497}{265}
+        % Mixer input (immagine attenuata dal filtro RF, oscillatore locale)
+        \draw[spikec, line width=1.8pt] (1381,490) -- (1381,370);
+        \grp{1497}{490}
+        % Mixer output
+        \grp{1110}{640}
+        % IF filter output
+        \bump{1110}{820}{50}
+
+        % --- interruzioni degli assi ---
+        \brk{1220}{265}
+        \brk{1220}{490}
+
+        % --- titoli dei pannelli ---
+        \node[anchor=west, font=\sffamily\scriptsize] at (1005,178) {Antenna};
+        \node[anchor=west, font=\sffamily\scriptsize, text=FiltRed] at (1005,322) {RF filter};
+        \node[anchor=west, font=\sffamily\scriptsize] at (1005,397) {Mixer input};
+        \node[anchor=west, font=\sffamily\scriptsize] at (1005,548) {Mixer output};
+        \node[anchor=west, font=\sffamily\scriptsize, text=FiltRed] at (1000,688) {IF filter};
+        \node[anchor=west, align=left, font=\sffamily\scriptsize] at (1000,768) {IF filter\\output};
+
+        % --- etichette ---
+        \node at (1272,202) {S2};
+        \node at (1495,200) {S1};
+        \node at (1272,507) {Image};
+        \node at (1381,507) {LO};
+        \node at (1497,507) {RF};
+        \node at (1110,657) {IF};
+        \node at (1133,770) {S1};
+        \flabel{1608}{285}
+        \flabel{1608}{512}
+        \flabel{1198}{657}
+
+        % --- quote IF nel pannello Mixer input ---
+        \draw[|<->|, line width=0.7pt] (1268,546) -- (1381,546) node[midway, fill=white, inner sep=1.5pt] {IF};
+        \draw[|<->|, line width=0.7pt] (1381,546) -- (1497,546) node[midway, fill=white, inner sep=1.5pt] {IF};
     \end{tikzpicture}%
     }
     \caption*{Evoluzione dello spettro all'interno del ricevitore. Il filtro RF attenua fortemente la frequenza immagine (S2) prima del mixer. Il filtro IF seleziona in modo ``chirurgico'' il singolo canale desiderato (S1) rigettando le altre frequenze generate dal mixer.}
 \end{figure}
-
-\subsection*{Specifiche dei Filtri}
-
-Le specifiche fondamentali che caratterizzano un filtro reale da inserire in un circuito a radiofrequenza sono:
-\begin{itemize}[label=\textcolor{PoliBlue}{\textbullet}]
-    \item \textbf{Frequenza centrale} ($f_0$): il centro della banda di interesse.
-    \item \textbf{Banda di frequenza} ($B$): ovvero gli estremi di frequenza (inferiore e superiore) che definiscono la zona di transito consentito.
-    \item \textbf{Attenuazione entro la banda} o \textbf{Insertion Loss}: rappresenta la perdita di potenza intrinseca del filtro. Poiché il segnale utile viene attenuato, si tratta a tutti gli effetti di un \textit{guadagno negativo}.
-    \item \textbf{Alimentazione}: necessaria se si tratta di filtri \textit{attivi}.
-    \item \textbf{Figura di rumore}: indica quanto rumore termico aggiuntivo viene introdotto dal filtro stesso.
-\end{itemize}
 
 \section{Oscillatori}
 
@@ -3981,6 +4001,7 @@ Se adottassimo l'equazione (6) come vera, allora, trasformandola in termini line
     X_i [\text{W}] \cdot y_1 [\text{W}] \cdot y_2 [\text{W}] \dots y_n [\text{W}] = X_{\text{finale}} [\text{W}^n]
 \end{equation*}
 il che non è vero, perché trattiamo sempre livelli di potenza in [W] e non in [W$^n$].
+
 
 
 
