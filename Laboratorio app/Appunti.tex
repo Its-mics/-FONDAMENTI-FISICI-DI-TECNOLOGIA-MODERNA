@@ -162,12 +162,259 @@
     pdfauthor={Agata Trovato, Federico Dogo}
 }
 
+\definecolor{mainblue}{RGB}{15, 60, 120}
+\definecolor{accentblue}{RGB}{30, 110, 180}
+\definecolor{lightbg}{RGB}{245, 247, 250}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=mainblue,
+    urlcolor=accentblue,
+    pdftitle={Formulario e Calcoli di Laboratorio - FFTM}
+}
+
+\tcbset{
+    colback=lightbg,
+    colframe=mainblue,
+    fonttitle=\bfseries,
+    arc=4pt,
+    boxrule=1pt
+} 
 % ==================================================
 % INIZIO DOCUMENTO
 % ==================================================
 \begin{document}
 
-Laboratorio: 
+% =====================================================================
+\section{Attività A: Catena Supereterodina (Banda Ka)}
+% =====================================================================
+
+\subsection{1. Frequenza dell'Oscillatore Locale ($f_{\text{LO}}$)}
+
+\begin{tcolorbox}[title=Formula per il Mixer]
+\[
+f_{\text{LO}} = |f_{\text{RF}} \mp f_{\text{IF}}|
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $f_{\text{LO}}$: Frequenza da impostare sul generatore/PLL (Oscillatore Locale) [\text{GHz}].
+    \item $f_{\text{RF}}$: Frequenza della portante radio a radiofrequenza (es. $28.7\,\text{GHz}$ o $18.9\,\text{GHz}$) [\text{GHz}].
+    \item $f_{\text{IF}}$: Frequenza Intermedia di lavoro (es. $1\,\text{GHz}$) [\text{GHz}].
+\end{itemize}
+
+\paragraph{Come si usa al banco:}
+Prima di attivare la trasmissione, calcola $f_{\text{LO}}$ per sapere a quale frequenza impostare il sintetizzatore PLL (es. ADF4371) in modo che il mixer converta correttamente il segnale dalla banda base/IF alla banda Ka.
+
+% ---------------------------------------------------------------------
+\subsection{2. Bilancio di Potenza a Stadi Cascati}
+
+\begin{tcolorbox}[title=Formula per la Potenza d'Uscita dello Stadio]
+\[
+P_{\text{out}} \, [\text{dBm}] = P_{\text{in}} \, [\text{dBm}] + G \, [\text{dB}]
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $P_{\text{out}}$: Potenza presente all'uscita dello stadio o componente [\text{dBm}].
+    \item $P_{\text{in}}$: Potenza che entra nello stadio [\text{dBm}].
+    \item $G$: Guadagno dello stadio (se positivo) oppure Attenuazione (se negativo) [\text{dB}].
+\end{itemize}
+
+\paragraph{Come si usa al banco:}
+Procedi stadio per stadio lungo la catena RF. Somma i guadagni e sottrai le attenuazioni dei filtri. Questo ti permette di verificare che la potenza in ingresso a ciascun modulo non superi i limiti di sicurezza ed eviti la saturazione.
+
+% ---------------------------------------------------------------------
+\subsection{3. Figura di Rumore Totale (Formula di Friis)}
+
+\begin{tcolorbox}[title=Formula della Figura di Rumore]
+Fattore di rumore totale (in scala lineare):
+\[
+F_{\text{tot}} = F_1 + \frac{F_2 - 1}{G_1} + \frac{F_3 - 1}{G_1 \cdot G_2}
+\]
+Conversione della Figura di Rumore in decibel:
+\[
+NF_{\text{tot}} \, [\text{dB}] = 10 \cdot \log_{10}(F_{\text{tot}})
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $F_1, F_2, F_3$: Fattori di rumore dei singoli stadi (in scala lineare, $F = 10^{NF/10}$).
+    \item $G_1, G_2$: Guadagni dei singoli stadi (in scala lineare, $G = 10^{G_{\text{dB}}/10}$).
+    \item $NF_{\text{tot}}$: Figura di rumore complessiva della catena di ricezione [\text{dB}].
+\end{itemize}
+
+\paragraph{Significato fisico:}
+Il primo amplificatore (LNA) è il più importante: se il suo guadagno $G_1$ è alto, i contributi di rumore degli stadi successivi vengono divisi per $G_1$ e diventano trascurabili.
+
+\newpage
+
+% =====================================================================
+\section{Attività B: Setup Strumenti e Misure di Componenti}
+% =====================================================================
+
+\subsection{1. Correzione della Potenza del Generatore RF}
+
+\begin{tcolorbox}[title=Formula di Compensazione del Cavo]
+\[
+P_{\text{DUT}} \, [\text{dBm}] = P_{\text{generatore}} \, [\text{dBm}] - L_{\text{cavo}} \, [\text{dB}]
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $P_{\text{DUT}}$: Potenza reale che arriva all'ingresso del componente sotto test (DUT) [\text{dBm}].
+    \item $P_{\text{generatore}}$: Potenza impostata sul display del generatore di segnale [\text{dBm}].
+    \item $L_{\text{cavo}}$: Perdita di inserzione introdotta dal cavo coassiale di collegamento [\text{dB}].
+\end{itemize}
+
+\paragraph{Come si usa al banco:}
+Se il cavo perde $1.5\,\text{dB}$ e ti servono $0\,\text{dBm}$ sul dispositivo, devi impostare il generatore a $+1.5\,\text{dBm}$.
+
+% ---------------------------------------------------------------------
+\subsection{2. Punto di Compressione a 1 dB ($P_{1\text{dB}}$)}
+
+\begin{tcolorbox}[title=Condizione di Compressione]
+\[
+G_{\text{reale}} = G_{\text{lineare}} - 1\,\text{dB}
+\]
+\[
+P_{\text{out, 1dB}} \, [\text{dBm}] = P_{\text{in, 1dB}} \, [\text{dBm}] + G_{\text{lineare}} \, [\text{dB}] - 1\,\text{dB}
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $G_{\text{lineare}}$: Guadagno costante dell'amplificatore a basse potenze [\text{dB}].
+    \item $P_{\text{in, 1dB}}$: Potenza d'ingresso a cui l'amplificatore inizia a saturare [\text{dBm}].
+\end{itemize}
+
+\paragraph{Come si trova al banco:}
+\begin{enumerate}
+    \item Aumenta gradualmente la potenza del generatore $P_{\text{in}}$ (sweep in potenza).
+    \item Calcola ad ogni passo $G = P_{\text{out}} - P_{\text{in}}$.
+    \item Quando $G$ scende di $1\,\text{dB}$ rispetto al valore iniziale, hai trovato il punto $P_{1\text{dB}}$.
+\end{enumerate}
+
+% ---------------------------------------------------------------------
+\subsection{3. Larghezza di Banda a $-3\,\text{dB}$}
+
+\begin{tcolorbox}[title=Formula della Banda Passante]
+\[
+P_{\text{soglia}} \, [\text{dBm}] = P_{\text{massima}} \, [\text{dBm}] - 3\,\text{dB}
+\]
+\[
+B_{-3\text{dB}} = f_{\text{superiore}} - f_{\text{inferiore}}
+\]
+\end{tcolorbox}
+
+\paragraph{Come si calcola sullo Spettrometro / VNA:}
+Trova la frequenza di picco con il marker ($P_{\text{massima}}$). Sposta i marker a destra e a sinistra finché la potenza non scende di $3\,\text{dB}$. La differenza tra le due frequenze è la larghezza di banda $B_{-3\text{dB}}$.
+
+\newpage
+
+% =====================================================================
+\section{Attività C \& D: Guide d'Onda e Parametri S (VNA)}
+% =====================================================================
+
+\subsection{1. Frequenza di Taglio della Guida d'Onda Rettangolare}
+
+\begin{tcolorbox}[title=Formula per il Modo Fondamentale $\text{TE}_{10}$]
+\[
+f_c = \frac{c}{2 \cdot a}
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $f_c$: Frequenza di taglio al di sotto della quale l'onda non si propaga [\text{Hz}].
+    \item $c$: Velocità della luce nello spazio libero ($\approx 3 \times 10^8\,\text{m/s}$).
+    \item $a$: Dimensione del lato maggiore della sezione rettangolare della guida [\text{m}].
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\subsection{2. Parametri S dall'Analizzatore di Rete (VNA)}
+
+\begin{tcolorbox}[title=Formule dei Parametri di Scattering]
+\begin{itemize}
+    \item \textbf{Return Loss (Perdita di Riflessione):}
+    \[ RL = -20 \cdot \log_{10} |S_{11}| \quad [\text{dB}] \]
+    
+    \item \textbf{Insertion Loss (Perdita d'Inserzione / Guadagno):}
+    \[ IL = -20 \cdot \log_{10} |S_{21}| \quad [\text{dB}] \]
+    
+    \item \textbf{Mismatch Loss (Perdita da Disadattamento):}
+    \[ ML = -10 \cdot \log_{10} (1 - |S_{11}|^2) \quad [\text{dB}] \]
+\end{itemize}
+\end{tcolorbox}
+
+\paragraph{Significato pratico al banco:}
+\begin{itemize}
+    \item $|S_{11}|$: Coefficiente di riflessione all'ingresso. Un valore $RL > 10\,\text{dB}$ indica che il componente è ben adattato a $50\,\Omega$.
+    \item $|S_{21}|$: Trasmittanza dalla porta 1 alla porta 2. Indica quanto segnale passa attraverso il filtro o l'antenna.
+\end{itemize}
+
+\newpage
+
+% =====================================================================
+\section{Attività E: Bilancio di Collegamento (Link Budget)}
+% =====================================================================
+
+\subsection{1. Attenuazione di Spazio Libero ($L_{\text{FS}}$)}
+
+\begin{tcolorbox}[title=Formula Pratica dell'Attenuazione di Tratta]
+\[
+L_{\text{FS}} \, [\text{dB}] = 92.45 + 20 \cdot \log_{10}(d_{[\text{km}]}) + 20 \cdot \log_{10}(f_{[\text{GHz}]})
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $d_{[\text{km}]}$: Distanza tra l'antenna trasmittente e quella ricevente [in chilometri].
+    \item $f_{[\text{GHz}]}$: Frequenza della portante radio [in GigaHertz].
+\end{itemize}
+
+% ---------------------------------------------------------------------
+\subsection{2. Potenza Ricevuta Attesa ($P_{\text{RX}}$)}
+
+\begin{tcolorbox}[title=Equazione Completa del Link Budget]
+\[
+P_{\text{RX}} \, [\text{dBm}] = P_{\text{TX}} \, [\text{dBm}] + G_{\text{TX}} \, [\text{dBi}] - L_{\text{FS}} \, [\text{dB}] - L_{\text{altri}} \, [\text{dB}] + G_{\text{RX}} \, [\text{dBi}]
+\]
+\end{tcolorbox}
+
+\paragraph{Legenda dei Simboli:}
+\begin{itemize}
+    \item $P_{\text{RX}}$: Potenza misurata sullo spettrometro in ricezione [\text{dBm}].
+    \item $P_{\text{TX}}$: Potenza erogata dal trasmettitore [\text{dBm}].
+    \item $G_{\text{TX}}, G_{\text{RX}}$: Guadagni delle antenne di trasmissione e ricezione [\text{dBi}].
+    \item $L_{\text{FS}}$: Attenuazione di spazio libero [\text{dB}].
+    \item $L_{\text{altri}}$: Somma di attenuazioni di cavi, connettori ed eventuali disallineamenti [\text{dB}].
+\end{itemize}
+
+\paragraph{Procedura al banco:}
+Calcola $P_{\text{RX}}$ teorica e confrontala subito con la misura reale sullo spettrometro. Se c'è una differenza significativa, orienta meglio le antenne per allineare i lobi principali di radiazione.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \end{document}
+
