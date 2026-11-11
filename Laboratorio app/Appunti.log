@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.9.3)  30 SEP 2026 22:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.9.3)  10 NOV 2026 18:40
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1126,247 +1126,9 @@ Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
 \c@lstlisting=\count407
 Package hyperref Info: Link coloring ON on input line 168.
-LaTeX Font Info:    Trying to load font information for T1+lmss on input line 178.
-(/usr/local/texlive/2026/texmf-dist/tex/latex/lm/t1lmss.fd
-File: t1lmss.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Package microtype Info: Loading generic protrusion settings for font family
-(microtype)             `lmss' (encoding: T1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
+[1
 
-Underfull \hbox (badness 10000) in paragraph at lines 199--201
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 203--204
-
- []
-
-LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 207.
-(/usr/local/texlive/2026/texmf-dist/tex/latex/lm/ot1lmr.fd
-File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OML+lmm on input line 207.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/lm/omllmm.fd
-File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 207.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/lm/omslmsy.fd
-File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 207.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/lm/omxlmex.fd
-File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <12> on input line 207.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <8> on input line 207.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <6> on input line 207.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 207.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-) (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/mt-msa.cfg
-File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
-)
-LaTeX Font Info:    Trying to load font information for U+msb on input line 207.
- (/usr/local/texlive/2026/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) (/usr/local/texlive/2026/texmf-dist/tex/latex/microtype/mt-msb.cfg
-File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
-) [1
-
-
-{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] [2
-
-] (./Appunti.toc
-Package cleveref Info: loaded `italian' language definitions on input line 1.
-Package cleveref Info: loaded `italian' language definitions on input line 2.
-)
-\tf@toc=\write4
-\openout4 = `Appunti.toc'.
-
- [3
-
-]
-Package cleveref Info: loaded `italian' language definitions on input line 221.
- [4
-
-]
-Capitolo 1.
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 249.
-(/usr/local/texlive/2026/texmf-dist/tex/latex/lm/ts1lmr.fd
-File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-)
-Underfull \vbox (badness 1365) has occurred while \output is active []
-
- [5
-
-{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}]
-Overfull \hbox (1.10275pt too wide) in paragraph at lines 424--425
- [][] 
- []
-
-Package cleveref Info: loaded `italian' language definitions on input line 426.
-[6]
-Package cleveref Info: loaded `italian' language definitions on input line 496.
- [7]
-Package cleveref Info: loaded `italian' language definitions on input line 673.
- [8]
-Package cleveref Info: loaded `italian' language definitions on input line 804.
- [9]
-Package cleveref Info: loaded `italian' language definitions on input line 816.
- [10]
-Capitolo 2.
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 882.
-[11
-
-]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10.95> on input line 948.
-
-Underfull \vbox (badness 5446) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 1181.
- [12]
-Package cleveref Info: loaded `italian' language definitions on input line 1229.
- [13]
-Package cleveref Info: loaded `italian' language definitions on input line 1349.
- [14]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 1406.
- [15]
-Package cleveref Info: loaded `italian' language definitions on input line 1442.
- [16]
-Package cleveref Info: loaded `italian' language definitions on input line 1516.
- [17]
-Package cleveref Info: loaded `italian' language definitions on input line 1674.
- [18]
-Package cleveref Info: loaded `italian' language definitions on input line 1760.
- [19]
-Package cleveref Info: loaded `italian' language definitions on input line 1820.
- [20]
-Package cleveref Info: loaded `italian' language definitions on input line 2025.
- [21]
-Package cleveref Info: loaded `italian' language definitions on input line 2050.
- [22]
-Package cleveref Info: loaded `italian' language definitions on input line 2266.
- [23]
-Package cleveref Info: loaded `italian' language definitions on input line 2297.
- [24]
-Package cleveref Info: loaded `italian' language definitions on input line 2418.
- [25]
-Package cleveref Info: loaded `italian' language definitions on input line 2459.
- [26]
-Package cleveref Info: loaded `italian' language definitions on input line 2525.
- [27]
-Package cleveref Info: loaded `italian' language definitions on input line 2642.
- [28]
-Package cleveref Info: loaded `italian' language definitions on input line 2693.
- [29]
-Package cleveref Info: loaded `italian' language definitions on input line 2856.
- [30]
-Package cleveref Info: loaded `italian' language definitions on input line 2878.
- [31]
-Underfull \vbox (badness 2990) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 2998.
- [32]
-Package cleveref Info: loaded `italian' language definitions on input line 3009.
- [33]
-Package cleveref Info: loaded `italian' language definitions on input line 3125.
- [34]
-Package cleveref Info: loaded `italian' language definitions on input line 3218.
- [35]
-LaTeX Font Info:    Font shape `T1/lmss/m/it' in size <8> not available
-(Font)              Font shape `T1/lmss/m/sl' tried instead on input line 3424.
-
-Underfull \vbox (badness 3724) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 3427.
- [36]
-Package cleveref Info: loaded `italian' language definitions on input line 3444.
- [37]
-Package cleveref Info: loaded `italian' language definitions on input line 3511.
- [38]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 3662.
- [39]
-Package cleveref Info: loaded `italian' language definitions on input line 3675.
- [40]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 3772.
- [41]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 3787.
- [42]
-Overfull \hbox (154.62094pt too wide) detected at line 3878
-\OML/lmm/m/it/12 A[] \OT1/lmr/m/n/12 = [] = [] = [][] = \OMS/lmsy/m/n/12 j\OML/lmm/m/it/12 A[]\OMS/lmsy/m/n/12 jj\OML/lmm/m/it/12 A[]\OMS/lmsy/m/n/12 j \OT1/lmr/m/n/12 = 40 \OMS/lmsy/m/n/12 ^^B \OT1/lmr/m/n/12 10[] \OMS/lmsy/m/n/12 ^^B \OT1/lmr/m/n/12 275 \OMS/lmsy/m/n/12 ^^B \OT1/lmr/m/n/12 10[] = 11 \OMS/lmsy/m/n/12 ^^B \OT1/lmr/m/n/12 10[]
- []
-
-Package cleveref Info: loaded `italian' language definitions on input line 3885.
-[43]
-Package cleveref Info: loaded `italian' language definitions on input line 3923.
- [44]
-Package cleveref Info: loaded `italian' language definitions on input line 4004.
- [45]
-Package cleveref Info: loaded `italian' language definitions on input line 4144.
- [46]
-Package pgfplots info on input line 4185: Using 'lua backend=false' for axis: xmode=log unsupported (yet).
-Package cleveref Info: loaded `italian' language definitions on input line 4211.
- [47]
-Package cleveref Info: loaded `italian' language definitions on input line 4327.
- [48]
-Package cleveref Info: loaded `italian' language definitions on input line 4409.
- [49]
-<Immagini/Screenshot 2026-09-30 alle 20.58.15.png, id=413, 336.25626pt x 463.7325pt>
-File: Immagini/Screenshot 2026-09-30 alle 20.58.15.png Graphic file (type png)
-<use Immagini/Screenshot 2026-09-30 alle 20.58.15.png>
-Package pdftex.def Info: Immagini/Screenshot 2026-09-30 alle 20.58.15.png  used on input line 4417.
-(pdftex.def)             Requested size: 204.85846pt x 282.5226pt.
-Package cleveref Info: loaded `italian' language definitions on input line 4430.
- [50 <./Immagini/Screenshot 2026-09-30 alle 20.58.15.png>]
-LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <14.4> on input line 4499.
-
-Underfull \vbox (badness 3019) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 4564.
- [51]
-Package cleveref Info: loaded `italian' language definitions on input line 4627.
- [52]
-Package cleveref Info: loaded `italian' language definitions on input line 4705.
- [53]
-Package cleveref Info: loaded `italian' language definitions on input line 4738.
- [54]
-Underfull \vbox (badness 1048) has occurred while \output is active []
-
-Package cleveref Info: loaded `italian' language definitions on input line 4844.
- [55]
-<Immagini/white nouse.png, id=460, 579.16376pt x 258.9675pt>
-File: Immagini/white nouse.png Graphic file (type png)
-<use Immagini/white nouse.png>
-Package pdftex.def Info: Immagini/white nouse.png  used on input line 4855.
-(pdftex.def)             Requested size: 204.85846pt x 91.60019pt.
-
-Overfull \hbox (30.85652pt too wide) in paragraph at lines 4855--4893
-[][] [] 
- []
-
-Package cleveref Info: loaded `italian' language definitions on input line 4909.
-[56 <./Immagini/white nouse.png>]
-Package cleveref Info: loaded `italian' language definitions on input line 5058.
- [57]
-Package cleveref Info: loaded `italian' language definitions on input line 5063.
- [58] (./Appunti.aux
+{/usr/local/texlive/2026/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/usr/local/texlive/2026/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}] (./Appunti.aux
 Package cleveref Info: loaded `italian' language definitions on input line 8.
 Package cleveref Info: loaded `italian' language definitions on input line 9.
 )
@@ -1376,18 +1138,18 @@ L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 78082 strings out of 467525
- 1935716 string characters out of 5418983
- 2716232 words of memory out of 5000000
- 105473 multiletter control sequences out of 15000+600000
- 824122 words of font info for 366 fonts, out of 8000000 for 9000
+ 70241 strings out of 467525
+ 1777499 string characters out of 5418983
+ 2668070 words of memory out of 5000000
+ 98344 multiletter control sequences out of 15000+600000
+ 638303 words of font info for 51 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 103i,13n,108p,1077b,2169s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmi8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmmib10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr5.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmri12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss12.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsso8.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy6.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmsy8.pfb>
-Output written on Appunti.pdf (58 pages, 1451871 bytes).
+ 103i,12n,108p,1077b,1057s stack positions out of 10000i,1000n,20000p,200000b,200000s
+</usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></usr/local/texlive/2026/texmf-dist/fonts/type1/public/lm/lmr12.pfb>
+Output written on Appunti.pdf (1 page, 42156 bytes).
 PDF statistics:
- 714 PDF objects out of 1000 (max. 8388607)
- 558 compressed objects within 6 object streams
- 193 named destinations out of 1000 (max. 500000)
- 110937 words of extra memory for PDF output out of 128383 (max. 10000000)
+ 63 PDF objects out of 1000 (max. 8388607)
+ 31 compressed objects within 1 object stream
+ 2 named destinations out of 1000 (max. 500000)
+ 6301 words of extra memory for PDF output out of 10000 (max. 10000000)
 
